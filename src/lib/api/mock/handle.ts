@@ -180,6 +180,55 @@ export async function mockHandle<T>(
   }
 
   // ---------------------------------------------------------------------------
+  // Public forms (Phase 8) — accept-and-acknowledge; admin reviews in Filament
+  // ---------------------------------------------------------------------------
+  if (path === "/api/public/registration-request" && method === "POST") {
+    const body = (options.body ?? {}) as Record<string, unknown>;
+    const required = [
+      "facility_name",
+      "category",
+      "province_id",
+      "kabkota_id",
+      "kecamatan_id",
+      "requester_name",
+      "requester_email",
+      "message",
+    ];
+    const missing = required.filter((k) => !body[k]);
+    if (missing.length > 0) {
+      throw new ApiError(422, {
+        message: "Form tidak valid.",
+        errors: Object.fromEntries(missing.map((k) => [k, [`${k} wajib diisi`]])),
+      });
+    }
+    return undefined as T;
+  }
+  if (path === "/api/public/correction-request" && method === "POST") {
+    const body = (options.body ?? {}) as Record<string, unknown>;
+    const required = ["facility_url", "requester_name", "requester_email", "message"];
+    const missing = required.filter((k) => !body[k]);
+    if (missing.length > 0) {
+      throw new ApiError(422, {
+        message: "Form tidak valid.",
+        errors: Object.fromEntries(missing.map((k) => [k, [`${k} wajib diisi`]])),
+      });
+    }
+    return undefined as T;
+  }
+  if (path === "/api/public/deletion-request" && method === "POST") {
+    const body = (options.body ?? {}) as Record<string, unknown>;
+    const required = ["facility_url", "requester_name", "requester_email", "reason"];
+    const missing = required.filter((k) => !body[k]);
+    if (missing.length > 0) {
+      throw new ApiError(422, {
+        message: "Form tidak valid.",
+        errors: Object.fromEntries(missing.map((k) => [k, [`${k} wajib diisi`]])),
+      });
+    }
+    return undefined as T;
+  }
+
+  // ---------------------------------------------------------------------------
   // Regions / categories
   // ---------------------------------------------------------------------------
   if (path === "/api/regions/provinces" && method === "GET") {

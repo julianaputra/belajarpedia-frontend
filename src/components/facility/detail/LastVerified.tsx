@@ -1,16 +1,21 @@
 import Link from "next/link";
+import { absoluteUrl } from "@/lib/site/config";
 
 type Props = {
   date: string | null | undefined;
-  reportHref?: string;
+  /** Path to the current detail page; passed as `?facility_url=` to correction form. */
+  facilityPath?: string;
 };
 
 /**
  * B-09 mitigation: "Last verified" footer + "Report incorrect information" link.
- * Builds trust by being honest about freshness.
+ * The link prefills the correction form's facility_url field via query param.
  */
-export function LastVerified({ date, reportHref = "/request-correction" }: Props) {
+export function LastVerified({ date, facilityPath }: Props) {
   const formatted = date ? formatId(date) : null;
+  const reportHref = facilityPath
+    ? `/request-correction?facility_url=${encodeURIComponent(absoluteUrl(facilityPath))}`
+    : "/request-correction";
 
   return (
     <footer className="text-sm text-muted flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-4 border-t border-ink-100">

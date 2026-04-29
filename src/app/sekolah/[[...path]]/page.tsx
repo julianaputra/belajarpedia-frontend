@@ -298,7 +298,10 @@ async function renderDetail(
             <InquiryForm facilityId={detail.id} facilityName={detail.name ?? slug} />
           )}
 
-          <LastVerified date={detail.last_verified_at ?? null} />
+          <LastVerified
+            date={detail.last_verified_at ?? null}
+            facilityPath={sekolahDetailPath(filters, slug)}
+          />
         </div>
 
         {/* Sidebar */}

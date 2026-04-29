@@ -272,7 +272,10 @@ async function renderDetail(
             <InquiryForm facilityId={detail.id} facilityName={detail.name ?? slug} />
           )}
 
-          <LastVerified date={detail.last_verified_at ?? null} />
+          <LastVerified
+            date={detail.last_verified_at ?? null}
+            facilityPath={kursusDetailPath(filters, slug)}
+          />
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">

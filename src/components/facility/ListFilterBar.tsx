@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { ChevronDown, Search, SlidersHorizontal, X } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -51,6 +51,7 @@ const SCHOOL_TYPE_OPTIONS: Array<{ value: SchoolType; label: string }> = [
 export function ListFilterBar({ category, currentFilters }: Props) {
   const router = useRouter();
   const [query, setQuery] = React.useState("");
+  const [filtersOpen, setFiltersOpen] = React.useState(false);
 
   // Region slugs from current path-based filters.
   const provinceSlug = currentFilters.provinsi ?? "";
@@ -153,9 +154,14 @@ export function ListFilterBar({ category, currentFilters }: Props) {
     router.push(`/${category}/search?q=${encodeURIComponent(q)}`);
   };
 
-  const hasAnyFilter = Boolean(
-    provinceSlug || kabkotaSlug || kecamatanSlug || schoolType || mainCategory,
-  );
+  const activeFilterCount = [
+    provinceSlug,
+    kabkotaSlug,
+    kecamatanSlug,
+    schoolType,
+    mainCategory,
+  ].filter(Boolean).length;
+  const hasAnyFilter = activeFilterCount > 0;
 
   const onReset = () => {
     setQuery("");
@@ -181,7 +187,7 @@ export function ListFilterBar({ category, currentFilters }: Props) {
   return (
     <section
       aria-label="Cari & filter"
-      className="rounded-2xl bg-white border border-ink-100 p-4 sm:p-5 space-y-4"
+      className="rounded-2xl bg-white border border-ink-100 p-3 sm:p-5 space-y-3 sm:space-y-4"
     >
       <form
         onSubmit={onSubmitSearch}
@@ -213,8 +219,46 @@ export function ListFilterBar({ category, currentFilters }: Props) {
         </Button>
       </form>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
+      {/* Mobile filter toggle */}
+      <div className="flex items-center gap-2 sm:hidden">
+        <button
+          type="button"
+          onClick={() => setFiltersOpen((v) => !v)}
+          aria-expanded={filtersOpen}
+          aria-controls="list-filter-panel"
+          className="flex-1 inline-flex items-center justify-between gap-2 h-10 px-3 rounded-lg border border-ink-200 bg-white text-sm font-medium text-ink-700 hover:border-ink-300 transition-colors"
+        >
+          <span className="inline-flex items-center gap-2">
+            <SlidersHorizontal size={14} aria-hidden className="text-ink-400" />
+            Filter
+            {activeFilterCount > 0 && (
+              <span className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-brand-600 text-white text-[11px] font-semibold">
+                {activeFilterCount}
+              </span>
+            )}
+          </span>
+          <ChevronDown
+            size={14}
+            aria-hidden
+            className={`text-ink-400 transition-transform ${filtersOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+        {hasAnyFilter && (
+          <button
+            type="button"
+            onClick={onReset}
+            className="inline-flex items-center gap-1 h-10 px-3 rounded-lg text-sm font-medium text-coral-500 hover:bg-coral-400/10 transition-colors"
+          >
+            <X size={14} aria-hidden /> Reset
+          </button>
+        )}
+      </div>
+
+      <div
+        id="list-filter-panel"
+        className={`space-y-2 ${filtersOpen ? "block" : "hidden"} sm:block`}
+      >
+        <div className="hidden sm:flex items-center justify-between">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted">
             Saring berdasarkan wilayah
           </p>

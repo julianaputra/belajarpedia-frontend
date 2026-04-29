@@ -35,40 +35,40 @@ export function ParentTips() {
       aria-labelledby="tips-heading"
       className="bg-[var(--color-surface-soft)] border-y border-ink-100"
     >
-      <div className="mx-auto max-w-6xl px-5 py-14 sm:py-16">
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700 mb-2">
+      <div className="mx-auto max-w-6xl px-4 sm:px-5 py-10 sm:py-16">
+        <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-10">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700 mb-1.5 sm:mb-2">
             Panduan untuk orang tua
           </p>
           <h2
             id="tips-heading"
-            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-ink-700 leading-tight"
+            className="text-xl sm:text-3xl lg:text-4xl font-semibold text-ink-700 leading-tight"
           >
             4 langkah memilih sekolah dengan tenang
           </h2>
-          <p className="text-muted mt-3 leading-relaxed">
+          <p className="text-sm sm:text-base text-muted mt-2 sm:mt-3 leading-relaxed">
             Tips praktis dari pengalaman ribuan keluarga yang sudah memilih
             lewat Belajarpedia.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
           {TIPS.map((t) => (
             <article
               key={t.n}
-              className="bg-white border border-ink-100 rounded-2xl p-5 sm:p-6 flex gap-4"
+              className="bg-white border border-ink-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 flex gap-3 sm:gap-4"
             >
               <div
                 aria-hidden
-                className="text-2xl sm:text-3xl font-semibold text-brand-200 leading-none flex-shrink-0"
+                className="text-xl sm:text-3xl font-semibold text-brand-200 leading-none flex-shrink-0"
               >
                 {t.n}
               </div>
               <div>
-                <h3 className="font-semibold text-ink-700 text-base sm:text-lg leading-snug">
+                <h3 className="font-semibold text-ink-700 text-sm sm:text-lg leading-snug">
                   {t.title}
                 </h3>
-                <p className="text-sm text-body mt-2 leading-relaxed">
+                <p className="text-xs sm:text-sm text-body mt-1.5 sm:mt-2 leading-relaxed">
                   {t.body}
                 </p>
               </div>

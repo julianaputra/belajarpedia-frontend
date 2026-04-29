@@ -46,32 +46,32 @@ export function JenjangFilter() {
   return (
     <section
       aria-labelledby="jenjang-heading"
-      className="mx-auto max-w-6xl px-5 py-12 sm:py-14"
+      className="mx-auto max-w-6xl px-4 sm:px-5 py-8 sm:py-14"
     >
-      <div className="mb-6 sm:mb-8">
+      <div className="mb-4 sm:mb-8">
         <h2
           id="jenjang-heading"
-          className="text-2xl sm:text-3xl font-semibold text-ink-700"
+          className="text-xl sm:text-3xl font-semibold text-ink-700"
         >
           Mulai dari jenjang pendidikan
         </h2>
-        <p className="text-muted mt-1">
+        <p className="text-sm sm:text-base text-muted mt-1">
           Pilih sesuai usia anak Anda untuk hasil paling relevan.
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
         {JENJANG.map((j) => (
           <Link
             key={j.label}
             href={j.href}
-            className={`block rounded-xl border-2 ${j.color} p-4 sm:p-5 transition-transform hover:-translate-y-1 hover:shadow-[0_8px_20px_-10px_rgb(28_47_112_/_0.25)]`}
+            className={`block rounded-xl border-2 ${j.color} p-3 sm:p-5 transition-transform hover:-translate-y-1 hover:shadow-[0_8px_20px_-10px_rgb(28_47_112_/_0.25)]`}
           >
-            <div className="font-semibold text-lg sm:text-xl">{j.label}</div>
+            <div className="font-semibold text-base sm:text-xl">{j.label}</div>
             <div className="text-xs sm:text-sm opacity-80 mt-0.5">
               {j.sublabel}
             </div>
-            <div className="text-xs font-semibold mt-3 opacity-70 group-hover:opacity-100">
+            <div className="text-xs font-semibold mt-2 sm:mt-3 opacity-70 group-hover:opacity-100">
               Cari →
             </div>
           </Link>

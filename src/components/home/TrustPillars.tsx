@@ -35,36 +35,36 @@ export function TrustPillars() {
       aria-labelledby="trust-heading"
       className="bg-[var(--color-surface-soft)] border-y border-ink-100"
     >
-      <div className="mx-auto max-w-6xl px-5 py-14 sm:py-16">
-        <div className="text-center max-w-2xl mx-auto mb-10">
+      <div className="mx-auto max-w-6xl px-4 sm:px-5 py-10 sm:py-16">
+        <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-10">
           <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700 mb-2">
             Mengapa Belajarpedia?
           </p>
           <h2
             id="trust-heading"
-            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-ink-700 leading-tight"
+            className="text-xl sm:text-3xl lg:text-4xl font-semibold text-ink-700 leading-tight"
           >
             Dibuat untuk membantu orang tua, bukan menjual iklan
           </h2>
-          <p className="text-muted mt-3 leading-relaxed">
+          <p className="text-sm sm:text-base text-muted mt-2 sm:mt-3 leading-relaxed">
             Belajarpedia adalah inisiatif Timedoor untuk memberikan akses
             informasi pendidikan yang netral dan terverifikasi.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {PILLARS.map((p) => (
             <div
               key={p.label}
-              className="bg-white border border-ink-100 rounded-2xl p-5 sm:p-6"
+              className="bg-white border border-ink-100 rounded-xl sm:rounded-2xl p-4 sm:p-6"
             >
-              <div className="text-3xl sm:text-4xl font-semibold text-brand-700 leading-none">
+              <div className="text-2xl sm:text-4xl font-semibold text-brand-700 leading-none">
                 {p.stat}
               </div>
               <div className="text-sm font-semibold text-ink-700 mt-1.5">
                 {p.label}
               </div>
-              <p className="text-xs sm:text-sm text-muted mt-3 leading-relaxed">
+              <p className="text-xs sm:text-sm text-muted mt-2 sm:mt-3 leading-relaxed">
                 {p.body}
               </p>
             </div>

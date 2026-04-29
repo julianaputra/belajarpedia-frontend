@@ -48,7 +48,8 @@ export function Pagination({
         aria-label="Halaman sebelumnya"
         pageMode={pageMode}
       >
-        <ChevronLeft size={16} aria-hidden /> Sebelumnya
+        <ChevronLeft size={16} aria-hidden />
+        <span className="hidden sm:inline">Sebelumnya</span>
       </PageLink>
 
       {pages.map((p, i) =>
@@ -83,7 +84,8 @@ export function Pagination({
         aria-label="Halaman berikutnya"
         pageMode={pageMode}
       >
-        Berikutnya <ChevronRight size={16} aria-hidden />
+        <span className="hidden sm:inline">Berikutnya</span>
+        <ChevronRight size={16} aria-hidden />
       </PageLink>
     </nav>
   );

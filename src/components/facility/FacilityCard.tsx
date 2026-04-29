@@ -32,11 +32,11 @@ export function FacilityCard({ facility, className }: Props) {
     <Link
       href={href}
       className={cn(
-        "block focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200 rounded-2xl",
+        "block focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200 rounded-lg sm:rounded-2xl",
         className,
       )}
     >
-      <Card interactive className="h-full overflow-hidden">
+      <Card interactive className="h-full overflow-hidden rounded-lg sm:rounded-2xl">
         <div className="relative aspect-[4/3] bg-gradient-to-br from-brand-50 to-ink-50">
           <Image
             src={imageSrc}
@@ -46,18 +46,19 @@ export function FacilityCard({ facility, className }: Props) {
             className="object-cover"
           />
           {isTimedoor && (
-            <span className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sun-400 text-ink-900 text-xs font-semibold shadow-[0_2px_6px_-1px_rgb(28_47_112_/_0.2)]">
-              <Star size={12} fill="currentColor" aria-hidden />
-              Featured Partner
+            <span className="absolute top-2 left-2 sm:top-3 sm:left-3 inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-sun-400 text-ink-900 text-[10px] sm:text-xs font-semibold shadow-[0_2px_6px_-1px_rgb(28_47_112_/_0.2)]">
+              <Star size={11} fill="currentColor" aria-hidden />
+              <span className="hidden xs:inline sm:inline">Featured Partner</span>
+              <span className="inline xs:hidden sm:hidden">Featured</span>
             </span>
           )}
         </div>
-        <CardBody className="space-y-1">
-          <h3 className="text-base font-semibold text-ink-700 leading-snug line-clamp-2">
+        <CardBody className="space-y-0.5 sm:space-y-1 p-3 sm:p-5 sm:pt-3">
+          <h3 className="text-sm sm:text-base font-semibold text-ink-700 leading-snug line-clamp-2">
             {name}
           </h3>
           {kabkota && (
-            <p className="text-sm text-muted line-clamp-1">{kabkota}</p>
+            <p className="text-xs sm:text-sm text-muted line-clamp-1">{kabkota}</p>
           )}
         </CardBody>
       </Card>
@@ -74,7 +75,7 @@ export function FacilityGrid({ facilities, className }: GridProps) {
   return (
     <div
       className={cn(
-        "grid gap-4 sm:gap-5",
+        "grid gap-3 sm:gap-5",
         "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
         className,
       )}

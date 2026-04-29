@@ -32,12 +32,12 @@ export function SearchBar({ className }: { className?: string }) {
     <form
       onSubmit={submit}
       className={
-        "rounded-2xl bg-white p-3 shadow-[var(--shadow-lift)] border-2 border-ink-100 " +
+        "rounded-2xl bg-white p-2 sm:p-3 shadow-[var(--shadow-lift)] border-2 border-ink-100 " +
         (className ?? "")
       }
       role="search"
     >
-      <div className="grid gap-2 sm:grid-cols-[180px_1fr_auto]">
+      <div className="grid gap-2 grid-cols-[140px_1fr] sm:grid-cols-[180px_1fr_auto]">
         <SearchableSelect
           value={category}
           onChange={(v) => setCategory(v as Category)}
@@ -56,7 +56,12 @@ export function SearchBar({ className }: { className?: string }) {
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />
-        <Button type="submit" size="md" disabled={!canSubmit}>
+        <Button
+          type="submit"
+          size="md"
+          disabled={!canSubmit}
+          className="col-span-2 sm:col-span-1 justify-center"
+        >
           <Search size={18} aria-hidden /> Cari
         </Button>
       </div>

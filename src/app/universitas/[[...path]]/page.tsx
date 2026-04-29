@@ -110,13 +110,13 @@ async function renderList(filters: UniversitasFilters, page: number) {
   const heading = universitasHeading(filters);
 
   return (
-    <main className="mx-auto max-w-6xl px-5 py-10 space-y-8">
+    <main className="mx-auto max-w-6xl px-4 sm:px-5 py-5 sm:py-10 space-y-4 sm:space-y-8">
       <JsonLd data={breadcrumbListJsonLd(breadcrumbs)} id="ld-breadcrumbs" />
       <Breadcrumbs items={breadcrumbs} />
 
-      <header className="space-y-2">
-        <h1 className="text-3xl sm:text-4xl text-ink-700">{heading}</h1>
-        <p className="text-muted">
+      <header className="space-y-1 sm:space-y-2">
+        <h1 className="text-2xl sm:text-4xl text-ink-700">{heading}</h1>
+        <p className="text-sm sm:text-base text-muted">
           {total > 0
             ? `${total.toLocaleString("id-ID")} universitas ditemukan`
             : "Belum ada universitas yang terdaftar di area ini."}
@@ -127,7 +127,10 @@ async function renderList(filters: UniversitasFilters, page: number) {
 
       {facilities.length > 0 ? (
         <>
-          <FacilityGrid facilities={facilities} />
+          <FacilityGrid
+            facilities={facilities}
+            className="grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          />
           <Pagination
             basePath={basePath}
             currentPage={page}

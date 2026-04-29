@@ -8,16 +8,16 @@ export function OwnerCta() {
   return (
     <section
       aria-labelledby="owner-cta-heading"
-      className="mx-auto max-w-6xl px-5 py-12 sm:py-14"
+      className="mx-auto max-w-6xl px-4 sm:px-5 py-8 sm:py-14"
     >
-      <div className="bg-ink-700 text-white rounded-2xl p-7 sm:p-10 grid lg:grid-cols-[1.5fr_1fr] gap-6 items-center">
-        <div className="space-y-3">
+      <div className="bg-ink-700 text-white rounded-xl sm:rounded-2xl p-5 sm:p-10 grid lg:grid-cols-[1.5fr_1fr] gap-5 sm:gap-6 items-center">
+        <div className="space-y-2 sm:space-y-3">
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-300">
             Untuk pemilik fasilitas
           </p>
           <h2
             id="owner-cta-heading"
-            className="text-xl text-white sm:text-2xl lg:text-3xl font-semibold leading-tight"
+            className="text-lg text-white sm:text-2xl lg:text-3xl font-semibold leading-tight"
           >
             Punya sekolah, kampus, atau lembaga kursus?
           </h2>
@@ -26,7 +26,7 @@ export function OwnerCta() {
             informasi sebelum dipublikasi. Tanpa biaya, tanpa kewajiban.
           </p>
         </div>
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2 sm:gap-2.5">
           <Link
             href="/submit-listing"
             className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-white text-ink-700 font-semibold text-sm hover:bg-ink-50 transition-colors"

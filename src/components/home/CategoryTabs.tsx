@@ -64,19 +64,19 @@ export function CategoryTabs() {
   return (
     <section
       aria-labelledby="category-tabs-heading"
-      className="mx-auto max-w-6xl px-5 py-12 sm:py-16"
+      className="mx-auto max-w-6xl px-4 sm:px-5 py-8 sm:py-16"
     >
-      <header className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
-        <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700 mb-2">
+      <header className="text-center max-w-2xl mx-auto mb-5 sm:mb-10">
+        <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700 mb-1.5 sm:mb-2">
           Jelajahi pilihan
         </p>
         <h2
           id="category-tabs-heading"
-          className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-ink-700 leading-tight"
+          className="text-xl sm:text-3xl lg:text-4xl font-semibold text-ink-700 leading-tight"
         >
           Rekomendasi per kategori
         </h2>
-        <p className="text-muted mt-3 leading-relaxed">
+        <p className="text-sm sm:text-base text-muted mt-2 sm:mt-3 leading-relaxed">
           Pilih kategori untuk lihat fasilitas terdata yang baru saja
           diverifikasi.
         </p>
@@ -86,9 +86,9 @@ export function CategoryTabs() {
       <div
         role="tablist"
         aria-label="Pilih kategori"
-        className="flex justify-center mb-8"
+        className="flex justify-center mb-5 sm:mb-8"
       >
-        <div className="inline-flex p-1 rounded-lg bg-ink-50 border border-ink-100">
+        <div className="inline-flex p-1 rounded-lg bg-ink-50 border border-ink-100 max-w-full">
           {TABS.map((t) => {
             const isActive = t.id === activeId;
             return (
@@ -101,7 +101,7 @@ export function CategoryTabs() {
                 tabIndex={isActive ? 0 : -1}
                 onClick={() => setActiveId(t.id)}
                 className={cn(
-                  "inline-flex items-center gap-2 h-10 px-4 sm:px-5 rounded-md text-sm font-semibold",
+                  "inline-flex items-center gap-1.5 sm:gap-2 h-9 sm:h-10 px-3 sm:px-5 rounded-md text-xs sm:text-sm font-semibold",
                   "transition-all duration-200",
                   "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-200",
                   isActive
@@ -109,7 +109,7 @@ export function CategoryTabs() {
                     : "text-ink-500 hover:text-ink-700",
                 )}
               >
-                <t.Icon size={16} aria-hidden />
+                <t.Icon size={14} aria-hidden className="shrink-0" />
                 <span>{t.label}</span>
               </button>
             );
@@ -123,20 +123,20 @@ export function CategoryTabs() {
         id={`panel-${activeId}`}
         aria-labelledby={`tab-${activeId}`}
         key={activeId}
-        className="space-y-6 animate-[var(--animate-fade-up)]"
+        className="space-y-4 sm:space-y-6 animate-[var(--animate-fade-up)]"
       >
         <div className="text-center max-w-2xl mx-auto">
-          <h3 className="text-xl sm:text-2xl font-semibold text-ink-700">
+          <h3 className="text-base sm:text-2xl font-semibold text-ink-700">
             {active.title}
           </h3>
-          <p className="text-muted mt-2 text-sm sm:text-base leading-relaxed">
+          <p className="text-sm sm:text-base text-muted mt-1.5 sm:mt-2 leading-relaxed">
             {active.subtitle}
           </p>
         </div>
 
         <RekomendasiSection category={active.id} />
 
-        <div className="flex justify-center pt-2">
+        <div className="flex justify-center pt-1 sm:pt-2">
           <ButtonLink
             href={active.ctaHref}
             variant="primary"

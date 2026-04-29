@@ -56,17 +56,17 @@ export function PopularRegions() {
   return (
     <section
       aria-labelledby="regions-heading"
-      className="mx-auto max-w-6xl px-5 py-14 sm:py-16"
+      className="mx-auto max-w-6xl px-4 sm:px-5 py-8 sm:py-16"
     >
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 sm:gap-3 mb-4 sm:mb-8">
         <div>
           <h2
             id="regions-heading"
-            className="text-2xl sm:text-3xl font-semibold text-ink-700"
+            className="text-xl sm:text-3xl font-semibold text-ink-700"
           >
             Wilayah populer
           </h2>
-          <p className="text-muted mt-1">
+          <p className="text-sm sm:text-base text-muted mt-1">
             Mulai pencarian dari kota besar dengan opsi terbanyak.
           </p>
         </div>
@@ -78,21 +78,21 @@ export function PopularRegions() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
         {REGIONS.map((r) => (
           <Link
             key={r.href}
             href={r.href}
-            className="group bg-white border border-ink-100 rounded-xl p-4 sm:p-5 hover:border-brand-300 hover:shadow-[0_8px_20px_-10px_rgb(28_47_112_/_0.2)] transition-all"
+            className="group bg-white border border-ink-100 rounded-lg sm:rounded-xl p-3 sm:p-5 hover:border-brand-300 hover:shadow-[0_8px_20px_-10px_rgb(28_47_112_/_0.2)] transition-all"
           >
-            <div className="flex items-center gap-2 text-ink-500 text-xs">
-              <MapPin size={14} aria-hidden />
+            <div className="flex items-center gap-1.5 text-ink-500 text-[10px] sm:text-xs">
+              <MapPin size={12} aria-hidden />
               <span className="uppercase tracking-wider font-medium">Wilayah</span>
             </div>
-            <div className="font-semibold text-base sm:text-lg text-ink-700 mt-1.5 group-hover:text-brand-700 transition-colors">
+            <div className="font-semibold text-sm sm:text-lg text-ink-700 mt-1 sm:mt-1.5 group-hover:text-brand-700 transition-colors line-clamp-1">
               {r.label}
             </div>
-            <div className="text-xs sm:text-sm text-muted mt-1">{r.count}</div>
+            <div className="text-xs sm:text-sm text-muted mt-0.5 sm:mt-1">{r.count}</div>
           </Link>
         ))}
       </div>

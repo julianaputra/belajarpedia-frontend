@@ -39,28 +39,28 @@ export function ParentHero() {
         className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[44rem] h-[44rem] rounded-full bg-brand-100 opacity-40 blur-3xl"
       />
 
-      <div className="relative mx-auto max-w-5xl px-5 py-12 sm:py-16 lg:py-20 text-center space-y-7">
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-5 py-10 sm:py-16 lg:py-20 text-center space-y-5 sm:space-y-7">
         <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700">
           Direktori pendidikan Indonesia
         </p>
 
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold text-ink-700 leading-[1.15] max-w-3xl mx-auto">
+        <h1 className="text-[26px] sm:text-5xl lg:text-6xl font-semibold text-ink-700 leading-[1.15] max-w-3xl mx-auto">
           Bantu Anda memilih{" "}
           <span className="text-brand-700">pendidikan terbaik</span> untuk anak
         </h1>
 
-        <p className="text-base sm:text-lg text-ink-600 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-sm sm:text-lg text-ink-600 max-w-2xl mx-auto leading-relaxed">
           Bandingkan sekolah, universitas, dan kursus dari seluruh Indonesia.
           Lihat biaya, kurikulum, akreditasi, dan kontak — semua dalam satu
           tempat, transparan dan terpercaya.
         </p>
 
-        <div className="pt-2 max-w-3xl mx-auto">
+        <div className="pt-1 sm:pt-2 max-w-3xl mx-auto">
           <SearchBar />
         </div>
 
         {/* Quick category links */}
-        <p className="text-sm text-muted pt-1">
+        <p className="text-xs sm:text-sm text-muted pt-0.5 sm:pt-1">
           Atau jelajahi langsung:{" "}
           <Link
             href="/sekolah"
@@ -85,18 +85,18 @@ export function ParentHero() {
         </p>
 
         {/* Trust badges row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 pt-4 sm:pt-8 max-w-4xl mx-auto">
           {TRUST_BADGES.map((b) => (
             <div
               key={b.title}
-              className="bg-white border border-ink-100 rounded-xl p-4 text-left"
+              className="bg-white border border-ink-100 rounded-xl p-3 sm:p-4 text-left"
             >
               <div className="flex items-start gap-3">
                 <span
                   aria-hidden
-                  className="w-9 h-9 rounded-full bg-brand-100 text-brand-700 grid place-items-center flex-shrink-0"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-100 text-brand-700 grid place-items-center flex-shrink-0"
                 >
-                  <b.Icon size={18} />
+                  <b.Icon size={16} />
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-ink-700">{b.title}</p>

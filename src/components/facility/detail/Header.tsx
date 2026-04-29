@@ -1,8 +1,7 @@
-import Image from "next/image";
 import { Star } from "lucide-react";
-import type { components } from "@/types/api";
 
-const PLACEHOLDER = "/placeholder-facility.svg";
+import { FacilityImage } from "@/components/facility/FacilityImage";
+import type { components } from "@/types/api";
 
 type Props = {
   facility: components["schemas"]["FacilityBase"];
@@ -18,14 +17,13 @@ type Props = {
  */
 export function DetailHeader({ facility, subtitle }: Props) {
   const name = facility.name ?? "";
-  const image = facility.image_main_url ?? PLACEHOLDER;
   const isTimedoor = facility.is_timedoor_academy === true;
 
   return (
     <header className="space-y-5">
       <div className="relative aspect-[16/9] sm:aspect-[16/6] rounded-2xl overflow-hidden bg-gradient-to-br from-brand-50 to-ink-50 border border-ink-100">
-        <Image
-          src={image}
+        <FacilityImage
+          src={facility.image_main_url}
           alt={name}
           fill
           priority

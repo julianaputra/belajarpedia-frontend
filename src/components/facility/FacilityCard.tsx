@@ -1,12 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Star } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Card, CardBody } from "@/components/ui/Card";
+import { FacilityImage } from "@/components/facility/FacilityImage";
 import type { FacilityCard as FacilityCardData } from "@/lib/api/facilities";
-
-const PLACEHOLDER = "/placeholder-facility.svg";
 
 type Props = {
   facility: FacilityCardData;
@@ -25,7 +23,6 @@ export function FacilityCard({ facility, className }: Props) {
   const href = facility.url ?? "#";
   const name = facility.name ?? "Tanpa nama";
   const kabkota = facility.kabkota_name ?? "";
-  const imageSrc = facility.image_main_url ?? PLACEHOLDER;
   const isTimedoor = facility.is_timedoor_academy === true;
 
   return (
@@ -38,8 +35,8 @@ export function FacilityCard({ facility, className }: Props) {
     >
       <Card interactive className="h-full overflow-hidden rounded-lg sm:rounded-2xl">
         <div className="relative aspect-[4/3] bg-gradient-to-br from-brand-50 to-ink-50">
-          <Image
-            src={imageSrc}
+          <FacilityImage
+            src={facility.image_main_url}
             alt={name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

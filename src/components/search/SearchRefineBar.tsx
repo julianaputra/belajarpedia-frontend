@@ -6,7 +6,7 @@ import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
+import { SearchableSelect } from "@/components/ui/SearchableSelect";
 
 type Category = "sekolah" | "universitas" | "kursus";
 
@@ -47,15 +47,16 @@ export function SearchRefineBar({ category, initialQuery }: Props) {
       aria-label={`Cari di ${CATEGORY_LABEL[category]}`}
     >
       <div className="grid gap-2 sm:grid-cols-[160px_1fr_auto]">
-        <Select
-          aria-label="Kategori"
+        <SearchableSelect
           value={cat}
-          onChange={(e) => setCat(e.target.value as Category)}
-        >
-          <option value="sekolah">Sekolah</option>
-          <option value="universitas">Universitas</option>
-          <option value="kursus">Kursus</option>
-        </Select>
+          onChange={(v) => setCat(v as Category)}
+          options={[
+            { value: "sekolah", label: "Sekolah" },
+            { value: "universitas", label: "Universitas" },
+            { value: "kursus", label: "Kursus" },
+          ]}
+          searchable={false}
+        />
         <Input
           type="search"
           aria-label="Kata kunci"

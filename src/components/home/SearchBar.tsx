@@ -6,7 +6,7 @@ import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
+import { SearchableSelect } from "@/components/ui/SearchableSelect";
 
 type Category = "" | "sekolah" | "universitas" | "kursus";
 
@@ -38,17 +38,17 @@ export function SearchBar({ className }: { className?: string }) {
       role="search"
     >
       <div className="grid gap-2 sm:grid-cols-[180px_1fr_auto]">
-        <Select
-          aria-label="Kategori"
+        <SearchableSelect
           value={category}
-          onChange={(e) => setCategory(e.target.value as Category)}
-          required
-        >
-          <option value="">Pilih kategori</option>
-          <option value="sekolah">Sekolah</option>
-          <option value="universitas">Universitas</option>
-          <option value="kursus">Kursus</option>
-        </Select>
+          onChange={(v) => setCategory(v as Category)}
+          options={[
+            { value: "sekolah", label: "Sekolah" },
+            { value: "universitas", label: "Universitas" },
+            { value: "kursus", label: "Kursus" },
+          ]}
+          placeholder="Pilih kategori"
+          searchable={false}
+        />
         <Input
           type="search"
           aria-label="Kata kunci pencarian"

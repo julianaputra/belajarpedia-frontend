@@ -10,7 +10,6 @@ import { DatePicker } from "@/components/ui/DatePicker";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { PhoneInput } from "@/components/ui/PhoneInput";
 import { isoDateToday, isoDateYearsAgo } from "@/lib/utils";
-import { Select } from "@/components/ui/Select";
 import { FormError } from "@/components/auth/AuthCard";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useKabkotas, useProvinces } from "@/hooks/useRegions";
@@ -128,15 +127,17 @@ function ProfileInfoSection({
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="gender">Jenis kelamin</Label>
-            <Select
+            <SearchableSelect
               id="gender"
               value={gender}
-              onChange={(e) => setGender(e.target.value as "male" | "female" | "")}
-            >
-              <option value="">Pilih</option>
-              <option value="male">Laki-laki</option>
-              <option value="female">Perempuan</option>
-            </Select>
+              onChange={(v) => setGender(v as "male" | "female" | "")}
+              options={[
+                { value: "male", label: "Laki-laki" },
+                { value: "female", label: "Perempuan" },
+              ]}
+              placeholder="Pilih"
+              searchable={false}
+            />
           </div>
           <div>
             <Label htmlFor="birthdate">Tanggal lahir</Label>
@@ -315,14 +316,16 @@ function AddChildForm({
     >
       <div>
         <Label htmlFor="add-gender">Jenis kelamin</Label>
-        <Select
+        <SearchableSelect
           id="add-gender"
           value={gender}
-          onChange={(e) => setGender(e.target.value as "male" | "female")}
-        >
-          <option value="male">Laki-laki</option>
-          <option value="female">Perempuan</option>
-        </Select>
+          onChange={(v) => setGender(v as "male" | "female")}
+          options={[
+            { value: "male", label: "Laki-laki" },
+            { value: "female", label: "Perempuan" },
+          ]}
+          searchable={false}
+        />
       </div>
       <div>
         <Label htmlFor="add-birth">Tanggal lahir</Label>

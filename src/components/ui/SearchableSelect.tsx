@@ -23,6 +23,8 @@ type Props = {
   className?: string;
   /** Controls whether to clear value when "" is selected. Default true. */
   clearable?: boolean;
+  /** Show the search input inside the popover. Default true. Set false for short lists. */
+  searchable?: boolean;
 };
 
 /**
@@ -45,6 +47,7 @@ export function SearchableSelect({
   id,
   name,
   className,
+  searchable = true,
 }: Props) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -77,12 +80,15 @@ export function SearchableSelect({
     return () => document.removeEventListener("mousedown", onClick);
   }, [open, onBlur]);
 
-  // Focus search input once popover renders.
+  // Focus search input (or listbox, when search is hidden) once popover renders.
   React.useEffect(() => {
     if (!open) return;
-    const id = requestAnimationFrame(() => inputRef.current?.focus());
+    const id = requestAnimationFrame(() => {
+      if (searchable) inputRef.current?.focus();
+      else listRef.current?.focus();
+    });
     return () => cancelAnimationFrame(id);
-  }, [open]);
+  }, [open, searchable]);
 
   const handleToggle = () => {
     if (disabled) return;
@@ -183,37 +189,41 @@ export function SearchableSelect({
         <div
           className="absolute z-50 left-0 right-0 mt-2 rounded-lg bg-white border border-ink-100 shadow-[0_10px_30px_-10px_rgb(28_47_112_/_0.25)] overflow-hidden animate-[var(--animate-fade-up)]"
         >
-          <div className="border-b border-ink-100 p-2">
-            <div className="relative">
-              <Search
-                size={16}
-                aria-hidden
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400 pointer-events-none"
-              />
-              <input
-                ref={inputRef}
-                type="text"
-                role="combobox"
-                aria-expanded={open}
-                aria-controls={id ? `${id}-list` : undefined}
-                aria-autocomplete="list"
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  setActiveIdx(0);
-                }}
-                onKeyDown={onKeyDown}
-                placeholder={searchPlaceholder}
-                className="h-10 w-full rounded-lg border border-ink-200 bg-white pl-9 pr-3 text-sm focus:outline-none focus:border-brand-500"
-              />
+          {searchable && (
+            <div className="border-b border-ink-100 p-2">
+              <div className="relative">
+                <Search
+                  size={16}
+                  aria-hidden
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400 pointer-events-none"
+                />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  role="combobox"
+                  aria-expanded={open}
+                  aria-controls={id ? `${id}-list` : undefined}
+                  aria-autocomplete="list"
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setActiveIdx(0);
+                  }}
+                  onKeyDown={onKeyDown}
+                  placeholder={searchPlaceholder}
+                  className="h-10 w-full rounded-lg border border-ink-200 bg-white pl-9 pr-3 text-sm focus:outline-none focus:border-brand-500"
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           <ul
             ref={listRef}
             id={id ? `${id}-list` : undefined}
             role="listbox"
-            className="max-h-64 overflow-y-auto py-1"
+            tabIndex={searchable ? undefined : -1}
+            onKeyDown={searchable ? undefined : onKeyDown}
+            className="max-h-64 overflow-y-auto py-1 focus:outline-none"
           >
             {filtered.length === 0 ? (
               <li className="px-3 py-6 text-sm text-muted text-center">

@@ -13,7 +13,8 @@
   --color-brand-200: #a7f3b3;
   --color-brand-300: #6ee787;
   --color-brand-400: #3dd45c;
-  --color-brand-500: #10af13;   /* primary, per brand */
+  --color-brand-500: #10af13;
+  /* primary, per brand */
   --color-brand-600: #0c9510;
   --color-brand-700: #0a7510;
   --color-brand-800: #0a5c12;
@@ -27,12 +28,14 @@
   --color-ink-400: #5874ad;
   --color-ink-500: #3a5599;
   --color-ink-600: #28428a;
-  --color-ink-700: #1c2f70;     /* secondary, per brand */
+  --color-ink-700: #1c2f70;
+  /* secondary, per brand */
   --color-ink-800: #182857;
   --color-ink-900: #121f44;
 
   /* --- Neutrals & text ---------------------------------------------------- */
-  --color-body: #212529;        /* per brand text */
+  --color-body: #212529;
+  /* per brand text */
   --color-muted: #6c757d;
   --color-surface: #ffffff;
   --color-surface-soft: #f8fafb;
@@ -78,31 +81,74 @@
 }
 
 @keyframes bounce-in {
-  0%   { transform: scale(0.8) translateY(8px); opacity: 0; }
-  60%  { transform: scale(1.05) translateY(-2px); opacity: 1; }
-  100% { transform: scale(1) translateY(0); opacity: 1; }
+  0% {
+    transform: scale(0.8) translateY(8px);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.05) translateY(-2px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pop {
-  0%   { transform: scale(0.95); }
-  60%  { transform: scale(1.04); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0.95);
+  }
+
+  60% {
+    transform: scale(1.04);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes wiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25%      { transform: rotate(-3deg); }
-  75%      { transform: rotate(3deg); }
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-3deg);
+  }
+
+  75% {
+    transform: rotate(3deg);
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-4px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 /* ============================================================================
@@ -120,8 +166,12 @@ body {
   font-feature-settings: "ss01", "cv11";
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: var(--color-ink-700);
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -138,24 +188,21 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Highlighter — playful background swipe under important words */
 .fx-highlight {
-  background-image: linear-gradient(
-    180deg,
-    transparent 60%,
-    var(--color-brand-300) 60%,
-    var(--color-brand-300) 92%,
-    transparent 92%
-  );
+  background-image: linear-gradient(180deg,
+      transparent 60%,
+      var(--color-brand-300) 60%,
+      var(--color-brand-300) 92%,
+      transparent 92%);
   padding: 0 0.15em;
   white-space: nowrap;
 }
+
 .fx-highlight-sun {
-  background-image: linear-gradient(
-    180deg,
-    transparent 60%,
-    var(--color-sun-400) 60%,
-    var(--color-sun-400) 92%,
-    transparent 92%
-  );
+  background-image: linear-gradient(180deg,
+      transparent 60%,
+      var(--color-sun-400) 60%,
+      var(--color-sun-400) 92%,
+      transparent 92%);
   padding: 0 0.15em;
 }
 
@@ -189,10 +236,22 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   font-size: 0.875rem;
 }
-.fx-stick-rot-l { transform: rotate(-3deg); }
-.fx-stick-rot-r { transform: rotate(3deg); }
-.fx-stick-rot-l-soft { transform: rotate(-1.5deg); }
-.fx-stick-rot-r-soft { transform: rotate(1.5deg); }
+
+.fx-stick-rot-l {
+  transform: rotate(-3deg);
+}
+
+.fx-stick-rot-r {
+  transform: rotate(3deg);
+}
+
+.fx-stick-rot-l-soft {
+  transform: rotate(-1.5deg);
+}
+
+.fx-stick-rot-r-soft {
+  transform: rotate(1.5deg);
+}
 
 /* Tape strip — for cards that should look stuck on */
 .fx-tape::before {
@@ -220,33 +279,56 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Floating motion */
 @keyframes drift {
-  0%, 100% { transform: translateY(0) rotate(var(--drift-rot, 0deg)); }
-  50%      { transform: translateY(-8px) rotate(calc(var(--drift-rot, 0deg) + 1deg)); }
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--drift-rot, 0deg));
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(calc(var(--drift-rot, 0deg) + 1deg));
+  }
 }
+
 .fx-drift {
   animation: drift 5s ease-in-out infinite;
 }
 
 /* Marquee for CTA strip */
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
+
 .fx-marquee {
   animation: marquee 30s linear infinite;
 }
 
 /* Star burst pulse */
 @keyframes burst {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  50%      { transform: scale(1.15) rotate(15deg); }
+
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+
+  50% {
+    transform: scale(1.15) rotate(15deg);
+  }
 }
+
 .fx-burst {
   animation: burst 2.5s ease-in-out infinite;
 }
 
 /* Reduce motion for users who request it */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

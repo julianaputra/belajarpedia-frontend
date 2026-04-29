@@ -7,7 +7,6 @@ import { z } from "zod";
 
 import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { PhoneInput } from "@/components/ui/PhoneInput";
 import { Turnstile } from "@/components/Turnstile";
@@ -126,12 +125,25 @@ export default function SubmitListingPage() {
 
           <div>
             <Label htmlFor="category">Kategori</Label>
-            <Select id="category" {...register("category")}>
-              <option value="">Pilih kategori</option>
-              <option value="sekolah">Sekolah (SD/SMP/SMA/SMK)</option>
-              <option value="universitas">Universitas / Perguruan Tinggi</option>
-              <option value="kursus">Kursus / Lembaga Pelatihan</option>
-            </Select>
+            <Controller
+              control={control}
+              name="category"
+              render={({ field }) => (
+                <SearchableSelect
+                  id="category"
+                  value={field.value ?? ""}
+                  onChange={(v) => field.onChange(v)}
+                  onBlur={field.onBlur}
+                  options={[
+                    { value: "sekolah", label: "Sekolah (SD/SMP/SMA/SMK)" },
+                    { value: "universitas", label: "Universitas / Perguruan Tinggi" },
+                    { value: "kursus", label: "Kursus / Lembaga Pelatihan" },
+                  ]}
+                  placeholder="Pilih kategori"
+                  searchable={false}
+                />
+              )}
+            />
             <FieldError message={errors.category?.message} />
           </div>
 

@@ -25,7 +25,6 @@ import {
 
 import { Button } from "@/components/ui/Button";
 import { Input, Label, PasswordInput } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { PhoneInput } from "@/components/ui/PhoneInput";
@@ -249,11 +248,24 @@ export default function RegisterPage() {
                   htmlFor="gender"
                   error={errors.gender?.message}
                 >
-                  <Select id="gender" {...rhf("gender")}>
-                    <option value="">Pilih</option>
-                    <option value="male">Laki-laki</option>
-                    <option value="female">Perempuan</option>
-                  </Select>
+                  <Controller
+                    control={control}
+                    name="gender"
+                    render={({ field }) => (
+                      <SearchableSelect
+                        id="gender"
+                        value={field.value ?? ""}
+                        onChange={(v) => field.onChange(v)}
+                        onBlur={field.onBlur}
+                        options={[
+                          { value: "male", label: "Laki-laki" },
+                          { value: "female", label: "Perempuan" },
+                        ]}
+                        placeholder="Pilih"
+                        searchable={false}
+                      />
+                    )}
+                  />
                 </Field>
                 <Field
                   label="Tanggal lahir"
@@ -383,14 +395,24 @@ export default function RegisterPage() {
                           htmlFor={`children.${idx}.gender`}
                           error={errors.children?.[idx]?.gender?.message}
                         >
-                          <Select
-                            id={`children.${idx}.gender`}
-                            {...rhf(`children.${idx}.gender`)}
-                          >
-                            <option value="">Pilih</option>
-                            <option value="male">Laki-laki</option>
-                            <option value="female">Perempuan</option>
-                          </Select>
+                          <Controller
+                            control={control}
+                            name={`children.${idx}.gender`}
+                            render={({ field }) => (
+                              <SearchableSelect
+                                id={`children.${idx}.gender`}
+                                value={field.value ?? ""}
+                                onChange={(v) => field.onChange(v)}
+                                onBlur={field.onBlur}
+                                options={[
+                                  { value: "male", label: "Laki-laki" },
+                                  { value: "female", label: "Perempuan" },
+                                ]}
+                                placeholder="Pilih"
+                                searchable={false}
+                              />
+                            )}
+                          />
                         </Field>
                         <Field
                           label="Tanggal lahir"

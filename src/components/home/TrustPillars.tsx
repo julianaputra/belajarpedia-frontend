@@ -1,3 +1,4 @@
+import { CountUp } from "@/components/CountUp";
 import { Reveal, RevealItem } from "@/components/Reveal";
 
 /**
@@ -10,22 +11,26 @@ import { Reveal, RevealItem } from "@/components/Reveal";
 
 const PILLARS = [
   {
-    stat: "12.000+",
+    value: 12000,
+    suffix: "+",
     label: "Sekolah terdata",
     body: "Database terus diperbarui setiap tahun ajaran baru oleh tim editorial Belajarpedia.",
   },
   {
-    stat: "100%",
+    value: 100,
+    suffix: "%",
     label: "Bebas iklan",
     body: "Tidak ada paid placement. Listing Featured Partner ditandai jelas dan transparan.",
   },
   {
-    stat: "514",
+    value: 514,
+    suffix: "",
     label: "Kab/Kota tercover",
     body: "Cakupan nasional dari Sabang sampai Merauke, termasuk wilayah 3T.",
   },
   {
-    stat: "0",
+    value: 0,
+    suffix: "",
     label: "Biaya untuk Anda",
     body: "Pencarian, perbandingan, dan komunikasi dengan fasilitas — semua gratis selamanya.",
   },
@@ -72,9 +77,11 @@ export function TrustPillars() {
               key={p.label}
               className="bg-white border border-ink-100 rounded-xl sm:rounded-2xl p-4 sm:p-6"
             >
-              <div className="text-2xl sm:text-4xl font-semibold text-brand-700 leading-none">
-                {p.stat}
-              </div>
+              <CountUp
+                value={p.value}
+                suffix={p.suffix}
+                className="block text-2xl sm:text-4xl font-semibold text-brand-700 leading-none tabular-nums"
+              />
               <div className="text-sm font-semibold text-ink-700 mt-1.5">
                 {p.label}
               </div>

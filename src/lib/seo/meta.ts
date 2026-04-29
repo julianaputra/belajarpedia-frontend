@@ -147,6 +147,31 @@ export function searchMetadata(input: SearchMetaInput): Metadata {
   };
 }
 
+export function staticPageMetadata(input: {
+  title: string;
+  description: string;
+  path: string;
+  noindex?: boolean;
+}): Metadata {
+  const canonical = absoluteUrl(input.path);
+  return {
+    title: input.title,
+    description: input.description,
+    alternates: { canonical },
+    robots: input.noindex
+      ? { index: false, follow: true }
+      : { index: true, follow: true },
+    openGraph: {
+      type: "website",
+      locale: siteConfig.locale,
+      siteName: siteConfig.name,
+      title: input.title,
+      description: input.description,
+      url: canonical,
+    },
+  };
+}
+
 export function homeMetadata(): Metadata {
   return {
     title: { absolute: `${siteConfig.name} — ${siteConfig.tagline}` },

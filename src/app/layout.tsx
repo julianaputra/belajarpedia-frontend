@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { MobileTabNav } from "@/components/layout/NavLinks";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -42,10 +43,11 @@ export default function RootLayout({
       lang="id"
       className={`${poppins.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-0">
         <Header />
         <div className="flex-1">{children}</div>
         <Footer />
+        <MobileTabNav />
       </body>
     </html>
   );

@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { GraduationCap } from "lucide-react";
 
-import { DesktopNav, MobileTabNav } from "@/components/layout/NavLinks";
+import { DesktopNav } from "@/components/layout/NavLinks";
 import { UserMenu } from "@/components/layout/UserMenu";
 
 /**
  * Sticky site header.
  * - Desktop: logo (left) | nav links | user menu (right)
- * - Mobile: top bar collapses nav into a secondary tab strip below.
+ * - Mobile: only logo + user menu — the nav strip lives at the bottom of the
+ *   viewport (see `<MobileTabNav />` in the root layout) for thumb-reach.
  */
 export function Header() {
   return (
@@ -35,8 +36,6 @@ export function Header() {
           <UserMenu />
         </div>
       </div>
-
-      <MobileTabNav />
     </header>
   );
 }

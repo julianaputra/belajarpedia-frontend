@@ -53,7 +53,7 @@ export function MobileTabNav() {
   return (
     <nav
       aria-label="Kategori"
-      className="md:hidden border-t border-ink-100 bg-white/95 backdrop-blur-md"
+      className="fixed inset-x-0 bottom-0 z-40 md:hidden border-t border-ink-100 bg-white/95 backdrop-blur-md shadow-[0_-2px_8px_-2px_rgb(28_47_112_/_0.08)] pb-[env(safe-area-inset-bottom)]"
     >
       <div className="mx-auto max-w-6xl px-2 flex">
         {NAV.map((n) => {
@@ -78,7 +78,7 @@ export function MobileTabNav() {
               {active && (
                 <span
                   aria-hidden
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-brand-600"
+                  className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-brand-600"
                 />
               )}
             </Link>

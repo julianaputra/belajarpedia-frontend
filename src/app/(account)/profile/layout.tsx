@@ -52,15 +52,17 @@ export default function ProfileLayout({
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 sm:px-5 py-5 sm:py-10 space-y-4 sm:space-y-8">
+    <main className="mx-auto max-w-6xl px-4 sm:px-5 py-5 sm:py-10 space-y-4 sm:space-y-8 overflow-x-clip">
       <header className="space-y-1 sm:space-y-2">
         <h1 className="text-2xl sm:text-4xl text-ink-700">Akun Saya</h1>
-        <p className="text-sm sm:text-base text-muted">
+        <p className="text-sm sm:text-base text-muted break-all sm:break-normal">
           {user.email}{" "}
           {user.email_verified_at ? (
-            <span className="text-brand-700 font-semibold">✓ Terverifikasi</span>
+            <span className="text-brand-700 font-semibold whitespace-nowrap">
+              ✓ Terverifikasi
+            </span>
           ) : (
-            <span className="text-coral-500 font-semibold">
+            <span className="text-coral-500 font-semibold whitespace-nowrap">
               Belum diverifikasi
             </span>
           )}
@@ -68,20 +70,21 @@ export default function ProfileLayout({
       </header>
 
       <div className="grid gap-4 sm:gap-8 lg:grid-cols-[240px_1fr]">
-        <aside className="lg:sticky lg:top-20 lg:self-start">
+        <aside className="lg:sticky lg:top-20 lg:self-start min-w-0">
           <nav aria-label="Navigasi profil">
-            <ul className="flex gap-1.5 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:pb-0">
+            <ul className="grid grid-cols-2 gap-1.5 lg:flex lg:flex-col lg:gap-1">
               {NAV_ITEMS.map((item) => {
                 const active = item.exact
                   ? pathname === item.href
                   : pathname?.startsWith(item.href);
                 return (
-                  <li key={item.href} className="shrink-0 lg:shrink lg:w-full">
+                  <li key={item.href} className="min-w-0">
                     <Link
                       href={item.href}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors lg:whitespace-normal",
+                        "flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                        "min-w-0",
                         active
                           ? item.danger
                             ? "bg-coral-400/10 text-coral-500"
@@ -92,7 +95,7 @@ export default function ProfileLayout({
                       )}
                     >
                       <item.Icon size={16} aria-hidden className="shrink-0" />
-                      {item.label}
+                      <span className="truncate">{item.label}</span>
                     </Link>
                   </li>
                 );

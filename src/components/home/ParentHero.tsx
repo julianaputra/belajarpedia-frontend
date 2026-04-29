@@ -99,22 +99,9 @@ export function ParentHero() {
         once
         stagger={0.1}
       >
-        {/* Social proof badge */}
-        <RevealItem className="flex justify-center">
-          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-200 shadow-[0_2px_8px_-3px_rgb(28_47_112_/_0.08)] text-xs sm:text-sm font-medium text-ink-700">
-            <span className="inline-flex -space-x-1.5" aria-hidden>
-              <span className="w-5 h-5 rounded-full bg-brand-500 border-2 border-white" />
-              <span className="w-5 h-5 rounded-full bg-sun-400 border-2 border-white" />
-              <span className="w-5 h-5 rounded-full bg-coral-400 border-2 border-white" />
-            </span>
-            Direktori pendidikan{" "}
-            <span className="font-semibold text-brand-700">tanpa iklan</span>{" "}
-            di Indonesia
-          </span>
-        </RevealItem>
 
         <RevealItem>
-          <h1 className="text-[28px] sm:text-5xl lg:text-7xl font-semibold text-ink-700 leading-[1.1] tracking-tight max-w-4xl mx-auto">
+          <h1 className="text-[32px] sm:text-5xl lg:text-7xl font-semibold text-ink-700 leading-[1.1] tracking-tight max-w-4xl mx-auto">
             Temukan{" "}
             <span className="relative inline-block text-brand-700">
               <span

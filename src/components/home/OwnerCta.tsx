@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
 
+import { Reveal, RevealItem } from "@/components/Reveal";
+
 /**
  * Subordinate CTA for facility owners. Quiet on the parent home so it doesn't
  * compete with the primary parent journey.
@@ -27,36 +29,46 @@ export function OwnerCta() {
           className="absolute top-4 right-4 sm:top-6 sm:right-6 text-sun-400 opacity-70"
         />
 
-        <div className="relative space-y-2 sm:space-y-3">
-          <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand-300">
-            <span aria-hidden className="h-px w-5 bg-brand-300/60" />
-            Untuk pemilik fasilitas
-          </p>
-          <h2
-            id="owner-cta-heading"
-            className="text-lg text-white sm:text-2xl lg:text-3xl font-semibold leading-tight"
-          >
-            Punya sekolah, kampus, atau lembaga kursus?
-          </h2>
-          <p className="text-white/80 text-sm sm:text-base leading-relaxed max-w-xl">
-            Daftarkan fasilitas Anda secara gratis. Tim kami akan memverifikasi
-            informasi sebelum dipublikasi. Tanpa biaya, tanpa kewajiban.
-          </p>
-        </div>
-        <div className="relative flex flex-col gap-2 sm:gap-2.5">
-          <Link
-            href="/submit-listing"
-            className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-white text-ink-700 font-semibold text-sm hover:bg-ink-50 transition-colors"
-          >
-            Daftarkan fasilitas →
-          </Link>
-          <Link
-            href="/request-correction"
-            className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-transparent border border-white/30 text-white text-sm font-medium hover:bg-white/10 transition-colors"
-          >
-            Perbaiki info yang ada
-          </Link>
-        </div>
+        <Reveal className="relative space-y-2 sm:space-y-3">
+          <RevealItem>
+            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand-300">
+              <span aria-hidden className="h-px w-5 bg-brand-300/60" />
+              Untuk pemilik fasilitas
+            </p>
+          </RevealItem>
+          <RevealItem>
+            <h2
+              id="owner-cta-heading"
+              className="text-lg text-white sm:text-2xl lg:text-3xl font-semibold leading-tight"
+            >
+              Punya sekolah, kampus, atau lembaga kursus?
+            </h2>
+          </RevealItem>
+          <RevealItem>
+            <p className="text-white/80 text-sm sm:text-base leading-relaxed max-w-xl">
+              Daftarkan fasilitas Anda secara gratis. Tim kami akan memverifikasi
+              informasi sebelum dipublikasi. Tanpa biaya, tanpa kewajiban.
+            </p>
+          </RevealItem>
+        </Reveal>
+        <Reveal className="relative flex flex-col gap-2 sm:gap-2.5" stagger={0.08}>
+          <RevealItem>
+            <Link
+              href="/submit-listing"
+              className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-white text-ink-700 font-semibold text-sm hover:bg-ink-50 transition-colors"
+            >
+              Daftarkan fasilitas →
+            </Link>
+          </RevealItem>
+          <RevealItem>
+            <Link
+              href="/request-correction"
+              className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-transparent border border-white/30 text-white text-sm font-medium hover:bg-white/10 transition-colors"
+            >
+              Perbaiki info yang ada
+            </Link>
+          </RevealItem>
+        </Reveal>
       </div>
     </section>
   );

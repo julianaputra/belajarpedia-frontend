@@ -5,6 +5,7 @@ import { ArrowRight, GraduationCap, School, Sparkles } from "lucide-react";
 
 import { ButtonLink } from "@/components/ui/Button";
 import { RekomendasiSection } from "@/components/home/RekomendasiSection";
+import { Reveal, RevealItem } from "@/components/Reveal";
 import { cn } from "@/lib/utils";
 
 type CategoryId = "sekolah" | "universitas" | "kursus";
@@ -66,23 +67,29 @@ export function CategoryTabs() {
       aria-labelledby="category-tabs-heading"
       className="mx-auto max-w-6xl px-4 sm:px-5 py-8 sm:py-16"
     >
-      <header className="text-center max-w-2xl mx-auto mb-5 sm:mb-10">
-        <p className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700 mb-1.5 sm:mb-2">
-          <span aria-hidden className="h-px w-5 bg-brand-300" />
-          Jelajahi pilihan
-          <span aria-hidden className="h-px w-5 bg-brand-300" />
-        </p>
-        <h2
-          id="category-tabs-heading"
-          className="text-xl sm:text-3xl lg:text-4xl font-semibold text-ink-700 leading-tight"
-        >
-          Rekomendasi per kategori
-        </h2>
-        <p className="text-sm sm:text-base text-muted mt-2 sm:mt-3 leading-relaxed">
-          Pilih kategori untuk lihat fasilitas terdata yang baru saja
-          diverifikasi.
-        </p>
-      </header>
+      <Reveal className="text-center max-w-2xl mx-auto mb-5 sm:mb-10">
+        <RevealItem>
+          <p className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700 mb-1.5 sm:mb-2">
+            <span aria-hidden className="h-px w-5 bg-brand-300" />
+            Jelajahi pilihan
+            <span aria-hidden className="h-px w-5 bg-brand-300" />
+          </p>
+        </RevealItem>
+        <RevealItem>
+          <h2
+            id="category-tabs-heading"
+            className="text-xl sm:text-3xl lg:text-4xl font-semibold text-ink-700 leading-tight"
+          >
+            Rekomendasi per kategori
+          </h2>
+        </RevealItem>
+        <RevealItem>
+          <p className="text-sm sm:text-base text-muted mt-2 sm:mt-3 leading-relaxed">
+            Pilih kategori untuk lihat fasilitas terdata yang baru saja
+            diverifikasi.
+          </p>
+        </RevealItem>
+      </Reveal>
 
       {/* Tab list */}
       <div

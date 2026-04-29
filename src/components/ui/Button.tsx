@@ -64,7 +64,7 @@ const sizeStyles: Record<Size, string> = {
 
 const baseStyles = cn(
   "inline-flex items-center justify-center font-semibold",
-  "rounded-[var(--radius)]",
+  "rounded-lg",
   "select-none whitespace-nowrap",
   "transition-[transform,box-shadow,background-color] duration-150 ease-[var(--ease-pop)]",
   // Layout-stable depth: only transform + shadow change. Box geometry never moves.

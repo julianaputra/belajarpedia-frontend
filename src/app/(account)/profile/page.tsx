@@ -7,6 +7,8 @@ import useSWR from "swr";
 import { Button } from "@/components/ui/Button";
 import { Input, Label, PasswordInput } from "@/components/ui/Input";
 import { DatePicker } from "@/components/ui/DatePicker";
+import { SearchableSelect } from "@/components/ui/SearchableSelect";
+import { PhoneInput } from "@/components/ui/PhoneInput";
 import { isoDateToday, isoDateYearsAgo } from "@/lib/utils";
 import { Select } from "@/components/ui/Select";
 import { FormError } from "@/components/auth/AuthCard";
@@ -151,46 +153,42 @@ function ProfileInfoSection({
         </div>
         <div>
           <Label htmlFor="phone">No. HP</Label>
-          <Input
-            id="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
+          <PhoneInput id="phone" value={phone} onChange={setPhone} />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="province">Provinsi</Label>
-            <Select
+            <SearchableSelect
               id="province"
-              value={provinceId}
-              onChange={(e) => {
-                setProvinceId(Number(e.target.value));
+              value={provinceId ? String(provinceId) : ""}
+              onChange={(v) => {
+                setProvinceId(Number(v));
                 setKabkotaId(0);
               }}
-            >
-              <option value={0}>Pilih provinsi</option>
-              {provinces?.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </Select>
+              options={(provinces ?? []).map((p) => ({
+                value: String(p.id),
+                label: p.name ?? "",
+              }))}
+              placeholder="Pilih provinsi"
+              searchPlaceholder="Cari provinsi…"
+            />
           </div>
           <div>
             <Label htmlFor="kabkota">Kab/Kota</Label>
-            <Select
+            <SearchableSelect
               id="kabkota"
-              value={kabkotaId}
-              onChange={(e) => setKabkotaId(Number(e.target.value))}
+              value={kabkotaId ? String(kabkotaId) : ""}
+              onChange={(v) => setKabkotaId(Number(v))}
               disabled={!provinceSlug}
-            >
-              <option value={0}>Pilih kab/kota</option>
-              {kabkotas?.map((k) => (
-                <option key={k.id} value={k.id}>
-                  {k.name}
-                </option>
-              ))}
-            </Select>
+              options={(kabkotas ?? []).map((k) => ({
+                value: String(k.id),
+                label: k.name ?? "",
+              }))}
+              placeholder={
+                !provinceSlug ? "Pilih provinsi dulu" : "Pilih kab/kota"
+              }
+              searchPlaceholder="Cari kab/kota…"
+            />
           </div>
         </div>
 
@@ -235,7 +233,7 @@ function ChildrenSection() {
         {(data ?? []).map((c) => (
           <div
             key={c.id}
-            className="flex items-center justify-between gap-3 rounded-[var(--radius)] border-2 border-ink-100 px-4 py-3"
+            className="flex items-center justify-between gap-3 rounded-lg border-2 border-ink-100 px-4 py-3"
           >
             <div className="text-sm">
               <span className="font-semibold text-ink-700">
@@ -313,7 +311,7 @@ function AddChildForm({
           setSaving(false);
         }
       }}
-      className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] items-end p-4 rounded-[var(--radius)] border-2 border-dashed border-ink-200"
+      className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] items-end p-4 rounded-lg border-2 border-dashed border-ink-200"
     >
       <div>
         <Label htmlFor="add-gender">Jenis kelamin</Label>
@@ -453,7 +451,7 @@ function DangerZone({ onLogout }: { onLogout: () => void }) {
   const [busy, setBusy] = React.useState(false);
 
   return (
-    <section className="rounded-[var(--radius-lg)] border-2 border-coral-400 bg-coral-400/5 p-5 sm:p-6 space-y-4">
+    <section className="rounded-lg border-2 border-coral-400 bg-coral-400/5 p-5 sm:p-6 space-y-4">
       <div className="space-y-1">
         <h2 className="font-display font-semibold text-xl text-coral-500">
           Zona berbahaya
@@ -487,7 +485,7 @@ function DangerZone({ onLogout }: { onLogout: () => void }) {
           </Button>
         ) : (
           <form
-            className="w-full space-y-3 rounded-[var(--radius)] bg-white border-2 border-coral-400 p-4"
+            className="w-full space-y-3 rounded-lg bg-white border-2 border-coral-400 p-4"
             onSubmit={async (e) => {
               e.preventDefault();
               if (!pwd) {
@@ -558,7 +556,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-5 sm:p-6 space-y-4">
+    <section className="rounded-2xl bg-white border-2 border-ink-100 p-5 sm:p-6 space-y-4">
       <h2 className="font-display font-semibold text-xl text-ink-700">{title}</h2>
       <div className="space-y-4">{children}</div>
     </section>

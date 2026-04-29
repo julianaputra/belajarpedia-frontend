@@ -219,7 +219,7 @@ export function DatePicker({
           role="dialog"
           aria-modal="false"
           aria-label="Pilih tanggal"
-          className="absolute z-50 left-0 right-0 mt-2 min-w-[18rem] max-w-sm rounded-xl bg-white border border-ink-100 shadow-[0_10px_30px_-10px_rgb(28_47_112_/_0.25)] p-3 animate-[var(--animate-fade-up)]"
+          className="absolute z-50 left-0 right-0 mt-2 min-w-[18rem] max-w-sm rounded-lg bg-white border border-ink-100 shadow-[0_10px_30px_-10px_rgb(28_47_112_/_0.25)] p-3 animate-[var(--animate-fade-up)]"
         >
           {view === "year" && (
             <YearGrid

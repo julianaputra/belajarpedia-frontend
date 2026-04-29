@@ -118,7 +118,7 @@ export function Hero() {
               <Link
                 key={p.label}
                 href={p.href}
-                className="px-3 py-1.5 rounded-full bg-white border-2 border-ink-200 text-ink-700 font-semibold hover:border-brand-500 hover:bg-brand-50 hover:-translate-y-0.5 transition-all duration-150"
+                className="px-3 py-1.5 rounded-lg bg-white border-2 border-ink-200 text-ink-700 font-semibold hover:border-brand-500 hover:bg-brand-50 hover:-translate-y-0.5 transition-all duration-150"
               >
                 {p.label}
               </Link>
@@ -131,7 +131,7 @@ export function Hero() {
           className="relative animate-[var(--animate-bounce-in)]"
           style={{ animationDelay: "200ms" }}
         >
-          <div className="relative fx-tape rounded-[var(--radius-xl)] bg-white border-2 border-ink-700 p-6 sm:p-7 rotate-[1.5deg] shadow-[8px_8px_0_0_var(--color-ink-700)]">
+          <div className="relative fx-tape rounded-2xl bg-white border-2 border-ink-700 p-6 sm:p-7 rotate-[1.5deg] shadow-[8px_8px_0_0_var(--color-ink-700)]">
             <div className="space-y-4">
               <div className="flex items-baseline gap-3">
                 <span className="font-display font-semibold text-5xl sm:text-6xl text-brand-500 leading-none">

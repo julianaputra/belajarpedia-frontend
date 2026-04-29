@@ -23,7 +23,7 @@ export function KursusCategoryChips({ selectedSlug, onSelect }: Props) {
         {Array.from({ length: 5 }).map((_, i) => (
           <span
             key={i}
-            className="h-9 w-24 rounded-full bg-ink-100 animate-pulse"
+            className="h-9 w-24 rounded-lg bg-ink-100 animate-pulse"
             aria-hidden
           />
         ))}
@@ -70,7 +70,7 @@ function Chip({ label, active, onClick }: ChipProps) {
       aria-selected={active}
       onClick={onClick}
       className={cn(
-        "h-9 px-4 rounded-full text-sm font-semibold",
+        "h-9 px-4 rounded-lg text-sm font-semibold",
         "transition-[transform,background-color,box-shadow,border-color] duration-150 ease-[var(--ease-pop)]",
         "border-2 hover:-translate-y-0.5",
         active

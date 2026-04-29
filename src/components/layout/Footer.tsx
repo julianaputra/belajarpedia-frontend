@@ -40,7 +40,7 @@ const ABOUT = [
  */
 export function Footer() {
   return (
-    <footer className="mt-16 bg-[var(--color-surface-soft)] border-t border-ink-100">
+    <footer className="bg-[var(--color-surface-soft)] border-t border-ink-100">
       <div className="mx-auto max-w-6xl px-5 py-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         {/* Column 1 — Brand + trust */}
         <div className="lg:col-span-1">

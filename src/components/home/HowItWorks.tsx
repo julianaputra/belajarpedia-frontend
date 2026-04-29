@@ -52,7 +52,7 @@ export function HowItWorks() {
           {STEPS.map((s, i) => (
             <div
               key={s.n}
-              className={`relative ${s.bg} ${s.rotate} rounded-[var(--radius-xl)] border-2 border-ink-700 p-6 sm:p-7 shadow-[6px_6px_0_0_var(--color-ink-700)] animate-[var(--animate-bounce-in)] hover:rotate-0 hover:-translate-y-1 transition-all duration-200`}
+              className={`relative ${s.bg} ${s.rotate} rounded-2xl border-2 border-ink-700 p-6 sm:p-7 shadow-[6px_6px_0_0_var(--color-ink-700)] animate-[var(--animate-bounce-in)] hover:rotate-0 hover:-translate-y-1 transition-all duration-200`}
               style={{ animationDelay: `${i * 120}ms` }}
             >
               <div className="flex items-start gap-4">

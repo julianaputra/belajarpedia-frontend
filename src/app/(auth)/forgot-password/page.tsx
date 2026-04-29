@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
           </Link>
         }
       >
-        <div className="rounded-[var(--radius)] bg-brand-50 border-2 border-brand-200 p-4 text-sm text-body">
+        <div className="rounded-lg bg-brand-50 border-2 border-brand-200 p-4 text-sm text-body">
           Tidak menerima email dalam 5 menit? Cek folder spam atau coba lagi
           dengan email yang berbeda.
         </div>

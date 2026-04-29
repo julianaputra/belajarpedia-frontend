@@ -32,7 +32,7 @@ export function SearchBar({ className }: { className?: string }) {
     <form
       onSubmit={submit}
       className={
-        "rounded-[var(--radius-xl)] bg-white p-3 shadow-[var(--shadow-lift)] border-2 border-ink-100 " +
+        "rounded-2xl bg-white p-3 shadow-[var(--shadow-lift)] border-2 border-ink-100 " +
         (className ?? "")
       }
       role="search"

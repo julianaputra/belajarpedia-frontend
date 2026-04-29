@@ -27,6 +27,8 @@ import { Button } from "@/components/ui/Button";
 import { Input, Label, PasswordInput } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { DatePicker } from "@/components/ui/DatePicker";
+import { SearchableSelect } from "@/components/ui/SearchableSelect";
+import { PhoneInput } from "@/components/ui/PhoneInput";
 import { Turnstile } from "@/components/Turnstile";
 import { AuthCard, FormError, FieldError } from "@/components/auth/AuthCard";
 import { register as registerUser } from "@/lib/api/auth.client";
@@ -72,32 +74,32 @@ const STEPS: Array<{
   Icon: typeof UserCircle;
   fields: FieldPath<FormValues>[];
 }> = [
-  {
-    id: "akun",
-    label: "Akun",
-    Icon: UserCircle,
-    fields: ["email", "password", "password_confirmation"],
-  },
-  {
-    id: "profil",
-    label: "Profil",
-    Icon: MapPin,
-    fields: [
-      "name",
-      "gender",
-      "birthdate",
-      "phone",
-      "province_id",
-      "kabkota_id",
-    ],
-  },
-  {
-    id: "anak",
-    label: "Anak",
-    Icon: Baby,
-    fields: ["children"],
-  },
-];
+    {
+      id: "akun",
+      label: "Akun",
+      Icon: UserCircle,
+      fields: ["email", "password", "password_confirmation"],
+    },
+    {
+      id: "profil",
+      label: "Profil",
+      Icon: MapPin,
+      fields: [
+        "name",
+        "gender",
+        "birthdate",
+        "phone",
+        "province_id",
+        "kabkota_id",
+      ],
+    },
+    {
+      id: "anak",
+      label: "Anak",
+      Icon: Baby,
+      fields: ["children"],
+    },
+  ];
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -142,6 +144,7 @@ export default function RegisterPage() {
 
   return (
     <AuthCard
+      className="max-w-2xl"
       title="Buat akun gratis"
       subtitle="Akun ini dipakai untuk simpan favorit, kirim pertanyaan, dan email ucapan ulang tahun."
       footer={
@@ -276,12 +279,17 @@ export default function RegisterPage() {
                 </Field>
               </div>
               <Field label="No. HP" htmlFor="phone" error={errors.phone?.message}>
-                <Input
-                  id="phone"
-                  type="tel"
-                  autoComplete="tel"
-                  placeholder="+62812…"
-                  {...rhf("phone")}
+                <Controller
+                  control={control}
+                  name="phone"
+                  render={({ field }) => (
+                    <PhoneInput
+                      id="phone"
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                    />
+                  )}
                 />
               </Field>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -290,39 +298,54 @@ export default function RegisterPage() {
                   htmlFor="province_id"
                   error={errors.province_id?.message}
                 >
-                  <Select
-                    id="province_id"
-                    {...rhf("province_id", {
-                      onChange: () => setValue("kabkota_id", ""),
-                    })}
-                  >
-                    <option value="">Pilih provinsi</option>
-                    {provinces?.map((p) => (
-                      <option key={p.id} value={String(p.id)}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </Select>
+                  <Controller
+                    control={control}
+                    name="province_id"
+                    render={({ field }) => (
+                      <SearchableSelect
+                        id="province_id"
+                        value={field.value ?? ""}
+                        onChange={(v) => {
+                          field.onChange(v);
+                          setValue("kabkota_id", "");
+                        }}
+                        onBlur={field.onBlur}
+                        options={(provinces ?? []).map((p) => ({
+                          value: String(p.id),
+                          label: p.name ?? "",
+                        }))}
+                        placeholder="Pilih provinsi"
+                        searchPlaceholder="Cari provinsi…"
+                      />
+                    )}
+                  />
                 </Field>
                 <Field
                   label="Kab/Kota"
                   htmlFor="kabkota_id"
                   error={errors.kabkota_id?.message}
                 >
-                  <Select
-                    id="kabkota_id"
-                    disabled={!provinceSlug}
-                    {...rhf("kabkota_id")}
-                  >
-                    <option value="">
-                      {!provinceSlug ? "Pilih provinsi dulu" : "Pilih kab/kota"}
-                    </option>
-                    {kabkotas?.map((k) => (
-                      <option key={k.id} value={String(k.id)}>
-                        {k.name}
-                      </option>
-                    ))}
-                  </Select>
+                  <Controller
+                    control={control}
+                    name="kabkota_id"
+                    render={({ field }) => (
+                      <SearchableSelect
+                        id="kabkota_id"
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        disabled={!provinceSlug}
+                        options={(kabkotas ?? []).map((k) => ({
+                          value: String(k.id),
+                          label: k.name ?? "",
+                        }))}
+                        placeholder={
+                          !provinceSlug ? "Pilih provinsi dulu" : "Pilih kab/kota"
+                        }
+                        searchPlaceholder="Cari kab/kota…"
+                      />
+                    )}
+                  />
                 </Field>
               </div>
             </Section>
@@ -340,7 +363,7 @@ export default function RegisterPage() {
                   {fields.map((f, idx) => (
                     <div
                       key={f.id}
-                      className="rounded-xl border border-dashed border-ink-200 bg-ink-50/40 p-4 sm:p-5"
+                      className="rounded-lg border border-dashed border-ink-200 bg-ink-50/40 p-4 sm:p-5"
                     >
                       <div className="flex items-center justify-between gap-2 mb-3">
                         <p className="text-sm font-semibold text-ink-700">
@@ -487,8 +510,8 @@ function Stepper({ current }: { current: number }) {
                   isComplete && "bg-brand-600 text-white",
                   isActive && "bg-brand-700 text-white",
                   !isActive &&
-                    !isComplete &&
-                    "bg-ink-50 text-ink-400 border border-ink-200",
+                  !isComplete &&
+                  "bg-ink-50 text-ink-400 border border-ink-200",
                 )}
                 aria-current={isActive ? "step" : undefined}
               >

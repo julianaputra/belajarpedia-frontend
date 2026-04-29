@@ -46,7 +46,7 @@ export function RekomendasiSection({ category, filterMainCategory }: Props) {
 
   if (error || !data) {
     return (
-      <div className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-6 text-muted text-sm">
+      <div className="rounded-2xl bg-white border-2 border-ink-100 p-6 text-muted text-sm">
         Gagal memuat rekomendasi. Coba muat ulang halaman.
       </div>
     );
@@ -58,7 +58,7 @@ export function RekomendasiSection({ category, filterMainCategory }: Props) {
 
   if (items.length === 0) {
     return (
-      <div className="rounded-[var(--radius-lg)] bg-white border-2 border-dashed border-ink-200 p-6 text-muted text-sm">
+      <div className="rounded-2xl bg-white border-2 border-dashed border-ink-200 p-6 text-muted text-sm">
         Tidak ada rekomendasi untuk filter ini saat ini.
       </div>
     );
@@ -82,7 +82,7 @@ function SkeletonGrid({ count }: { count: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 overflow-hidden"
+          className="rounded-2xl bg-white border-2 border-ink-100 overflow-hidden"
           aria-hidden
         >
           <div className="aspect-[4/3] bg-ink-100 animate-pulse" />

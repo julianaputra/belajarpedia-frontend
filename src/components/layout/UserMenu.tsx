@@ -29,7 +29,7 @@ export function UserMenu() {
 
   if (isLoading) {
     return (
-      <div className="h-9 w-24 rounded-[var(--radius)] bg-ink-100 animate-pulse" aria-hidden />
+      <div className="h-9 w-24 rounded-lg bg-ink-100 animate-pulse" aria-hidden />
     );
   }
 
@@ -59,7 +59,7 @@ export function UserMenu() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 px-2 sm:px-3 h-9 rounded-[var(--radius)] hover:bg-brand-50 transition-colors"
+        className="flex items-center gap-2 px-2 sm:px-3 h-9 rounded-lg hover:bg-brand-50 transition-colors"
         aria-haspopup="menu"
         aria-expanded={open}
       >
@@ -75,7 +75,7 @@ export function UserMenu() {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 mt-2 w-56 rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 shadow-[var(--shadow-lift)] p-1.5 z-50 animate-[var(--animate-bounce-in)]"
+          className="absolute right-0 mt-2 w-56 rounded-lg bg-white border-2 border-ink-100 shadow-[var(--shadow-lift)] p-1.5 z-50 animate-[var(--animate-bounce-in)]"
         >
           <div className="px-3 py-2 border-b border-ink-100">
             <p className="text-sm font-semibold text-ink-700 truncate">
@@ -92,7 +92,7 @@ export function UserMenu() {
           <button
             role="menuitem"
             type="button"
-            className="w-full text-left px-3 py-2 rounded-[var(--radius)] text-sm font-semibold text-coral-500 hover:bg-coral-400/10 inline-flex items-center gap-2"
+            className="w-full text-left px-3 py-2 rounded-md text-sm font-semibold text-coral-500 hover:bg-coral-400/10 inline-flex items-center gap-2"
             onClick={async () => {
               setOpen(false);
               await logout();
@@ -122,7 +122,7 @@ function MenuItem({
       role="menuitem"
       href={href}
       onClick={onClick}
-      className="flex items-center gap-2 px-3 py-2 rounded-[var(--radius)] text-sm font-semibold text-ink-700 hover:bg-brand-50 hover:text-brand-700"
+      className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-semibold text-ink-700 hover:bg-brand-50 hover:text-brand-700"
     >
       {children}
     </Link>

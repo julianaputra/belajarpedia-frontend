@@ -48,11 +48,17 @@
   --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
   --font-hand: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
 
-  /* --- Radius (friendly = chunky rounded) --------------------------------- */
-  --radius-sm: 0.5rem;
-  --radius: 0.875rem;
-  --radius-lg: 1.25rem;
-  --radius-xl: 1.75rem;
+  /* --- Radius (coherent ascending scale) ---------------------------------
+     Inputs/buttons/notices use lg (0.5rem); mid surfaces use xl (0.75rem);
+     cards use 2xl (1rem). Matches Tailwind v4 defaults so `rounded-md` etc.
+     stay sensible. */
+  --radius-sm: 0.25rem;
+  --radius: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
 
   /* --- Shadows (3D depth) ------------------------------------------------- */
   --shadow-pop: 0 4px 0 0 rgb(0 0 0 / 0.12);

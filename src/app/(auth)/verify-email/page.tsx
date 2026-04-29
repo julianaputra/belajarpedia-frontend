@@ -33,7 +33,7 @@ export default function VerifyEmailPage() {
       }
     >
       <div className="space-y-4">
-        <div className="rounded-[var(--radius)] bg-brand-50 border-2 border-brand-200 p-4 text-sm text-ink-700">
+        <div className="rounded-lg bg-brand-50 border-2 border-brand-200 p-4 text-sm text-ink-700">
           <p className="font-semibold mb-1">📬 Langkah selanjutnya:</p>
           <ol className="list-decimal list-inside space-y-0.5 text-body">
             <li>Buka inbox email kamu (cek folder spam juga ya)</li>
@@ -45,7 +45,7 @@ export default function VerifyEmailPage() {
         {resent && (
           <div
             role="status"
-            className="rounded-[var(--radius)] bg-brand-100 border-2 border-brand-300 text-brand-800 px-4 py-2.5 text-sm"
+            className="rounded-lg bg-brand-100 border-2 border-brand-300 text-brand-800 px-4 py-2.5 text-sm"
           >
             ✓ Link verifikasi sudah dikirim ulang.
           </div>

@@ -59,7 +59,7 @@ export function SearchPrompt({ category }: Props) {
             <Link
               key={p.q}
               href={`/${category}/search?q=${encodeURIComponent(p.q)}`}
-              className="inline-flex items-center px-4 py-2 rounded-full bg-white border border-brand-200 text-brand-800 font-medium text-sm hover:bg-brand-100 hover:border-brand-300 transition-colors"
+              className="inline-flex items-center px-4 py-2 rounded-lg bg-white border border-brand-200 text-brand-800 font-medium text-sm hover:bg-brand-100 hover:border-brand-300 transition-colors"
             >
               {p.label}
             </Link>

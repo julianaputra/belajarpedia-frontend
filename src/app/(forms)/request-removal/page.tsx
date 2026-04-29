@@ -63,7 +63,7 @@ export default function RequestRemovalPage() {
       title="Hapus listing fasilitas dari direktori"
       subtitle="Untuk pemilik fasilitas yang ingin opt-out. Setiap permintaan akan diverifikasi manual sebelum diproses."
     >
-      <div className="rounded-[var(--radius)] bg-sun-400/15 border-2 border-sun-400 p-4 mb-5 text-sm text-ink-700">
+      <div className="rounded-lg bg-sun-400/15 border-2 border-sun-400 p-4 mb-5 text-sm text-ink-700">
         <p className="font-semibold mb-1">⚠ Catatan penting</p>
         <p>
           Penghapusan tidak otomatis. Tim akan menghubungimu via email untuk
@@ -133,7 +133,7 @@ export default function RequestRemovalPage() {
           <textarea
             id="reason"
             rows={6}
-            className="w-full rounded-[var(--radius)] border-2 border-ink-200 bg-white px-4 py-3 text-base text-body placeholder:text-muted transition-[border-color,box-shadow] hover:border-ink-300 focus:outline-none focus:border-brand-500 focus:shadow-[0_0_0_4px_var(--color-brand-100)]"
+            className="w-full rounded-lg border border-ink-200 bg-white px-4 py-3 text-base text-body placeholder:text-muted transition-[border-color,box-shadow] hover:border-ink-300 focus:outline-none focus:border-brand-500 focus:shadow-[0_0_0_3px_var(--color-brand-100)]"
             placeholder="Contoh: Saya pemilik fasilitas X. Kami ingin opt-out karena…"
             {...register("reason")}
           />

@@ -1,13 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { SearchableSelect } from "@/components/ui/SearchableSelect";
+import { PhoneInput } from "@/components/ui/PhoneInput";
 import { Turnstile } from "@/components/Turnstile";
 import { FieldError, FormError } from "@/components/auth/AuthCard";
 import { FormShell, FormSuccess } from "@/components/forms/FormShell";
@@ -136,58 +138,79 @@ export default function SubmitListingPage() {
           <div className="grid gap-3 sm:grid-cols-3">
             <div>
               <Label htmlFor="province_id">Provinsi</Label>
-              <Select
-                id="province_id"
-                {...register("province_id", {
-                  onChange: () => {
-                    setValue("kabkota_id", "");
-                    setValue("kecamatan_id", "");
-                  },
-                })}
-              >
-                <option value="">Pilih</option>
-                {provinces?.map((p) => (
-                  <option key={p.id} value={String(p.id)}>
-                    {p.name}
-                  </option>
-                ))}
-              </Select>
+              <Controller
+                control={control}
+                name="province_id"
+                render={({ field }) => (
+                  <SearchableSelect
+                    id="province_id"
+                    value={field.value ?? ""}
+                    onChange={(v) => {
+                      field.onChange(v);
+                      setValue("kabkota_id", "");
+                      setValue("kecamatan_id", "");
+                    }}
+                    onBlur={field.onBlur}
+                    options={(provinces ?? []).map((p) => ({
+                      value: String(p.id),
+                      label: p.name ?? "",
+                    }))}
+                    placeholder="Pilih"
+                    searchPlaceholder="Cari provinsi…"
+                  />
+                )}
+              />
               <FieldError message={errors.province_id?.message} />
             </div>
 
             <div>
               <Label htmlFor="kabkota_id">Kab/Kota</Label>
-              <Select
-                id="kabkota_id"
-                disabled={!provinceSlug}
-                {...register("kabkota_id", {
-                  onChange: () => setValue("kecamatan_id", ""),
-                })}
-              >
-                <option value="">Pilih</option>
-                {kabkotas?.map((k) => (
-                  <option key={k.id} value={String(k.id)}>
-                    {k.name}
-                  </option>
-                ))}
-              </Select>
+              <Controller
+                control={control}
+                name="kabkota_id"
+                render={({ field }) => (
+                  <SearchableSelect
+                    id="kabkota_id"
+                    value={field.value ?? ""}
+                    onChange={(v) => {
+                      field.onChange(v);
+                      setValue("kecamatan_id", "");
+                    }}
+                    onBlur={field.onBlur}
+                    disabled={!provinceSlug}
+                    options={(kabkotas ?? []).map((k) => ({
+                      value: String(k.id),
+                      label: k.name ?? "",
+                    }))}
+                    placeholder="Pilih"
+                    searchPlaceholder="Cari kab/kota…"
+                  />
+                )}
+              />
               <FieldError message={errors.kabkota_id?.message} />
             </div>
 
             <div>
               <Label htmlFor="kecamatan_id">Kecamatan</Label>
-              <Select
-                id="kecamatan_id"
-                disabled={!kabkotaSlug}
-                {...register("kecamatan_id")}
-              >
-                <option value="">Pilih</option>
-                {kecamatans?.map((k) => (
-                  <option key={k.id} value={String(k.id)}>
-                    {k.name}
-                  </option>
-                ))}
-              </Select>
+              <Controller
+                control={control}
+                name="kecamatan_id"
+                render={({ field }) => (
+                  <SearchableSelect
+                    id="kecamatan_id"
+                    value={field.value ?? ""}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    disabled={!kabkotaSlug}
+                    options={(kecamatans ?? []).map((k) => ({
+                      value: String(k.id),
+                      label: k.name ?? "",
+                    }))}
+                    placeholder="Pilih"
+                    searchPlaceholder="Cari kecamatan…"
+                  />
+                )}
+              />
               <FieldError message={errors.kecamatan_id?.message} />
             </div>
           </div>
@@ -214,7 +237,18 @@ export default function SubmitListingPage() {
             </div>
             <div>
               <Label htmlFor="phone">No. Telepon (opsional)</Label>
-              <Input id="phone" type="tel" {...register("phone")} />
+              <Controller
+                control={control}
+                name="phone"
+                render={({ field }) => (
+                  <PhoneInput
+                    id="phone"
+                    value={field.value ?? ""}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                  />
+                )}
+              />
             </div>
           </div>
         </Section>
@@ -247,7 +281,7 @@ export default function SubmitListingPage() {
             <textarea
               id="message"
               rows={5}
-              className="w-full rounded-[var(--radius)] border-2 border-ink-200 bg-white px-4 py-3 text-base text-body placeholder:text-muted transition-[border-color,box-shadow] hover:border-ink-300 focus:outline-none focus:border-brand-500 focus:shadow-[0_0_0_4px_var(--color-brand-100)]"
+              className="w-full rounded-lg border border-ink-200 bg-white px-4 py-3 text-base text-body placeholder:text-muted transition-[border-color,box-shadow] hover:border-ink-300 focus:outline-none focus:border-brand-500 focus:shadow-[0_0_0_3px_var(--color-brand-100)]"
               placeholder="Saya pemilik / staf / orangtua siswa di… Mau request tambah listing karena…"
               {...register("message")}
             />

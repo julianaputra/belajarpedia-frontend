@@ -16,7 +16,7 @@ export default function AuthLayout({
         className="pointer-events-none absolute bottom-0 -left-16 w-72 h-72 rounded-full bg-sun-400 opacity-25 blur-3xl"
       />
 
-      <div className="relative w-full max-w-md space-y-5 animate-[var(--animate-fade-up)]">
+      <div className="relative w-full space-y-5 animate-[var(--animate-fade-up)]">
         {children}
       </div>
     </main>

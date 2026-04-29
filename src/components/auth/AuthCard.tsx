@@ -12,7 +12,7 @@ export function AuthCard({ title, subtitle, children, footer, className }: Props
   return (
     <div
       className={cn(
-        "rounded-2xl bg-white border border-ink-100 p-6 sm:p-8 shadow-[0_10px_30px_-10px_rgb(28_47_112_/_0.15)] space-y-6",
+        "w-full max-w-md mx-auto rounded-2xl bg-white border border-ink-100 p-6 sm:p-8 shadow-[0_10px_30px_-10px_rgb(28_47_112_/_0.15)] space-y-6",
         className,
       )}
     >

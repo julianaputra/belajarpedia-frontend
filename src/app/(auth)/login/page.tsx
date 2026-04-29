@@ -106,7 +106,7 @@ export default function LoginPage() {
             </Label>
             <Link
               href="/forgot-password"
-              className="text-xs text-brand-700 hover:underline font-medium"
+              className="text-sm text-brand-700 hover:underline font-medium"
             >
               Lupa password?
             </Link>

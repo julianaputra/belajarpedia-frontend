@@ -89,7 +89,7 @@ export default function FavoritesPage() {
 
 function EmptyState() {
   return (
-    <div className="rounded-[var(--radius-lg)] bg-white border-2 border-dashed border-ink-200 p-8 sm:p-10 text-center space-y-4 animate-[var(--animate-bounce-in)]">
+    <div className="rounded-2xl bg-white border-2 border-dashed border-ink-200 p-8 sm:p-10 text-center space-y-4 animate-[var(--animate-bounce-in)]">
       <div className="text-5xl" aria-hidden>
         ♡
       </div>
@@ -134,7 +134,7 @@ function SkeletonGrid() {
       {Array.from({ length: 8 }).map((_, i) => (
         <div
           key={i}
-          className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 overflow-hidden"
+          className="rounded-2xl bg-white border-2 border-ink-100 overflow-hidden"
           aria-hidden
         >
           <div className="aspect-[4/3] bg-ink-100 animate-pulse" />

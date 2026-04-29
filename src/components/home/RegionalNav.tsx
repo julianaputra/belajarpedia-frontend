@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
-import { Select } from "@/components/ui/Select";
 import { Label } from "@/components/ui/Input";
+import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { useKabkotas, useProvinces } from "@/hooks/useRegions";
 
 type Props = {
@@ -19,8 +19,8 @@ const CATEGORY_LABEL: Record<Props["category"], string> = {
 };
 
 /**
- * Cascading provinsi → kabkota dropdowns. Submitting navigates to the deepest
- * filled level. Mobile-first: stacks fully, full-width submit button.
+ * Cascading provinsi → kabkota dropdowns with search. Submitting navigates
+ * to the deepest filled level. Mobile-first: stacks fully, full-width submit.
  */
 export function RegionalNav({ category }: Props) {
   const router = useRouter();
@@ -42,45 +42,43 @@ export function RegionalNav({ category }: Props) {
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
           <Label htmlFor={`${category}-province`}>Provinsi</Label>
-          <Select
+          <SearchableSelect
             id={`${category}-province`}
             value={provinceSlug}
-            onChange={(e) => {
-              setProvinceSlug(e.target.value);
+            onChange={(v) => {
+              setProvinceSlug(v);
               setKabkotaSlug("");
             }}
             disabled={pLoading}
-          >
-            <option value="">{pLoading ? "Memuat…" : "Pilih provinsi"}</option>
-            {provinces?.map((p) => (
-              <option key={p.slug} value={p.slug ?? ""}>
-                {p.name}
-              </option>
-            ))}
-          </Select>
+            options={(provinces ?? []).map((p) => ({
+              value: p.slug ?? "",
+              label: p.name ?? "",
+            }))}
+            placeholder={pLoading ? "Memuat…" : "Pilih provinsi"}
+            searchPlaceholder="Cari provinsi…"
+          />
         </div>
 
         <div>
           <Label htmlFor={`${category}-kabkota`}>Kab/Kota</Label>
-          <Select
+          <SearchableSelect
             id={`${category}-kabkota`}
             value={kabkotaSlug}
-            onChange={(e) => setKabkotaSlug(e.target.value)}
+            onChange={setKabkotaSlug}
             disabled={!provinceSlug || kLoading}
-          >
-            <option value="">
-              {!provinceSlug
+            options={(kabkotas ?? []).map((k) => ({
+              value: k.slug ?? "",
+              label: k.name ?? "",
+            }))}
+            placeholder={
+              !provinceSlug
                 ? "Pilih provinsi dulu"
                 : kLoading
                   ? "Memuat…"
-                  : "Semua kab/kota"}
-            </option>
-            {kabkotas?.map((k) => (
-              <option key={k.slug} value={k.slug ?? ""}>
-                {k.name}
-              </option>
-            ))}
-          </Select>
+                  : "Semua kab/kota"
+            }
+            searchPlaceholder="Cari kab/kota…"
+          />
         </div>
       </div>
 

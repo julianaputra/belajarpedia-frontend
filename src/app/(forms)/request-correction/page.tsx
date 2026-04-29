@@ -121,7 +121,7 @@ export default function RequestCorrectionPage() {
           <textarea
             id="message"
             rows={6}
-            className="w-full rounded-[var(--radius)] border-2 border-ink-200 bg-white px-4 py-3 text-base text-body placeholder:text-muted transition-[border-color,box-shadow] hover:border-ink-300 focus:outline-none focus:border-brand-500 focus:shadow-[0_0_0_4px_var(--color-brand-100)]"
+            className="w-full rounded-lg border border-ink-200 bg-white px-4 py-3 text-base text-body placeholder:text-muted transition-[border-color,box-shadow] hover:border-ink-300 focus:outline-none focus:border-brand-500 focus:shadow-[0_0_0_3px_var(--color-brand-100)]"
             placeholder="Contoh: Biaya yang tertulis Rp 1jt sebenarnya Rp 1.5jt. Atau: alamat sudah pindah ke…"
             {...register("message")}
           />

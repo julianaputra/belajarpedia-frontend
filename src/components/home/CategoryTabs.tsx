@@ -88,7 +88,7 @@ export function CategoryTabs() {
         aria-label="Pilih kategori"
         className="flex justify-center mb-8"
       >
-        <div className="inline-flex p-1 rounded-full bg-ink-50 border border-ink-100">
+        <div className="inline-flex p-1 rounded-lg bg-ink-50 border border-ink-100">
           {TABS.map((t) => {
             const isActive = t.id === activeId;
             return (
@@ -101,7 +101,7 @@ export function CategoryTabs() {
                 tabIndex={isActive ? 0 : -1}
                 onClick={() => setActiveId(t.id)}
                 className={cn(
-                  "inline-flex items-center gap-2 h-10 px-4 sm:px-5 rounded-full text-sm font-semibold",
+                  "inline-flex items-center gap-2 h-10 px-4 sm:px-5 rounded-md text-sm font-semibold",
                   "transition-all duration-200",
                   "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-200",
                   isActive

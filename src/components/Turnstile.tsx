@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { X } from "lucide-react";
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK_API === "true";
@@ -23,6 +24,7 @@ type Props = {
 export function Turnstile({ onVerify, resetKey }: Props) {
   const ref = React.useRef<HTMLDivElement>(null);
   const widgetIdRef = React.useRef<string | null>(null);
+  const [dismissed, setDismissed] = React.useState(false);
 
   const isMock = USE_MOCK || !SITE_KEY;
 
@@ -53,10 +55,29 @@ export function Turnstile({ onVerify, resetKey }: Props) {
   }, [isMock, resetKey]);
 
   if (isMock) {
+    if (dismissed) return null;
     return (
-      <div className="text-xs text-muted bg-ink-50 border border-ink-200 rounded-md px-3 py-1.5 inline-flex items-center gap-2">
-        <span aria-hidden>🔓</span>
-        <span>Verifikasi bot dilewati di dev mode</span>
+      <div
+        role="status"
+        className="flex items-start gap-3 rounded-lg border border-sun-400/40 bg-sun-400/10 px-4 py-3 text-sm"
+      >
+        <span aria-hidden className="shrink-0 text-base leading-none mt-0.5">
+          🔓
+        </span>
+        <div className="flex-1 min-w-0 space-y-0.5">
+          <p className="font-semibold text-ink-700">Mode pengembangan</p>
+          <p className="text-ink-600">
+            Verifikasi bot dilewati. Aktifkan Turnstile sebelum produksi.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          aria-label="Tutup notifikasi"
+          className="shrink-0 -mr-1 -mt-1 inline-flex items-center justify-center w-7 h-7 rounded-md text-ink-500 hover:text-ink-700 hover:bg-sun-400/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sun-400"
+        >
+          <X size={16} aria-hidden />
+        </button>
       </div>
     );
   }

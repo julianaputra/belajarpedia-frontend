@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { CollapsibleCard } from "@/components/facility/detail/CollapsibleCard";
 
 /**
  * AC-08: empty sections must not render. Pass content as children; if any
@@ -20,26 +20,22 @@ type SectionProps = {
   title: string;
   children: React.ReactNode;
   className?: string;
+  /** Optional anchor target for in-page navigation. */
+  id?: string;
 };
 
-export function DetailSection({ title, children, className }: SectionProps) {
+export function DetailSection({ title, children, className, id }: SectionProps) {
   // React.Children.toArray already drops null/undefined/false. If nothing
   // renders, collapse the whole section per AC-08.
   const visible = React.Children.toArray(children);
   if (visible.length === 0) return null;
 
   return (
-    <section
-      className={cn(
-        "rounded-2xl bg-white border border-ink-100 p-5 sm:p-6 space-y-4",
-        className,
-      )}
-    >
-      <h2 className="text-lg sm:text-xl font-semibold text-ink-700">{title}</h2>
+    <CollapsibleCard id={id} title={title} className={className}>
       <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-[max-content_1fr]">
         {children}
       </dl>
-    </section>
+    </CollapsibleCard>
   );
 }
 

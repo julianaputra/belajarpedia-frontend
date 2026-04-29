@@ -1,14 +1,17 @@
 import type { components } from "@/types/api";
+import { CollapsibleCard } from "@/components/facility/detail/CollapsibleCard";
 
 type Props = {
   facility: components["schemas"]["FacilityBase"];
+  /** Optional anchor target for in-page navigation. */
+  id?: string;
 };
 
 /**
  * Renders address / phone / website / email if present (each conditional, AC-08).
  * Returns null when all four are empty so caller's section logic collapses it.
  */
-export function ContactBlock({ facility }: Props) {
+export function ContactBlock({ facility, id }: Props) {
   const items: Array<{ label: string; value: React.ReactNode }> = [];
 
   if (facility.address) {
@@ -56,8 +59,7 @@ export function ContactBlock({ facility }: Props) {
   if (items.length === 0) return null;
 
   return (
-    <section className="rounded-2xl bg-white border border-ink-100 p-5 sm:p-6">
-      <h2 className="text-lg sm:text-xl font-semibold text-ink-700 mb-4">Kontak</h2>
+    <CollapsibleCard id={id} title="Kontak">
       <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-[max-content_1fr]">
         {items.map((it) => (
           <div key={it.label} className="contents">
@@ -66,6 +68,6 @@ export function ContactBlock({ facility }: Props) {
           </div>
         ))}
       </dl>
-    </section>
+    </CollapsibleCard>
   );
 }

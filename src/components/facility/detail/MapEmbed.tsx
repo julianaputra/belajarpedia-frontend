@@ -10,6 +10,9 @@ type Props = {
  *
  * Uses Google Maps embed iframe (no JS API key required for the basic embed
  * link). For richer interactions Phase 11 can swap to JS API.
+ *
+ * Renders bare — caller is expected to provide the surrounding card chrome
+ * (via CollapsibleCard or similar).
  */
 export function MapEmbed({ latitude, longitude, name }: Props) {
   if (
@@ -24,16 +27,14 @@ export function MapEmbed({ latitude, longitude, name }: Props) {
   const src = `https://maps.google.com/maps?q=${latitude},${longitude}&z=15&output=embed`;
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-ink-100 bg-white">
-      <div className="aspect-[16/9] sm:aspect-[16/7]">
-        <iframe
-          title={`Peta ${name}`}
-          src={src}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          className="h-full w-full border-0"
-        />
-      </div>
+    <div className="aspect-[16/9] sm:aspect-[16/7]">
+      <iframe
+        title={`Peta ${name}`}
+        src={src}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        className="h-full w-full border-0"
+      />
     </div>
   );
 }

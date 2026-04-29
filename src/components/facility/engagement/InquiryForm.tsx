@@ -49,17 +49,12 @@ export function InquiryForm({ facilityId, facilityName }: Props) {
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
   if (isLoading) {
-    return (
-      <div className="rounded-2xl border border-ink-100 bg-white p-6 text-muted">
-        Memuat formulir…
-      </div>
-    );
+    return <p className="text-muted">Memuat formulir…</p>;
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="rounded-2xl border border-ink-100 bg-white p-5 sm:p-6 space-y-3">
-        <h2 className="text-lg sm:text-xl font-semibold text-ink-700">Kirim Pertanyaan</h2>
+      <div className="space-y-3">
         <p className="text-muted">
           Silakan login untuk mengirim pertanyaan langsung ke {facilityName}.
         </p>
@@ -72,9 +67,9 @@ export function InquiryForm({ facilityId, facilityName }: Props) {
 
   if (success) {
     return (
-      <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 sm:p-6 space-y-2">
-        <h2 className="text-lg sm:text-xl font-semibold text-brand-800">Pesan terkirim ✓</h2>
-        <p className="text-body">
+      <div className="rounded-xl border border-brand-200 bg-brand-50 p-4 sm:p-5 space-y-1.5">
+        <p className="font-semibold text-brand-800">Pesan terkirim ✓</p>
+        <p className="text-body text-sm sm:text-base">
           Pertanyaan Anda telah diteruskan ke {facilityName}. Mereka akan
           membalas langsung ke email Anda.
         </p>
@@ -112,9 +107,8 @@ export function InquiryForm({ facilityId, facilityName }: Props) {
           }
         }
       })}
-      className="rounded-2xl border border-ink-100 bg-white p-5 sm:p-6 space-y-4"
+      className="space-y-4"
     >
-      <h2 className="text-lg sm:text-xl font-semibold text-ink-700">Kirim Pertanyaan</h2>
       <p className="text-sm text-muted">
         Pesan ini akan dikirim ke {facilityName}. Balasan akan masuk ke email
         akun Belajarpedia Anda.

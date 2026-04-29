@@ -37,6 +37,7 @@ import { ContactBlock } from "@/components/facility/detail/ContactBlock";
 import { MapEmbed } from "@/components/facility/detail/MapEmbed";
 import { LastVerified } from "@/components/facility/detail/LastVerified";
 import { GoneNotice } from "@/components/facility/detail/GoneNotice";
+import { CollapsibleCard } from "@/components/facility/detail/CollapsibleCard";
 import { FavoriteButton } from "@/components/facility/engagement/FavoriteButton";
 import { InquiryForm } from "@/components/facility/engagement/InquiryForm";
 import { ReviewWidget } from "@/components/facility/engagement/ReviewWidget";
@@ -234,6 +235,40 @@ async function renderDetail(
 
   const facilityUrl = absoluteUrl(sekolahDetailPath(filters, slug));
 
+  // Compute which sections will actually render (AC-08: empty sections collapse).
+  // Used to build the sidebar table of contents so it never points to nothing.
+  const has = {
+    tentang: !!detail.description,
+    profil: !!(
+      detail.accreditation ||
+      detail.curriculum ||
+      schoolTypeLabel(filters.school_type)
+    ),
+    biaya: !!(detail.biaya || detail.jam_sekolah),
+    fasilitas: !!detail.fasilitas,
+    kontak: !!(
+      detail.address ||
+      detail.phone ||
+      detail.email ||
+      detail.website
+    ),
+    peta:
+      detail.latitude !== null &&
+      detail.latitude !== undefined &&
+      detail.longitude !== null &&
+      detail.longitude !== undefined,
+    inquiry: !!(detail.email && detail.id !== undefined),
+  };
+
+  const tocItems: Array<{ id: string; label: string }> = [];
+  if (has.tentang) tocItems.push({ id: "tentang", label: "Tentang" });
+  if (has.profil) tocItems.push({ id: "profil", label: "Profil Sekolah" });
+  if (has.biaya) tocItems.push({ id: "biaya", label: "Biaya & Operasional" });
+  if (has.fasilitas) tocItems.push({ id: "fasilitas", label: "Fasilitas" });
+  if (has.kontak) tocItems.push({ id: "kontak", label: "Kontak" });
+  if (has.peta) tocItems.push({ id: "peta", label: "Lokasi" });
+  if (has.inquiry) tocItems.push({ id: "inquiry", label: "Kirim Pertanyaan" });
+
   return (
     <main className="mx-auto max-w-6xl px-5 py-10 space-y-8">
       <JsonLd data={breadcrumbListJsonLd(breadcrumbs)} id="ld-breadcrumbs" />
@@ -266,15 +301,12 @@ async function renderDetail(
         {/* Main content */}
         <div className="space-y-6">
           {detail.description && (
-            <section className="rounded-2xl bg-white border border-ink-100 p-5 sm:p-6">
-              <h2 className="text-xl font-semibold text-ink-700 mb-3">
-                Tentang {detail.name}
-              </h2>
+            <CollapsibleCard id="tentang" title={`Tentang ${detail.name}`}>
               <p className="text-body whitespace-pre-line">{detail.description}</p>
-            </section>
+            </CollapsibleCard>
           )}
 
-          <DetailSection title="Profil Sekolah">
+          <DetailSection id="profil" title="Profil Sekolah">
             <AttributeRow label="Akreditasi" value={detail.accreditation} />
             <AttributeRow label="Kurikulum" value={detail.curriculum} />
             <AttributeRow
@@ -283,25 +315,38 @@ async function renderDetail(
             />
           </DetailSection>
 
-          <DetailSection title="Biaya & Operasional">
+          <DetailSection id="biaya" title="Biaya & Operasional">
             <AttributeRow label="Biaya" value={detail.biaya} />
             <AttributeRow label="Jam Sekolah" value={detail.jam_sekolah} />
           </DetailSection>
 
-          <DetailSection title="Fasilitas">
+          <DetailSection id="fasilitas" title="Fasilitas">
             <AttributeRow label="Fasilitas" value={detail.fasilitas} />
           </DetailSection>
 
-          <ContactBlock facility={detail} />
+          <ContactBlock id="kontak" facility={detail} />
 
-          <MapEmbed
-            latitude={detail.latitude}
-            longitude={detail.longitude}
-            name={detail.name ?? slug}
-          />
+          {has.peta && (
+            <CollapsibleCard id="peta" title="Lokasi" contentClassName="p-0">
+              <MapEmbed
+                latitude={detail.latitude}
+                longitude={detail.longitude}
+                name={detail.name ?? slug}
+              />
+            </CollapsibleCard>
+          )}
 
           {detail.email && detail.id !== undefined && (
-            <InquiryForm facilityId={detail.id} facilityName={detail.name ?? slug} />
+            <CollapsibleCard
+              id="inquiry"
+              title="Kirim Pertanyaan"
+              contentClassName="p-0"
+            >
+              <InquiryForm
+                facilityId={detail.id}
+                facilityName={detail.name ?? slug}
+              />
+            </CollapsibleCard>
           )}
 
           <LastVerified
@@ -311,7 +356,9 @@ async function renderDetail(
         </div>
 
         {/* Sidebar */}
-        <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+        <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+          <Toc items={tocItems} />
+
           {detail.id !== undefined && (
             <div className="rounded-2xl bg-white border border-ink-100 p-5 space-y-4">
               <FavoriteButton facilityId={detail.id} />
@@ -323,6 +370,42 @@ async function renderDetail(
         </aside>
       </div>
     </main>
+  );
+}
+
+// =============================================================================
+// Local components
+// =============================================================================
+
+function Toc({ items }: { items: Array<{ id: string; label: string }> }) {
+  if (items.length === 0) return null;
+  return (
+    <nav
+      aria-label="Daftar isi"
+      className="rounded-2xl bg-white border border-ink-100 p-5"
+    >
+      <h2 className="text-xs font-semibold uppercase tracking-wider text-muted mb-3">
+        Daftar Isi
+      </h2>
+      <ol className="space-y-0.5">
+        {items.map((it, idx) => (
+          <li key={it.id}>
+            <a
+              href={`#${it.id}`}
+              className="flex items-baseline gap-3 rounded-md px-2 py-1.5 -mx-2 text-sm text-body hover:bg-ink-50 hover:text-brand-700 transition-colors"
+            >
+              <span
+                aria-hidden
+                className="text-xs font-medium text-muted tabular-nums"
+              >
+                {String(idx + 1).padStart(2, "0")}
+              </span>
+              <span className="leading-snug">{it.label}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
   );
 }
 

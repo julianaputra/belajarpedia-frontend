@@ -27,7 +27,7 @@ export function FavoriteButton({ facilityId }: Props) {
 
   if (isLoading) {
     return (
-      <Button variant="outline" disabled aria-busy>
+      <Button variant="outline" disabled aria-busy className="w-full">
         Memuat…
       </Button>
     );
@@ -35,7 +35,12 @@ export function FavoriteButton({ facilityId }: Props) {
 
   if (!isAuthenticated) {
     return (
-      <Button variant="outline" disabled title="Masuk untuk menyimpan favorit">
+      <Button
+        variant="outline"
+        disabled
+        title="Masuk untuk menyimpan favorit"
+        className="w-full"
+      >
         <Heart size={18} aria-hidden /> Login untuk simpan
       </Button>
     );
@@ -43,7 +48,7 @@ export function FavoriteButton({ facilityId }: Props) {
 
   if (favorited) {
     return (
-      <Button variant="primary" disabled aria-pressed="true">
+      <Button variant="primary" disabled aria-pressed="true" className="w-full">
         <Heart size={18} aria-hidden fill="currentColor" /> Tersimpan
       </Button>
     );
@@ -53,6 +58,7 @@ export function FavoriteButton({ facilityId }: Props) {
     <div className="space-y-2">
       <Button
         variant="outline"
+        className="w-full"
         disabled={pending}
         onClick={async () => {
           setPending(true);

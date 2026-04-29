@@ -7,6 +7,11 @@ type Props = {
   currentPage: number;
   totalPages: number;
   className?: string;
+  /**
+   * "path"  → /page/{n} appended to basePath (list routes, AC-02).
+   * "query" → &page={n} or ?page={n} appended (search routes — basePath holds ?q=).
+   */
+  pageMode?: "path" | "query";
 };
 
 /**
@@ -23,6 +28,7 @@ export function Pagination({
   currentPage,
   totalPages,
   className,
+  pageMode = "path",
 }: Props) {
   if (totalPages <= 1) return null;
 
@@ -39,6 +45,7 @@ export function Pagination({
         disabled={currentPage <= 1}
         rel="prev"
         aria-label="Halaman sebelumnya"
+        pageMode={pageMode}
       >
         ‹ Sebelumnya
       </PageLink>
@@ -60,6 +67,7 @@ export function Pagination({
             active={p === currentPage}
             aria-label={`Halaman ${p}`}
             aria-current={p === currentPage ? "page" : undefined}
+            pageMode={pageMode}
           >
             {p}
           </PageLink>
@@ -72,6 +80,7 @@ export function Pagination({
         disabled={currentPage >= totalPages}
         rel="next"
         aria-label="Halaman berikutnya"
+        pageMode={pageMode}
       >
         Berikutnya ›
       </PageLink>
@@ -86,6 +95,7 @@ type PageLinkProps = {
   active?: boolean;
   rel?: "prev" | "next";
   children: React.ReactNode;
+  pageMode: "path" | "query";
   "aria-label"?: string;
   "aria-current"?: "page";
 };
@@ -96,6 +106,7 @@ function PageLink({
   disabled,
   active,
   children,
+  pageMode,
   ...rest
 }: PageLinkProps) {
   const className = cn(
@@ -118,7 +129,7 @@ function PageLink({
 
   return (
     <Link
-      href={pageHref(basePath, page)}
+      href={pageHref(basePath, page, pageMode)}
       className={className}
       {...rest}
     >
@@ -127,8 +138,16 @@ function PageLink({
   );
 }
 
-function pageHref(basePath: string, page: number): string {
-  return page > 1 ? `${basePath}/page/${page}` : basePath;
+function pageHref(
+  basePath: string,
+  page: number,
+  mode: "path" | "query",
+): string {
+  if (page <= 1) return basePath;
+  if (mode === "path") return `${basePath}/page/${page}`;
+  // query mode: append &page=N or ?page=N depending on whether basePath has ?
+  const sep = basePath.includes("?") ? "&" : "?";
+  return `${basePath}${sep}page=${page}`;
 }
 
 /**

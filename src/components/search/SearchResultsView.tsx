@@ -2,20 +2,28 @@ import Link from "next/link";
 
 import { FacilityGrid } from "@/components/facility/FacilityCard";
 import { Pagination } from "@/components/Pagination";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { absoluteUrl } from "@/lib/site/config";
+import { buildBreadcrumbs } from "@/lib/seo/breadcrumbs";
+import { SearchRefineBar } from "@/components/search/SearchRefineBar";
+import { SearchEmptyState } from "@/components/search/SearchEmptyState";
+import { SearchPrompt } from "@/components/search/SearchPrompt";
 import type { PaginatedFacilityCardList } from "@/lib/api/facilities";
 
+type Category = "sekolah" | "universitas" | "kursus";
+
 type Props = {
-  category: "sekolah" | "universitas" | "kursus";
+  category: Category;
   query: string;
   page: number;
   results: PaginatedFacilityCardList;
 };
 
-const CAT_LABEL = {
+const CAT_LABEL: Record<Category, string> = {
   sekolah: "Sekolah",
   universitas: "Universitas",
   kursus: "Kursus",
-} as const;
+};
 
 export function SearchResultsView({ category, query, page, results }: Props) {
   const data = results.data ?? [];
@@ -24,47 +32,61 @@ export function SearchResultsView({ category, query, page, results }: Props) {
   const totalPages = meta?.last_page ?? 1;
   const basePath = `/${category}/search?q=${encodeURIComponent(query)}`;
 
-  return (
-    <main className="mx-auto max-w-6xl px-5 py-10 space-y-8">
-      <header className="space-y-2">
-        <p className="text-sm text-muted">
-          Hasil pencarian di {CAT_LABEL[category]}
-        </p>
-        <h1 className="text-3xl sm:text-4xl text-ink-700">
-          “{query}”
-        </h1>
-        <p className="text-muted">
-          {total > 0
-            ? `${total.toLocaleString("id-ID")} hasil ditemukan`
-            : "Tidak ada hasil yang cocok."}
-        </p>
-      </header>
+  const breadcrumbs = buildBreadcrumbs([
+    { name: CAT_LABEL[category], url: absoluteUrl(`/${category}`) },
+    {
+      name: query ? `Pencarian: "${query}"` : "Pencarian",
+      url: absoluteUrl(`/${category}/search${query ? `?q=${encodeURIComponent(query)}` : ""}`),
+    },
+  ]);
 
-      {data.length > 0 ? (
+  const hasQuery = query.length > 0;
+  const hasResults = hasQuery && data.length > 0;
+
+  return (
+    <main className="mx-auto max-w-6xl px-5 py-8 sm:py-10 space-y-6">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <SearchRefineBar category={category} initialQuery={query} />
+
+      {hasQuery ? (
         <>
-          <FacilityGrid facilities={data} />
-          {/* Pagination uses query-string for search per OpenAPI conventions. */}
-          <Pagination
-            basePath={basePath}
-            currentPage={page}
-            totalPages={totalPages}
-          />
+          <header className="space-y-2">
+            <p className="text-sm text-muted">
+              Hasil pencarian di{" "}
+              <Link
+                href={`/${category}`}
+                className="text-brand-700 hover:underline font-semibold"
+              >
+                {CAT_LABEL[category]}
+              </Link>
+            </p>
+            <h1 className="text-3xl sm:text-4xl text-ink-700">
+              <span className="font-display font-bold">&ldquo;{query}&rdquo;</span>
+            </h1>
+            <p className="text-muted">
+              {total > 0
+                ? `${total.toLocaleString("id-ID")} hasil ditemukan`
+                : "Tidak ada hasil yang cocok."}
+            </p>
+          </header>
+
+          {hasResults ? (
+            <>
+              <FacilityGrid facilities={data} />
+              <Pagination
+                basePath={basePath}
+                currentPage={page}
+                totalPages={totalPages}
+                pageMode="query"
+              />
+            </>
+          ) : (
+            <SearchEmptyState category={category} query={query} />
+          )}
         </>
       ) : (
-        <div className="rounded-[var(--radius-lg)] bg-white border-2 border-dashed border-ink-200 p-10 text-center space-y-3">
-          <p className="text-lg font-semibold text-ink-700">
-            Tidak ada {CAT_LABEL[category].toLowerCase()} yang cocok
-          </p>
-          <p className="text-muted">
-            Coba kata kunci yang berbeda atau jelajahi daftar lengkap.
-          </p>
-          <Link
-            href={`/${category}`}
-            className="inline-block text-brand-700 hover:underline font-semibold"
-          >
-            Lihat semua {CAT_LABEL[category].toLowerCase()} →
-          </Link>
-        </div>
+        <SearchPrompt category={category} />
       )}
     </main>
   );

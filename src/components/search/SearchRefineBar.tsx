@@ -1,0 +1,76 @@
+"use client";
+
+import * as React from "react";
+import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+
+type Category = "sekolah" | "universitas" | "kursus";
+
+type Props = {
+  category: Category;
+  initialQuery: string;
+};
+
+const CATEGORY_LABEL: Record<Category, string> = {
+  sekolah: "Sekolah",
+  universitas: "Universitas",
+  kursus: "Kursus",
+};
+
+/**
+ * Refinement bar at top of search results — prefilled with current query &
+ * category. Allows refining the keyword or swapping to a different category
+ * which navigates to that category's search page with the same query carried
+ * over.
+ */
+export function SearchRefineBar({ category, initialQuery }: Props) {
+  const router = useRouter();
+  const [q, setQ] = React.useState(initialQuery);
+  const [cat, setCat] = React.useState<Category>(category);
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const query = q.trim();
+    if (query.length === 0) return;
+    router.push(`/${cat}/search?q=${encodeURIComponent(query)}`);
+  };
+
+  return (
+    <form
+      onSubmit={submit}
+      className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-3 sm:p-4"
+      role="search"
+      aria-label={`Cari di ${CATEGORY_LABEL[category]}`}
+    >
+      <div className="grid gap-2 sm:grid-cols-[160px_1fr_auto]">
+        <Select
+          aria-label="Kategori"
+          value={cat}
+          onChange={(e) => setCat(e.target.value as Category)}
+        >
+          <option value="sekolah">Sekolah</option>
+          <option value="universitas">Universitas</option>
+          <option value="kursus">Kursus</option>
+        </Select>
+        <Input
+          type="search"
+          aria-label="Kata kunci"
+          placeholder="Refine pencarianmu…"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
+        <Button
+          type="submit"
+          size="md"
+          disabled={q.trim().length === 0}
+          className="w-full sm:w-auto justify-center"
+        >
+          🔍 Cari
+        </Button>
+      </div>
+    </form>
+  );
+}

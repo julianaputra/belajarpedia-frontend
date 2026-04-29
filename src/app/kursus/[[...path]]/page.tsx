@@ -29,6 +29,7 @@ import { buildBreadcrumbs, type BreadcrumbItem } from "@/lib/seo/breadcrumbs";
 import { absoluteUrl } from "@/lib/site/config";
 import { isApiError } from "@/lib/api/error";
 import { FacilityGrid } from "@/components/facility/FacilityCard";
+import { ListFilterBar } from "@/components/facility/ListFilterBar";
 import { Pagination } from "@/components/Pagination";
 import { Badge } from "@/components/ui/Badge";
 import { DetailHeader } from "@/components/facility/detail/Header";
@@ -123,6 +124,8 @@ async function renderList(filters: KursusFilters, page: number) {
             : "Belum ada kursus yang terdaftar di area ini."}
         </p>
       </header>
+
+      <ListFilterBar category="kursus" currentFilters={filters} />
 
       {facilities.length > 0 ? (
         <>

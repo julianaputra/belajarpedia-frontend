@@ -26,6 +26,7 @@ import { buildBreadcrumbs, type BreadcrumbItem } from "@/lib/seo/breadcrumbs";
 import { absoluteUrl } from "@/lib/site/config";
 import { isApiError } from "@/lib/api/error";
 import { FacilityGrid } from "@/components/facility/FacilityCard";
+import { ListFilterBar } from "@/components/facility/ListFilterBar";
 import { Pagination } from "@/components/Pagination";
 import { DetailHeader } from "@/components/facility/detail/Header";
 import {
@@ -135,6 +136,8 @@ async function renderList(filters: SekolahFilters, page: number) {
             : "Belum ada sekolah yang terdaftar di area ini."}
         </p>
       </header>
+
+      <ListFilterBar category="sekolah" currentFilters={filters} />
 
       {facilities.length > 0 ? (
         <>

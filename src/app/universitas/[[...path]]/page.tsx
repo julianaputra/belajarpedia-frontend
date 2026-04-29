@@ -29,6 +29,7 @@ import { buildBreadcrumbs, type BreadcrumbItem } from "@/lib/seo/breadcrumbs";
 import { absoluteUrl } from "@/lib/site/config";
 import { isApiError } from "@/lib/api/error";
 import { FacilityGrid } from "@/components/facility/FacilityCard";
+import { ListFilterBar } from "@/components/facility/ListFilterBar";
 import { Pagination } from "@/components/Pagination";
 import { DetailHeader } from "@/components/facility/detail/Header";
 import {
@@ -121,6 +122,8 @@ async function renderList(filters: UniversitasFilters, page: number) {
             : "Belum ada universitas yang terdaftar di area ini."}
         </p>
       </header>
+
+      <ListFilterBar category="universitas" currentFilters={filters} />
 
       {facilities.length > 0 ? (
         <>

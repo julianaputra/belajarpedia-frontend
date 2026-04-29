@@ -114,6 +114,42 @@ export async function fetchKursusDetail(args: {
   );
 }
 
+export async function fetchSekolahSearch(
+  q: string,
+  page: number,
+): Promise<PaginatedFacilityCardList> {
+  const params = new URLSearchParams({ q });
+  if (page > 1) params.set("page", String(page));
+  return apiServerFetch<PaginatedFacilityCardList>(
+    `/api/sekolah/search?${params.toString()}`,
+    { revalidate: LIST_REVALIDATE_SECONDS, tags: ["facilities:sekolah"] },
+  );
+}
+
+export async function fetchUniversitasSearch(
+  q: string,
+  page: number,
+): Promise<PaginatedFacilityCardList> {
+  const params = new URLSearchParams({ q });
+  if (page > 1) params.set("page", String(page));
+  return apiServerFetch<PaginatedFacilityCardList>(
+    `/api/universitas/search?${params.toString()}`,
+    { revalidate: LIST_REVALIDATE_SECONDS, tags: ["facilities:universitas"] },
+  );
+}
+
+export async function fetchKursusSearch(
+  q: string,
+  page: number,
+): Promise<PaginatedFacilityCardList> {
+  const params = new URLSearchParams({ q });
+  if (page > 1) params.set("page", String(page));
+  return apiServerFetch<PaginatedFacilityCardList>(
+    `/api/kursus/search?${params.toString()}`,
+    { revalidate: LIST_REVALIDATE_SECONDS, tags: ["facilities:kursus"] },
+  );
+}
+
 export async function fetchKursusList(
   filters: KursusFilters,
   page: number,

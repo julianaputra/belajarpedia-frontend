@@ -6,6 +6,8 @@ import useSWR from "swr";
 
 import { Button } from "@/components/ui/Button";
 import { Input, Label, PasswordInput } from "@/components/ui/Input";
+import { DatePicker } from "@/components/ui/DatePicker";
+import { isoDateToday, isoDateYearsAgo } from "@/lib/utils";
 import { Select } from "@/components/ui/Select";
 import { FormError } from "@/components/auth/AuthCard";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -136,11 +138,14 @@ function ProfileInfoSection({
           </div>
           <div>
             <Label htmlFor="birthdate">Tanggal lahir</Label>
-            <Input
+            <DatePicker
               id="birthdate"
-              type="date"
               value={birthdate}
-              onChange={(e) => setBirthdate(e.target.value)}
+              onChange={setBirthdate}
+              min={isoDateYearsAgo(120)}
+              max={isoDateToday()}
+              defaultViewYear={new Date().getFullYear() - 30}
+              placeholder="Pilih tanggal lahir"
             />
           </div>
         </div>
@@ -323,11 +328,14 @@ function AddChildForm({
       </div>
       <div>
         <Label htmlFor="add-birth">Tanggal lahir</Label>
-        <Input
+        <DatePicker
           id="add-birth"
-          type="date"
           value={birthdate}
-          onChange={(e) => setBirthdate(e.target.value)}
+          onChange={setBirthdate}
+          min={isoDateYearsAgo(25)}
+          max={isoDateToday()}
+          defaultViewYear={new Date().getFullYear() - 10}
+          placeholder="Pilih tanggal lahir"
         />
       </div>
       <div className="flex gap-2">

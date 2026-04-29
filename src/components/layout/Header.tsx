@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ButtonLink } from "@/components/ui/Button";
+import { UserMenu } from "@/components/layout/UserMenu";
 
 const NAV = [
   { href: "/sekolah", label: "Sekolah" },
@@ -31,12 +31,7 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <ButtonLink href="/login" variant="ghost" size="sm">
-            Login
-          </ButtonLink>
-          <ButtonLink href="/register" variant="primary" size="sm">
-            Daftar
-          </ButtonLink>
+          <UserMenu />
         </div>
       </div>
     </header>

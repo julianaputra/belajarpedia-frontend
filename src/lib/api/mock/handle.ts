@@ -17,6 +17,16 @@ import {
   findSekolahByPath,
   findUniversitasByPath,
 } from "@/lib/api/mock/detail";
+import {
+  addMockChild,
+  buildMockUser,
+  deleteMockChild,
+  getMockUser,
+  listMockChildren,
+  patchMockUser,
+  setMockUser,
+  updateMockChild,
+} from "@/lib/api/mock/auth-state";
 import type { components } from "@/types/api";
 
 type FacilityCard = NonNullable<components["schemas"]["FacilityCard"]>;
@@ -48,10 +58,125 @@ export async function mockHandle<T>(
     return undefined as T;
   }
   if (path === "/api/user" && method === "GET") {
-    throw new ApiError(401, { message: "Unauthenticated.", code: "UNAUTHENTICATED" });
+    const user = getMockUser();
+    if (!user) {
+      throw new ApiError(401, { message: "Unauthenticated.", code: "UNAUTHENTICATED" });
+    }
+    return user as T;
+  }
+  if (path === "/api/login" && method === "POST") {
+    const body = (options.body ?? {}) as { email?: string; password?: string };
+    if (!body.email || !body.password) {
+      throw new ApiError(422, {
+        message: "Email dan password wajib diisi.",
+        errors: {
+          email: !body.email ? ["Email wajib diisi."] : [],
+          password: !body.password ? ["Password wajib diisi."] : [],
+        },
+      });
+    }
+    // Mock: any valid-looking input succeeds. Reuse existing mock user if email
+    // matches; otherwise create one.
+    const existing = getMockUser();
+    const user =
+      existing && existing.email === body.email
+        ? existing
+        : buildMockUser({ email: body.email, emailVerified: true });
+    setMockUser(user);
+    return user as T;
+  }
+  if (path === "/api/register" && method === "POST") {
+    const body = (options.body ?? {}) as Partial<components["schemas"]["RegisterRequest"]>;
+    if (!body.email || !body.password) {
+      throw new ApiError(422, {
+        message: "Form tidak valid.",
+        errors: {
+          email: !body.email ? ["Email wajib diisi."] : [],
+          password: !body.password ? ["Password wajib diisi."] : [],
+        },
+      });
+    }
+    const user = buildMockUser({
+      email: body.email,
+      name: body.name,
+      gender: body.gender,
+      birthdate: body.birthdate,
+      phone: body.phone,
+      province_id: body.province_id,
+      kabkota_id: body.kabkota_id,
+      children: body.children,
+      emailVerified: false, // requires verification per AC-11
+    });
+    setMockUser(user);
+    return user as T;
   }
   if (path === "/api/logout" && method === "POST") {
+    setMockUser(null);
     return undefined as T;
+  }
+  if (path === "/api/email/verification-notification" && method === "POST") {
+    return undefined as T; // 202 ack
+  }
+  if (path === "/api/password/forgot" && method === "POST") {
+    return undefined as T; // 202 ack — privacy: don't reveal if email exists
+  }
+  if (path === "/api/password/reset" && method === "POST") {
+    return undefined as T; // 200 ack
+  }
+
+  // Profile mutations
+  if (path === "/api/user/profile" && method === "PATCH") {
+    const body = (options.body ?? {}) as Partial<components["schemas"]["ProfileUpdateRequest"]>;
+    const updated = patchMockUser(body);
+    if (!updated) {
+      throw new ApiError(401, { message: "Unauthenticated." });
+    }
+    return updated as T;
+  }
+  if (path === "/api/user/email/change-request" && method === "POST") {
+    return undefined as T; // 202 verification queued
+  }
+  if (path === "/api/user/password" && method === "PATCH") {
+    return undefined as T; // 204
+  }
+  if (path === "/api/user/account" && method === "DELETE") {
+    setMockUser(null); // 14-day grace ignored in mock — just drop session
+    return undefined as T;
+  }
+
+  // Children CRUD
+  if (path === "/api/user/children" && method === "GET") {
+    if (!getMockUser()) throw new ApiError(401, { message: "Unauthenticated." });
+    return listMockChildren() as T;
+  }
+  if (path === "/api/user/children" && method === "POST") {
+    if (!getMockUser()) throw new ApiError(401, { message: "Unauthenticated." });
+    const body = (options.body ?? {}) as components["schemas"]["ChildInput"];
+    return addMockChild(body) as T;
+  }
+  {
+    const m = path.match(/^\/api\/user\/children\/(\d+)$/);
+    if (m && method === "PATCH") {
+      const id = Number.parseInt(m[1]!, 10);
+      const body = (options.body ?? {}) as components["schemas"]["ChildInput"];
+      const updated = updateMockChild(id, body);
+      if (!updated) throw new ApiError(404, { message: "Child tidak ditemukan" });
+      return updated as T;
+    }
+    if (m && method === "DELETE") {
+      const id = Number.parseInt(m[1]!, 10);
+      if (!deleteMockChild(id)) {
+        throw new ApiError(404, { message: "Child tidak ditemukan" });
+      }
+      return undefined as T;
+    }
+  }
+
+  // Favorites (Phase 9)
+  if (path === "/api/user/favorites" && method === "GET") {
+    if (!getMockUser()) throw new ApiError(401, { message: "Unauthenticated." });
+    // Mock: empty for now. Phase 9 may seed real entries from MOCK_* lists.
+    return { data: [], meta: { current_page: 1, per_page: 50, total: 0, last_page: 1 } } as T;
   }
 
   // ---------------------------------------------------------------------------

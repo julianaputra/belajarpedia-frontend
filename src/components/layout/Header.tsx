@@ -1,67 +1,42 @@
 import Link from "next/link";
+import { GraduationCap } from "lucide-react";
+
+import { DesktopNav, MobileTabNav } from "@/components/layout/NavLinks";
 import { UserMenu } from "@/components/layout/UserMenu";
 
-const NAV = [
-  { href: "/sekolah", label: "Sekolah" },
-  { href: "/universitas", label: "Universitas" },
-  { href: "/kursus", label: "Kursus" },
-];
-
 /**
- * Header layout: logo left, nav links + profile right.
- * On mobile the nav drops to a secondary strip below the bar so categories
- * stay reachable without crowding the top row.
+ * Sticky site header.
+ * - Desktop: logo (left) | nav links | user menu (right)
+ * - Mobile: top bar collapses nav into a secondary tab strip below.
  */
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-ink-100 shadow-[0_1px_0_0_rgb(28_47_112_/_0.04)]">
-      <div className="mx-auto max-w-6xl px-4 sm:px-5 h-16 flex items-center justify-between gap-4">
-        {/* Left — logo */}
+    <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-ink-100 shadow-[0_1px_0_0_rgb(28_47_112_/_0.04)]">
+      <div className="mx-auto max-w-6xl px-4 sm:px-5 h-16 grid grid-cols-[1fr_auto] md:grid-cols-[auto_1fr_auto] items-center gap-4">
         <Link
           href="/"
-          className="font-semibold text-lg sm:text-xl text-ink-700 hover:text-brand-700 transition-colors whitespace-nowrap"
           aria-label="Belajarpedia — beranda"
+          className="group inline-flex items-center gap-2 whitespace-nowrap justify-self-start"
         >
-          Belajar<span className="text-brand-600">pedia</span>
+          <span
+            aria-hidden
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-white shadow-[0_2px_8px_-2px_rgb(16_175_19_/_0.5)] transition-transform group-hover:-rotate-6"
+          >
+            <GraduationCap size={18} strokeWidth={2.25} />
+          </span>
+          <span className="font-semibold text-lg sm:text-xl text-ink-700 group-hover:text-brand-700 transition-colors">
+            Belajar<span className="text-brand-600">pedia</span>
+          </span>
         </Link>
 
-        {/* Right — nav + profile */}
-        <div className="flex items-center gap-1 sm:gap-2">
-          <nav
-            aria-label="Navigasi utama"
-            className="hidden md:flex items-center gap-0.5"
-          >
-            {NAV.map((n) => (
-              <Link
-                key={n.href}
-                href={n.href}
-                className="px-3 py-2 rounded-md text-sm font-medium text-ink-600 hover:text-ink-800 hover:bg-ink-50 transition-colors"
-              >
-                {n.label}
-              </Link>
-            ))}
-          </nav>
+        <DesktopNav />
+
+        <div className="flex items-center justify-self-end">
           <UserMenu />
         </div>
       </div>
 
-      {/* Mobile-only secondary nav strip */}
-      <nav
-        aria-label="Kategori"
-        className="md:hidden border-t border-ink-100 bg-white"
-      >
-        <div className="mx-auto max-w-6xl px-4 flex">
-          {NAV.map((n) => (
-            <Link
-              key={n.href}
-              href={n.href}
-              className="flex-1 py-2.5 text-center text-xs font-semibold text-ink-600 hover:text-brand-700 hover:bg-brand-50 transition-colors"
-            >
-              {n.label}
-            </Link>
-          ))}
-        </div>
-      </nav>
+      <MobileTabNav />
     </header>
   );
 }

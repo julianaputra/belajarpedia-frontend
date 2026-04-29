@@ -45,7 +45,8 @@
 
   /* --- Typography --------------------------------------------------------- */
   --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-hand: var(--font-caveat), "Comic Sans MS", cursive;
 
   /* --- Radius (friendly = chunky rounded) --------------------------------- */
   --radius-sm: 0.5rem;
@@ -123,6 +124,117 @@ h1, h2, h3, h4, h5, h6 {
 ::selection {
   background: var(--color-brand-200);
   color: var(--color-ink-900);
+}
+
+/* ============================================================================
+   Decorative utilities — notebook + sticker aesthetic
+   ============================================================================ */
+
+/* Highlighter — playful background swipe under important words */
+.fx-highlight {
+  background-image: linear-gradient(
+    180deg,
+    transparent 60%,
+    var(--color-brand-300) 60%,
+    var(--color-brand-300) 92%,
+    transparent 92%
+  );
+  padding: 0 0.15em;
+  white-space: nowrap;
+}
+.fx-highlight-sun {
+  background-image: linear-gradient(
+    180deg,
+    transparent 60%,
+    var(--color-sun-400) 60%,
+    var(--color-sun-400) 92%,
+    transparent 92%
+  );
+  padding: 0 0.15em;
+}
+
+/* Notebook paper background — faint horizontal rule lines */
+.fx-paper {
+  background-color: var(--color-surface);
+  background-image:
+    linear-gradient(to bottom, transparent calc(100% - 1px), rgb(28 47 112 / 0.06) 100%);
+  background-size: 100% 28px;
+}
+
+/* Grid paper — for slightly different surface texture */
+.fx-grid-paper {
+  background-color: var(--color-surface);
+  background-image:
+    linear-gradient(to right, rgb(28 47 112 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(28 47 112 / 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Sticker — chunky shadow + slight rotation; pair with .fx-stick-rotN */
+.fx-sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  background: white;
+  border: 2px solid var(--color-ink-700);
+  box-shadow: 3px 3px 0 0 var(--color-ink-700);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.fx-stick-rot-l { transform: rotate(-3deg); }
+.fx-stick-rot-r { transform: rotate(3deg); }
+.fx-stick-rot-l-soft { transform: rotate(-1.5deg); }
+.fx-stick-rot-r-soft { transform: rotate(1.5deg); }
+
+/* Tape strip — for cards that should look stuck on */
+.fx-tape::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 70px;
+  height: 18px;
+  background: rgb(255 200 7 / 0.6);
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.05);
+  z-index: 2;
+}
+
+/* Hand-written tag font helper */
+.fx-hand {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Floating motion */
+@keyframes drift {
+  0%, 100% { transform: translateY(0) rotate(var(--drift-rot, 0deg)); }
+  50%      { transform: translateY(-8px) rotate(calc(var(--drift-rot, 0deg) + 1deg)); }
+}
+.fx-drift {
+  animation: drift 5s ease-in-out infinite;
+}
+
+/* Marquee for CTA strip */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.fx-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Star burst pulse */
+@keyframes burst {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50%      { transform: scale(1.15) rotate(15deg); }
+}
+.fx-burst {
+  animation: burst 2.5s ease-in-out infinite;
 }
 
 /* Reduce motion for users who request it */

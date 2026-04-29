@@ -12,9 +12,14 @@ type Props = {
   category: "sekolah" | "universitas";
 };
 
+const CATEGORY_LABEL: Record<Props["category"], string> = {
+  sekolah: "sekolah",
+  universitas: "universitas",
+};
+
 /**
- * Cascading provinsi → kabkota dropdowns. Submitting navigates to the
- * deepest filled level: /{category}/{province} or /{category}/{province}/{kabkota}.
+ * Cascading provinsi → kabkota dropdowns. Submitting navigates to the deepest
+ * filled level. Mobile-first: stacks fully, full-width submit button.
  */
 export function RegionalNav({ category }: Props) {
   const router = useRouter();
@@ -32,58 +37,67 @@ export function RegionalNav({ category }: Props) {
   };
 
   return (
-    <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] items-end">
-      <div>
-        <Label htmlFor={`${category}-province`}>Provinsi</Label>
-        <Select
-          id={`${category}-province`}
-          value={provinceSlug}
-          onChange={(e) => {
-            setProvinceSlug(e.target.value);
-            setKabkotaSlug("");
-          }}
-          disabled={pLoading}
-        >
-          <option value="">{pLoading ? "Memuat…" : "Pilih provinsi"}</option>
-          {provinces?.map((p) => (
-            <option key={p.slug} value={p.slug ?? ""}>
-              {p.name}
-            </option>
-          ))}
-        </Select>
-      </div>
+    <div className="space-y-4">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <Label htmlFor={`${category}-province`}>Provinsi</Label>
+          <Select
+            id={`${category}-province`}
+            value={provinceSlug}
+            onChange={(e) => {
+              setProvinceSlug(e.target.value);
+              setKabkotaSlug("");
+            }}
+            disabled={pLoading}
+          >
+            <option value="">{pLoading ? "Memuat…" : "Pilih provinsi"}</option>
+            {provinces?.map((p) => (
+              <option key={p.slug} value={p.slug ?? ""}>
+                {p.name}
+              </option>
+            ))}
+          </Select>
+        </div>
 
-      <div>
-        <Label htmlFor={`${category}-kabkota`}>Kab/Kota</Label>
-        <Select
-          id={`${category}-kabkota`}
-          value={kabkotaSlug}
-          onChange={(e) => setKabkotaSlug(e.target.value)}
-          disabled={!provinceSlug || kLoading}
-        >
-          <option value="">
-            {!provinceSlug
-              ? "Pilih provinsi dulu"
-              : kLoading
-                ? "Memuat…"
-                : "Semua kab/kota"}
-          </option>
-          {kabkotas?.map((k) => (
-            <option key={k.slug} value={k.slug ?? ""}>
-              {k.name}
+        <div>
+          <Label htmlFor={`${category}-kabkota`}>Kab/Kota</Label>
+          <Select
+            id={`${category}-kabkota`}
+            value={kabkotaSlug}
+            onChange={(e) => setKabkotaSlug(e.target.value)}
+            disabled={!provinceSlug || kLoading}
+          >
+            <option value="">
+              {!provinceSlug
+                ? "Pilih provinsi dulu"
+                : kLoading
+                  ? "Memuat…"
+                  : "Semua kab/kota"}
             </option>
-          ))}
-        </Select>
+            {kabkotas?.map((k) => (
+              <option key={k.slug} value={k.slug ?? ""}>
+                {k.name}
+              </option>
+            ))}
+          </Select>
+        </div>
       </div>
 
       <Button
         type="button"
         onClick={submit}
         disabled={!provinceSlug}
-        size="md"
+        className="w-full sm:w-auto justify-center"
       >
-        Lihat
+        🔎 Cari {CATEGORY_LABEL[category]}
       </Button>
+
+      {!provinceSlug && (
+        <p className="text-xs text-muted">
+          Pilih provinsi untuk mulai. Kab/Kota opsional — kosongkan untuk lihat
+          se-provinsi.
+        </p>
+      )}
     </div>
   );
 }

@@ -62,11 +62,12 @@ export function PopularRegions() {
         <div>
           <h2
             id="regions-heading"
-            className="text-xl sm:text-3xl font-semibold text-ink-700"
+            className="text-xl sm:text-3xl font-semibold text-ink-700 flex items-center gap-2"
           >
+            <span aria-hidden className="h-2 w-2 rounded-full bg-sun-400 shrink-0" />
             Wilayah populer
           </h2>
-          <p className="text-sm sm:text-base text-muted mt-1">
+          <p className="text-sm sm:text-base text-muted mt-1 pl-4">
             Mulai pencarian dari kota besar dengan opsi terbanyak.
           </p>
         </div>

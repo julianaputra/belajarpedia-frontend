@@ -51,11 +51,12 @@ export function JenjangFilter() {
       <div className="mb-4 sm:mb-8">
         <h2
           id="jenjang-heading"
-          className="text-xl sm:text-3xl font-semibold text-ink-700"
+          className="text-xl sm:text-3xl font-semibold text-ink-700 flex items-center gap-2"
         >
+          <span aria-hidden className="h-2 w-2 rounded-full bg-brand-500 shrink-0" />
           Mulai dari jenjang pendidikan
         </h2>
-        <p className="text-sm sm:text-base text-muted mt-1">
+        <p className="text-sm sm:text-base text-muted mt-1 pl-4">
           Pilih sesuai usia anak Anda untuk hasil paling relevan.
         </p>
       </div>

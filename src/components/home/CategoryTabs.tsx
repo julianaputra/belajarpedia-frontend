@@ -67,8 +67,10 @@ export function CategoryTabs() {
       className="mx-auto max-w-6xl px-4 sm:px-5 py-8 sm:py-16"
     >
       <header className="text-center max-w-2xl mx-auto mb-5 sm:mb-10">
-        <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700 mb-1.5 sm:mb-2">
+        <p className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700 mb-1.5 sm:mb-2">
+          <span aria-hidden className="h-px w-5 bg-brand-300" />
           Jelajahi pilihan
+          <span aria-hidden className="h-px w-5 bg-brand-300" />
         </p>
         <h2
           id="category-tabs-heading"

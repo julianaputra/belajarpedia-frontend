@@ -22,9 +22,13 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 
   images: {
-    remotePatterns: r2Hostname
-      ? [{ protocol: "https", hostname: r2Hostname, pathname: "/**" }]
-      : [],
+    remotePatterns: [
+      ...(r2Hostname
+        ? [{ protocol: "https" as const, hostname: r2Hostname, pathname: "/**" }]
+        : []),
+      // Allow Unsplash for mock data preview. Remove once backend hosts real images.
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+    ],
   },
 
   async headers() {

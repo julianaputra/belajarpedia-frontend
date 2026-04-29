@@ -3,6 +3,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import { ApiError, type ApiErrorPayload } from "@/lib/api/error";
 import { apiUrl } from "@/lib/api/config";
+import { mockHandle, useMockApi } from "@/lib/api/mock/handle";
 
 export type ServerFetchOptions = Omit<RequestInit, "body"> & {
   body?: unknown;
@@ -28,6 +29,13 @@ export async function apiServerFetch<T>(
   path: string,
   options: ServerFetchOptions = {},
 ): Promise<T> {
+  if (useMockApi) {
+    return mockHandle<T>(path, {
+      method: options.method,
+      body: options.body,
+    });
+  }
+
   const { body, headers: hdrs, revalidate, tags, cache, ...rest } = options;
   const headers = new Headers(hdrs);
   headers.set("accept", "application/json");

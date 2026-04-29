@@ -2,6 +2,7 @@ import "client-only";
 
 import { ApiError, type ApiErrorPayload } from "@/lib/api/error";
 import { apiUrl } from "@/lib/api/config";
+import { mockHandle, useMockApi } from "@/lib/api/mock/handle";
 
 export type ClientFetchOptions = Omit<RequestInit, "body" | "credentials"> & {
   body?: unknown;
@@ -24,6 +25,10 @@ export async function apiClientFetch<T>(
 ): Promise<T> {
   const method = (options.method ?? "GET").toUpperCase();
   const isMutation = method !== "GET" && method !== "HEAD";
+
+  if (useMockApi) {
+    return mockHandle<T>(path, { method, body: options.body });
+  }
 
   if (isMutation) {
     await ensureCsrfCookie();
@@ -69,6 +74,10 @@ export async function apiClientFetch<T>(
  * the API (HttpOnly=false) so the browser can read it and echo it back.
  */
 export async function ensureCsrfCookie(force = false): Promise<void> {
+  if (useMockApi) {
+    csrfPrimed = true;
+    return;
+  }
   if (csrfPrimed && !force) return;
   const res = await fetch(apiUrl("/sanctum/csrf-cookie"), {
     method: "GET",

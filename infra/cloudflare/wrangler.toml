@@ -1,0 +1,14 @@
+name = "belajarpedia-maintenance"
+main = "maintenance-worker.js"
+compatibility_date = "2026-04-01"
+
+# Wire to ALL belajarpedia traffic when activated. Comment out when not in use.
+# [[routes]]
+# pattern = "belajarpedia.com/*"
+# zone_name = "belajarpedia.com"
+
+# Set via: wrangler secret put MAINTENANCE_BYPASS_SECRET
+# A long random string. Operators include this in `X-Maintenance-Bypass`
+# header to bypass the maintenance page for smoke tests during the window.
+[vars]
+# (Empty — secrets injected via `wrangler secret put`)

@@ -1,0 +1,118 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Static checks — lint + typecheck. Fast, fail early.
+  # ---------------------------------------------------------------------------
+  static:
+    name: Lint + Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Regenerate API types (catches drift)
+        run: npm run types:api
+
+      - name: Verify no uncommitted type drift
+        run: |
+          if ! git diff --quiet src/types/api.ts; then
+            echo "::error::src/types/api.ts is out of sync with docs/belajarpedia_version01_api.yaml"
+            git diff src/types/api.ts
+            exit 1
+          fi
+
+      - run: npm run typecheck
+      - run: npm run lint
+
+  # ---------------------------------------------------------------------------
+  # Build — production compile, surfaces config errors.
+  # ---------------------------------------------------------------------------
+  build:
+    name: Production build
+    runs-on: ubuntu-latest
+    needs: static
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://belajarpedia.com
+          # Real env vars are injected at runtime; placeholders here keep
+          # build-time URL resolution well-formed.
+
+  # ---------------------------------------------------------------------------
+  # E2E — Playwright against `next start` (prod) for stability.
+  # ---------------------------------------------------------------------------
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    needs: static
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      # Cache Playwright browsers between runs.
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-pw-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright browsers
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Build for E2E
+        run: npm run build
+        env:
+          NEXT_PUBLIC_USE_MOCK_API: "true"
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+          REVALIDATE_SECRET: ci-test-secret
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+        env:
+          CI: "true"
+          NEXT_PUBLIC_USE_MOCK_API: "true"
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+          REVALIDATE_SECRET: ci-test-secret
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

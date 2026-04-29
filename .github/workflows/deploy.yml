@@ -1,0 +1,133 @@
+name: Deploy
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Tag or branch to deploy (default = current ref)"
+        required: false
+        default: ""
+      environment:
+        description: "Target environment"
+        required: true
+        type: choice
+        options: [staging, production]
+        default: staging
+
+concurrency:
+  group: deploy-${{ github.event.inputs.environment || 'production' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment || 'production' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: ${{ vars.SITE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build (production)
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
+          NEXT_PUBLIC_API_BASE_URL: ${{ vars.API_BASE_URL }}
+          NEXT_PUBLIC_USE_MOCK_API: "false"
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
+          NEXT_PUBLIC_GMAPS_KEY: ${{ vars.GMAPS_KEY }}
+          NEXT_PUBLIC_R2_PUBLIC_URL: ${{ vars.R2_PUBLIC_URL }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ vars.SENTRY_DSN }}
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+
+      # Build artifact = .next/ + public/ + package*.json + next.config.ts
+      - name: Pack artifact
+        run: |
+          tar czf belajarpedia-${{ github.sha }}.tar.gz \
+            .next public package.json package-lock.json next.config.ts \
+            node_modules
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Upload artifact via rsync
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_ed25519" \
+            belajarpedia-${{ github.sha }}.tar.gz \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/tmp/
+
+      - name: Activate release on host
+        run: |
+          ssh -i ~/.ssh/id_ed25519 \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            "bash -s" << 'EOF'
+          set -euo pipefail
+          RELEASE_DIR="/var/www/belajarpedia/releases/${{ github.sha }}"
+          CURRENT="/var/www/belajarpedia/current"
+
+          mkdir -p "$RELEASE_DIR"
+          tar xzf /tmp/belajarpedia-${{ github.sha }}.tar.gz -C "$RELEASE_DIR"
+
+          # Atomically swap symlink
+          ln -sfn "$RELEASE_DIR" "$CURRENT.new"
+          mv -Tf "$CURRENT.new" "$CURRENT"
+
+          # Restart Node service via PM2 (or systemd unit, etc.)
+          pm2 reload belajarpedia-next --update-env
+
+          # Keep last 5 releases for rollback
+          ls -1tr /var/www/belajarpedia/releases/ \
+            | head -n -5 \
+            | xargs -I {} rm -rf "/var/www/belajarpedia/releases/{}"
+
+          rm -f /tmp/belajarpedia-${{ github.sha }}.tar.gz
+          EOF
+
+      - name: Notify Sentry of release
+        if: vars.SENTRY_ORG != ''
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+        run: |
+          npx --yes @sentry/cli releases new "${{ github.sha }}"
+          npx --yes @sentry/cli releases set-commits "${{ github.sha }}" --auto
+          npx --yes @sentry/cli releases finalize "${{ github.sha }}"
+          npx --yes @sentry/cli releases deploys "${{ github.sha }}" new \
+            -e "${{ github.event.inputs.environment || 'production' }}"
+
+      - name: Smoke test (poll homepage)
+        run: |
+          for i in 1 2 3 4 5; do
+            if curl -fsS "${{ vars.SITE_URL }}" > /dev/null; then
+              echo "✓ Smoke OK"
+              exit 0
+            fi
+            echo "Smoke try $i failed, retrying…"
+            sleep 5
+          done
+          echo "::error::Smoke test failed — site not responding 200"
+          exit 1

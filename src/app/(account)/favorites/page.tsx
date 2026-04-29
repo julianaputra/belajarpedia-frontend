@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 
@@ -39,7 +38,7 @@ export default function FavoritesPage() {
 
   if (isLoading || !isAuthenticated) {
     return (
-      <main className="mx-auto max-w-6xl px-5 py-10 text-muted">
+      <main className="mx-auto max-w-6xl px-4 sm:px-5 py-5 sm:py-10 text-sm sm:text-base text-muted">
         Memuat…
       </main>
     );
@@ -53,18 +52,13 @@ export default function FavoritesPage() {
   const totalPages = data?.meta?.last_page ?? 1;
 
   return (
-    <main className="mx-auto max-w-6xl px-5 py-10 space-y-7">
-      <header className="space-y-2 animate-[var(--animate-fade-up)]">
-        <span className="fx-sticker fx-stick-rot-l-soft bg-coral-400 text-white border-ink-900 shadow-[3px_3px_0_0_var(--color-ink-900)]">
-          ♥ Favorit Saya
-        </span>
-        <h1 className="font-display font-semibold text-3xl sm:text-4xl text-ink-700">
-          Fasilitas yang kamu simpan
-        </h1>
-        <p className="text-muted">
+    <main className="mx-auto max-w-6xl px-4 sm:px-5 py-5 sm:py-10 space-y-4 sm:space-y-8">
+      <header className="space-y-1 sm:space-y-2">
+        <h1 className="text-2xl sm:text-4xl text-ink-700">Favorit Saya</h1>
+        <p className="text-sm sm:text-base text-muted">
           {total > 0
             ? `${total.toLocaleString("id-ID")} fasilitas tersimpan`
-            : "Mulai jelajahi dan simpan fasilitas favoritmu."}
+            : "Belum ada fasilitas yang Anda simpan."}
         </p>
       </header>
 
@@ -72,7 +66,10 @@ export default function FavoritesPage() {
         <SkeletonGrid />
       ) : facilities.length > 0 ? (
         <>
-          <FacilityGrid facilities={facilities} />
+          <FacilityGrid
+            facilities={facilities}
+            className="grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          />
           <Pagination
             basePath="/favorites"
             currentPage={initialPage}
@@ -81,64 +78,47 @@ export default function FavoritesPage() {
           />
         </>
       ) : (
-        <EmptyState />
+        <FavoritesEmpty />
       )}
     </main>
   );
 }
 
-function EmptyState() {
+function FavoritesEmpty() {
   return (
-    <div className="rounded-2xl bg-white border-2 border-dashed border-ink-200 p-8 sm:p-10 text-center space-y-4 animate-[var(--animate-bounce-in)]">
-      <div className="text-5xl" aria-hidden>
-        ♡
-      </div>
-      <h2 className="font-display font-semibold text-xl text-ink-700">
-        Belum ada favorit
-      </h2>
-      <p className="text-muted max-w-md mx-auto">
-        Klik tombol <strong className="text-ink-700">♡ Simpan ke Favorit</strong> di
-        halaman detail fasilitas untuk mulai membangun daftar pilihanmu.
+    <div className="rounded-2xl border border-dashed border-ink-200 p-8 sm:p-10 text-center space-y-3">
+      <p className="text-lg font-semibold text-ink-700">Belum ada favorit</p>
+      <p className="text-sm sm:text-base text-muted max-w-md mx-auto">
+        Klik tombol{" "}
+        <strong className="text-ink-700">Simpan ke Favorit</strong> di halaman
+        detail fasilitas untuk mulai membangun daftar pilihan Anda.
       </p>
-
-      <div className="flex flex-wrap justify-center gap-3 pt-2">
-        <ButtonLink href="/sekolah" variant="primary">
-          🏫 Cari Sekolah
+      <div className="flex flex-wrap justify-center gap-2 pt-2">
+        <ButtonLink href="/sekolah" variant="primary" size="sm">
+          Cari Sekolah
         </ButtonLink>
-        <ButtonLink href="/universitas" variant="secondary">
-          🎓 Cari Universitas
+        <ButtonLink href="/universitas" variant="secondary" size="sm">
+          Cari Universitas
         </ButtonLink>
-        <ButtonLink href="/kursus" variant="sun">
-          🚀 Cari Kursus
+        <ButtonLink href="/kursus" variant="outline" size="sm">
+          Cari Kursus
         </ButtonLink>
       </div>
-
-      <p className="text-xs text-muted pt-2">
-        Tips: favorit bersifat kumulatif — sekali disimpan, fasilitas tersebut
-        akan muncul di sini untuk selalu kamu tinjau ulang.
-      </p>
-
-      <Link
-        href="/profile"
-        className="inline-block text-brand-700 hover:underline text-sm font-semibold pt-2"
-      >
-        ← Kembali ke profil
-      </Link>
     </div>
   );
 }
 
 function SkeletonGrid() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: 8 }).map((_, i) => (
         <div
           key={i}
-          className="rounded-2xl bg-white border-2 border-ink-100 overflow-hidden"
+          className="rounded-lg sm:rounded-2xl bg-white border border-ink-100 overflow-hidden"
           aria-hidden
         >
           <div className="aspect-[4/3] bg-ink-100 animate-pulse" />
-          <div className="p-5 space-y-2">
+          <div className="p-3 sm:p-5 space-y-2">
             <div className="h-4 w-4/5 bg-ink-100 rounded animate-pulse" />
             <div className="h-3 w-3/5 bg-ink-100 rounded animate-pulse" />
           </div>

@@ -36,7 +36,7 @@ export function UserMenu() {
   if (!isAuthenticated || !user) {
     return (
       <div className="flex items-center gap-2">
-        <ButtonLink href="/login" variant="ghost" size="sm">
+        <ButtonLink href="/login" variant="outline" size="sm">
           Login
         </ButtonLink>
         <ButtonLink href="/register" variant="primary" size="sm">

@@ -38,7 +38,7 @@ export default function ProfilePage() {
   return (
     <main className="mx-auto max-w-3xl px-5 py-10 space-y-6">
       <header className="space-y-1">
-        <h1 className="font-display font-extrabold text-3xl sm:text-4xl text-ink-700">
+        <h1 className="font-display font-semibold text-3xl sm:text-4xl text-ink-700">
           Akun saya
         </h1>
         <p className="text-muted">
@@ -447,7 +447,7 @@ function DangerZone({ onLogout }: { onLogout: () => void }) {
   return (
     <section className="rounded-[var(--radius-lg)] border-2 border-coral-400 bg-coral-400/5 p-5 sm:p-6 space-y-4">
       <div className="space-y-1">
-        <h2 className="font-display font-bold text-xl text-coral-500">
+        <h2 className="font-display font-semibold text-xl text-coral-500">
           Zona berbahaya
         </h2>
         <p className="text-sm text-body">
@@ -551,7 +551,7 @@ function Section({
 }) {
   return (
     <section className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-5 sm:p-6 space-y-4">
-      <h2 className="font-display font-bold text-xl text-ink-700">{title}</h2>
+      <h2 className="font-display font-semibold text-xl text-ink-700">{title}</h2>
       <div className="space-y-4">{children}</div>
     </section>
   );

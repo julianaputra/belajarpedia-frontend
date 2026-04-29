@@ -19,7 +19,7 @@ export function Header() {
         {/* Left — logo */}
         <Link
           href="/"
-          className="font-bold text-lg sm:text-xl text-ink-700 hover:text-brand-700 transition-colors whitespace-nowrap"
+          className="font-semibold text-lg sm:text-xl text-ink-700 hover:text-brand-700 transition-colors whitespace-nowrap"
           aria-label="Belajarpedia — beranda"
         >
           Belajar<span className="text-brand-600">pedia</span>

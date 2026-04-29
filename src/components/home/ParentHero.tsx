@@ -44,7 +44,7 @@ export function ParentHero() {
           Direktori pendidikan Indonesia
         </p>
 
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-ink-700 leading-[1.15] max-w-3xl mx-auto">
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold text-ink-700 leading-[1.15] max-w-3xl mx-auto">
           Bantu Anda memilih{" "}
           <span className="text-brand-700">pendidikan terbaik</span> untuk anak
         </h1>

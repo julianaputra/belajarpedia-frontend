@@ -42,7 +42,7 @@ export function TrustPillars() {
           </p>
           <h2
             id="trust-heading"
-            className="text-2xl sm:text-3xl lg:text-4xl font-bold text-ink-700 leading-tight"
+            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-ink-700 leading-tight"
           >
             Dibuat untuk membantu orang tua, bukan menjual iklan
           </h2>
@@ -58,7 +58,7 @@ export function TrustPillars() {
               key={p.label}
               className="bg-white border border-ink-100 rounded-2xl p-5 sm:p-6"
             >
-              <div className="text-3xl sm:text-4xl font-extrabold text-brand-700 leading-none">
+              <div className="text-3xl sm:text-4xl font-semibold text-brand-700 leading-none">
                 {p.stat}
               </div>
               <div className="text-sm font-semibold text-ink-700 mt-1.5">

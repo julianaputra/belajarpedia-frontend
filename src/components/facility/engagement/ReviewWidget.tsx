@@ -190,7 +190,7 @@ function ConfirmModal({
       <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
         <h3
           id="confirm-rating-title"
-          className="text-xl font-bold text-ink-700"
+          className="text-xl font-semibold text-ink-700"
         >
           Konfirmasi rating
         </h3>

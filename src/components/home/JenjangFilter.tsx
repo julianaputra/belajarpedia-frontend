@@ -51,7 +51,7 @@ export function JenjangFilter() {
       <div className="mb-6 sm:mb-8">
         <h2
           id="jenjang-heading"
-          className="text-2xl sm:text-3xl font-bold text-ink-700"
+          className="text-2xl sm:text-3xl font-semibold text-ink-700"
         >
           Mulai dari jenjang pendidikan
         </h2>
@@ -67,7 +67,7 @@ export function JenjangFilter() {
             href={j.href}
             className={`block rounded-xl border-2 ${j.color} p-4 sm:p-5 transition-transform hover:-translate-y-1 hover:shadow-[0_8px_20px_-10px_rgb(28_47_112_/_0.25)]`}
           >
-            <div className="font-bold text-lg sm:text-xl">{j.label}</div>
+            <div className="font-semibold text-lg sm:text-xl">{j.label}</div>
             <div className="text-xs sm:text-sm opacity-80 mt-0.5">
               {j.sublabel}
             </div>

@@ -41,7 +41,7 @@ export function SearchPrompt({ category }: Props) {
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-ink-50 text-ink-500">
           <Search size={24} aria-hidden />
         </div>
-        <h2 className="text-xl sm:text-2xl font-bold text-ink-700">
+        <h2 className="text-xl sm:text-2xl font-semibold text-ink-700">
           Cari di {CATEGORY_LABEL[category]}
         </h2>
         <p className="text-muted">

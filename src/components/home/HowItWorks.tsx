@@ -35,7 +35,7 @@ export function HowItWorks() {
           <p className="fx-hand text-2xl text-brand-600 -rotate-2">
             cuma 3 langkah —
           </p>
-          <h2 className="font-display font-extrabold text-4xl sm:text-5xl text-ink-700">
+          <h2 className="font-display font-semibold text-4xl sm:text-5xl text-ink-700">
             <span className="relative inline-block">
               Gampang banget
               <WavyUnderline
@@ -57,7 +57,7 @@ export function HowItWorks() {
             >
               <div className="flex items-start gap-4">
                 <span
-                  className="font-display font-extrabold text-5xl text-ink-700/30 leading-none"
+                  className="font-display font-semibold text-5xl text-ink-700/30 leading-none"
                   aria-hidden
                 >
                   {s.n}
@@ -66,7 +66,7 @@ export function HowItWorks() {
                   {s.emoji}
                 </span>
               </div>
-              <h3 className="font-display font-bold text-2xl text-ink-700 mt-4">
+              <h3 className="font-display font-semibold text-2xl text-ink-700 mt-4">
                 {s.title}
               </h3>
               <p className="text-ink-700 mt-2 leading-relaxed">{s.body}</p>

@@ -62,7 +62,7 @@ export function PopularRegions() {
         <div>
           <h2
             id="regions-heading"
-            className="text-2xl sm:text-3xl font-bold text-ink-700"
+            className="text-2xl sm:text-3xl font-semibold text-ink-700"
           >
             Wilayah populer
           </h2>
@@ -89,7 +89,7 @@ export function PopularRegions() {
               <MapPin size={14} aria-hidden />
               <span className="uppercase tracking-wider font-medium">Wilayah</span>
             </div>
-            <div className="font-bold text-base sm:text-lg text-ink-700 mt-1.5 group-hover:text-brand-700 transition-colors">
+            <div className="font-semibold text-base sm:text-lg text-ink-700 mt-1.5 group-hover:text-brand-700 transition-colors">
               {r.label}
             </div>
             <div className="text-xs sm:text-sm text-muted mt-1">{r.count}</div>

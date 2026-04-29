@@ -46,7 +46,7 @@ export function Footer() {
         <div className="lg:col-span-1">
           <Link
             href="/"
-            className="inline-block font-bold text-xl text-ink-700 hover:text-brand-700 transition-colors"
+            className="inline-block font-semibold text-xl text-ink-700 hover:text-brand-700 transition-colors"
           >
             Belajar<span className="text-brand-600">pedia</span>
           </Link>
@@ -117,7 +117,7 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h2 className="text-xs font-bold uppercase tracking-wider text-ink-700 mb-4">
+      <h2 className="text-xs font-semibold uppercase tracking-wider text-ink-700 mb-4">
         {title}
       </h2>
       <ul className="space-y-2.5">

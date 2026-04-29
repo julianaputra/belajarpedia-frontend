@@ -63,7 +63,7 @@ export function UserMenu() {
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        <span className="w-8 h-8 rounded-full bg-brand-500 text-white grid place-items-center text-sm font-bold">
+        <span className="w-8 h-8 rounded-full bg-brand-500 text-white grid place-items-center text-sm font-semibold">
           {initials || "U"}
         </span>
         <span className="hidden sm:inline text-sm font-semibold text-ink-700">

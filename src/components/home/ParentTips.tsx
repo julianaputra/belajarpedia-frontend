@@ -42,7 +42,7 @@ export function ParentTips() {
           </p>
           <h2
             id="tips-heading"
-            className="text-2xl sm:text-3xl lg:text-4xl font-bold text-ink-700 leading-tight"
+            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-ink-700 leading-tight"
           >
             4 langkah memilih sekolah dengan tenang
           </h2>
@@ -60,7 +60,7 @@ export function ParentTips() {
             >
               <div
                 aria-hidden
-                className="text-2xl sm:text-3xl font-bold text-brand-200 leading-none flex-shrink-0"
+                className="text-2xl sm:text-3xl font-semibold text-brand-200 leading-none flex-shrink-0"
               >
                 {t.n}
               </div>

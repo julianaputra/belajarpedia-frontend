@@ -60,7 +60,7 @@ export function Hero() {
           </span>
 
           <h1
-            className="font-display font-extrabold text-[2.5rem] leading-[1.05] sm:text-6xl lg:text-7xl text-ink-700"
+            className="font-display font-semibold text-[2.5rem] leading-[1.05] sm:text-6xl lg:text-7xl text-ink-700"
             style={{ letterSpacing: "-0.02em" }}
           >
             Cari{" "}
@@ -134,7 +134,7 @@ export function Hero() {
           <div className="relative fx-tape rounded-[var(--radius-xl)] bg-white border-2 border-ink-700 p-6 sm:p-7 rotate-[1.5deg] shadow-[8px_8px_0_0_var(--color-ink-700)]">
             <div className="space-y-4">
               <div className="flex items-baseline gap-3">
-                <span className="font-display font-extrabold text-5xl sm:text-6xl text-brand-500 leading-none">
+                <span className="font-display font-semibold text-5xl sm:text-6xl text-brand-500 leading-none">
                   12K+
                 </span>
                 <span className="text-ink-700 font-semibold">sekolah terdata</span>
@@ -178,7 +178,7 @@ function Stat({
     <div className="flex items-baseline justify-between gap-2">
       <span className="text-ink-700 font-medium">{label}</span>
       <span
-        className={`font-display font-extrabold text-2xl ${
+        className={`font-display font-semibold text-2xl ${
           tone === "brand" ? "text-brand-600" : "text-ink-700"
         }`}
       >

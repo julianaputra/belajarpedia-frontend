@@ -17,7 +17,7 @@ export function AuthCard({ title, subtitle, children, footer, className }: Props
       )}
     >
       <header className="space-y-2">
-        <h1 className="text-2xl sm:text-3xl font-bold text-ink-700">{title}</h1>
+        <h1 className="text-2xl sm:text-3xl font-semibold text-ink-700">{title}</h1>
         {subtitle && <p className="text-muted leading-relaxed">{subtitle}</p>}
       </header>
 

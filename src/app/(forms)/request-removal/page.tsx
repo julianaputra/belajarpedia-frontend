@@ -64,7 +64,7 @@ export default function RequestRemovalPage() {
       subtitle="Untuk pemilik fasilitas yang ingin opt-out. Setiap permintaan akan diverifikasi manual sebelum diproses."
     >
       <div className="rounded-[var(--radius)] bg-sun-400/15 border-2 border-sun-400 p-4 mb-5 text-sm text-ink-700">
-        <p className="font-bold mb-1">⚠ Catatan penting</p>
+        <p className="font-semibold mb-1">⚠ Catatan penting</p>
         <p>
           Penghapusan tidak otomatis. Tim akan menghubungimu via email untuk
           verifikasi kepemilikan sebelum proses dilakukan. Setelah dihapus,

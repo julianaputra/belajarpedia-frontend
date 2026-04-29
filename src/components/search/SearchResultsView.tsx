@@ -62,7 +62,7 @@ export function SearchResultsView({ category, query, page, results }: Props) {
               </Link>
             </p>
             <h1 className="text-3xl sm:text-4xl text-ink-700">
-              <span className="font-display font-bold">&ldquo;{query}&rdquo;</span>
+              <span className="font-display font-semibold">&ldquo;{query}&rdquo;</span>
             </h1>
             <p className="text-muted">
               {total > 0

@@ -51,7 +51,7 @@ export function SearchEmptyState({ category, query }: Props) {
           <SearchX size={24} aria-hidden />
         </div>
         <div className="space-y-1">
-          <h2 className="text-xl sm:text-2xl font-bold text-ink-700">
+          <h2 className="text-xl sm:text-2xl font-semibold text-ink-700">
             Tidak ada hasil untuk &ldquo;{query}&rdquo;
           </h2>
           <p className="text-muted">

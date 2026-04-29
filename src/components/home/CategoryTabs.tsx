@@ -72,7 +72,7 @@ export function CategoryTabs() {
         </p>
         <h2
           id="category-tabs-heading"
-          className="text-2xl sm:text-3xl lg:text-4xl font-bold text-ink-700 leading-tight"
+          className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-ink-700 leading-tight"
         >
           Rekomendasi per kategori
         </h2>
@@ -126,7 +126,7 @@ export function CategoryTabs() {
         className="space-y-6 animate-[var(--animate-fade-up)]"
       >
         <div className="text-center max-w-2xl mx-auto">
-          <h3 className="text-xl sm:text-2xl font-bold text-ink-700">
+          <h3 className="text-xl sm:text-2xl font-semibold text-ink-700">
             {active.title}
           </h3>
           <p className="text-muted mt-2 text-sm sm:text-base leading-relaxed">

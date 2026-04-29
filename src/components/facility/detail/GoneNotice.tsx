@@ -25,7 +25,7 @@ export function GoneNotice({ category, parentHref }: Props) {
       <p className="text-xs font-semibold uppercase tracking-wider text-coral-500">
         410 — Tidak tersedia
       </p>
-      <h1 className="text-2xl sm:text-3xl font-bold text-ink-700">
+      <h1 className="text-2xl sm:text-3xl font-semibold text-ink-700">
         Fasilitas ini sudah tidak terdaftar
       </h1>
       <p className="text-muted text-base sm:text-lg leading-relaxed">

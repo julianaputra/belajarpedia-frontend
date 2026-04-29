@@ -355,7 +355,7 @@ function Section({
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-base font-semibold text-ink-700">{title}</h2>
               {optional && (
-                <span className="text-[10px] font-bold uppercase tracking-wider text-muted bg-ink-50 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted bg-ink-50 px-1.5 py-0.5 rounded">
                   Opsional
                 </span>
               )}

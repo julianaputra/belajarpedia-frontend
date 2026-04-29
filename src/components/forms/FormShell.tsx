@@ -17,7 +17,7 @@ export function FormShell({ emoji, eyebrow, title, subtitle, children }: ShellPr
         <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700 inline-flex items-center gap-2">
           <span aria-hidden>{emoji}</span> {eyebrow}
         </p>
-        <h1 className="text-2xl sm:text-3xl font-bold text-ink-700 leading-tight">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-ink-700 leading-tight">
           {title}
         </h1>
         <p className="text-muted leading-relaxed">{subtitle}</p>
@@ -41,7 +41,7 @@ export function FormSuccess({ title, body, homeHref = "/" }: SuccessProps) {
       <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-brand-100 text-brand-700">
         <CheckCircle2 size={28} aria-hidden />
       </div>
-      <h2 className="text-xl sm:text-2xl font-bold text-ink-700">{title}</h2>
+      <h2 className="text-xl sm:text-2xl font-semibold text-ink-700">{title}</h2>
       <p className="text-body leading-relaxed">{body}</p>
       <p className="text-sm text-muted">
         Tim Belajarpedia akan review permintaanmu dan menghubungi via email.

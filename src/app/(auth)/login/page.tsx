@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Heart, Mail, MessageCircle } from "lucide-react";
 
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { Input, Label, PasswordInput } from "@/components/ui/Input";
@@ -23,12 +22,6 @@ const schema = z.object({
 });
 
 type FormValues = z.infer<typeof schema>;
-
-const BENEFITS = [
-  { Icon: Heart, label: "Simpan favorit" },
-  { Icon: MessageCircle, label: "Kirim pertanyaan" },
-  { Icon: Mail, label: "Email ucapan ulang tahun" },
-];
 
 export default function LoginPage() {
   const router = useRouter();
@@ -47,41 +40,18 @@ export default function LoginPage() {
       title="Selamat datang kembali"
       subtitle="Masuk untuk lanjutkan pencarian dan akses fitur akun."
       footer={
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <span>
-            Belum punya akun?{" "}
-            <Link
-              href="/register"
-              className="text-brand-700 hover:underline font-semibold"
-            >
-              Daftar gratis
-            </Link>
-          </span>
+        <p className="text-center">
+          Belum punya akun?{" "}
           <Link
-            href="/forgot-password"
-            className="text-brand-700 hover:underline font-medium"
+            href="/register"
+            className="text-brand-700 hover:underline font-semibold"
           >
-            Lupa password?
+            Daftar gratis
           </Link>
-        </div>
+        </p>
       }
     >
-      {/* Benefit row — quick reminder of what login unlocks */}
-      <ul className="grid grid-cols-3 gap-2 -mt-2 mb-2">
-        {BENEFITS.map((b) => (
-          <li
-            key={b.label}
-            className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-lg bg-ink-50 text-center"
-          >
-            <span className="text-brand-700">
-              <b.Icon size={18} aria-hidden />
-            </span>
-            <span className="text-[11px] sm:text-xs text-ink-700 font-medium leading-tight">
-              {b.label}
-            </span>
-          </li>
-        ))}
-      </ul>
+
 
       <form
         className="space-y-4"
@@ -130,7 +100,17 @@ export default function LoginPage() {
         </div>
 
         <div>
-          <Label htmlFor="password">Password</Label>
+          <div className="flex items-baseline justify-between gap-2 mb-1.5">
+            <Label htmlFor="password" className="mb-0">
+              Password
+            </Label>
+            <Link
+              href="/forgot-password"
+              className="text-xs text-brand-700 hover:underline font-medium"
+            >
+              Lupa password?
+            </Link>
+          </div>
           <PasswordInput
             id="password"
             autoComplete="current-password"

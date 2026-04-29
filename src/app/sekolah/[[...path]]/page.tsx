@@ -261,7 +261,7 @@ async function renderDetail(
         <div className="space-y-6">
           {detail.description && (
             <section className="rounded-2xl bg-white border border-ink-100 p-5 sm:p-6">
-              <h2 className="text-xl font-bold text-ink-700 mb-3">
+              <h2 className="text-xl font-semibold text-ink-700 mb-3">
                 Tentang {detail.name}
               </h2>
               <p className="text-body whitespace-pre-line">{detail.description}</p>

@@ -58,7 +58,7 @@ export default function FavoritesPage() {
         <span className="fx-sticker fx-stick-rot-l-soft bg-coral-400 text-white border-ink-900 shadow-[3px_3px_0_0_var(--color-ink-900)]">
           ♥ Favorit Saya
         </span>
-        <h1 className="font-display font-extrabold text-3xl sm:text-4xl text-ink-700">
+        <h1 className="font-display font-semibold text-3xl sm:text-4xl text-ink-700">
           Fasilitas yang kamu simpan
         </h1>
         <p className="text-muted">
@@ -93,7 +93,7 @@ function EmptyState() {
       <div className="text-5xl" aria-hidden>
         ♡
       </div>
-      <h2 className="font-display font-bold text-xl text-ink-700">
+      <h2 className="font-display font-semibold text-xl text-ink-700">
         Belum ada favorit
       </h2>
       <p className="text-muted max-w-md mx-auto">

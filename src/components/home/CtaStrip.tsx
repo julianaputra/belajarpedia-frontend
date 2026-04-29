@@ -28,7 +28,7 @@ export function CtaStrip() {
         <div className="relative bg-ink-700 text-white rounded-[var(--radius-xl)] border-2 border-ink-900 shadow-[8px_8px_0_0_var(--color-ink-900)] overflow-hidden">
           {/* Marquee background strip */}
           <div className="absolute inset-x-0 top-0 h-14 border-b-2 border-ink-900/40 bg-brand-500 overflow-hidden flex items-center">
-            <div className="fx-marquee flex gap-8 whitespace-nowrap text-ink-900 font-display font-extrabold text-lg uppercase tracking-wider px-6">
+            <div className="fx-marquee flex gap-8 whitespace-nowrap text-ink-900 font-display font-semibold text-lg uppercase tracking-wider px-6">
               {items.map((it, i) => (
                 <span key={i}>{it}</span>
               ))}
@@ -50,7 +50,7 @@ export function CtaStrip() {
               <span className="fx-sticker fx-stick-rot-l-soft bg-sun-400 border-ink-900 shadow-[3px_3px_0_0_var(--color-ink-900)] text-ink-900">
                 💼 Untuk Pemilik Sekolah & Kursus
               </span>
-              <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-tight">
+              <h2 className="font-display font-semibold text-3xl sm:text-4xl lg:text-5xl leading-tight">
                 Punya sekolah atau kursus?{" "}
                 <span className="text-sun-400">Daftarkan gratis.</span>
               </h2>
@@ -63,7 +63,7 @@ export function CtaStrip() {
             <div className="flex flex-col gap-3">
               <Link
                 href="/submit-listing"
-                className="inline-flex items-center justify-center h-14 px-7 rounded-[var(--radius)] bg-sun-400 text-ink-900 font-bold text-lg border-b-4 border-sun-500 hover:-translate-y-0.5 active:translate-y-0.5 active:border-b-2 transition-transform"
+                className="inline-flex items-center justify-center h-14 px-7 rounded-[var(--radius)] bg-sun-400 text-ink-900 font-semibold text-lg border-b-4 border-sun-500 hover:-translate-y-0.5 active:translate-y-0.5 active:border-b-2 transition-transform"
               >
                 Daftarkan fasilitasku →
               </Link>

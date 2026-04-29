@@ -50,7 +50,7 @@ export function CategoryFeature({
             <span aria-hidden>{emoji}</span>
             <span className="uppercase tracking-wider">{eyebrow}</span>
           </p>
-          <h2 className="text-2xl sm:text-3xl font-bold text-ink-700 mt-2 leading-tight max-w-2xl">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-ink-700 mt-2 leading-tight max-w-2xl">
             {title}
           </h2>
           <p className="text-muted mt-2 max-w-2xl leading-relaxed">{subtitle}</p>

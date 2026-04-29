@@ -280,7 +280,7 @@ function Section({
 }) {
   return (
     <fieldset className="space-y-4">
-      <legend className="text-sm font-bold uppercase tracking-wider text-ink-700">
+      <legend className="text-sm font-semibold uppercase tracking-wider text-ink-700">
         {title}
       </legend>
       {children}

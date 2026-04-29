@@ -41,7 +41,7 @@ export function DetailHeader({ facility, subtitle }: Props) {
       </div>
 
       <div className="space-y-1.5">
-        <h1 className="text-3xl sm:text-4xl font-bold text-ink-700 leading-tight">
+        <h1 className="text-3xl sm:text-4xl font-semibold text-ink-700 leading-tight">
           {name}
         </h1>
         {subtitle && <p className="text-muted text-base">{subtitle}</p>}

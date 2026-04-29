@@ -17,7 +17,7 @@ export function OwnerCta() {
           </p>
           <h2
             id="owner-cta-heading"
-            className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight"
+            className="text-xl sm:text-2xl lg:text-3xl font-semibold leading-tight"
           >
             Punya sekolah, kampus, atau lembaga kursus?
           </h2>

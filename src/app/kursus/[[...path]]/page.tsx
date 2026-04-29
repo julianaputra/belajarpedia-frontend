@@ -5,18 +5,45 @@ import {
   parseKursusPath,
   type KursusFilters,
 } from "@/lib/routing/url-parser";
-import { kursusListPath } from "@/lib/routing/url-builder";
+import {
+  kursusDetailPath,
+  kursusListPath,
+} from "@/lib/routing/url-builder";
 import { humanize } from "@/lib/routing/humanize";
-import { fetchKursusList } from "@/lib/api/facilities";
-import { listMetadata, type ListMetaInput } from "@/lib/seo/meta";
+import {
+  fetchKursusDetail,
+  fetchKursusList,
+} from "@/lib/api/facilities";
+import {
+  detailMetadata,
+  listMetadata,
+  type ListMetaInput,
+} from "@/lib/seo/meta";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
-import { breadcrumbListJsonLd } from "@/lib/seo/jsonld";
+import {
+  breadcrumbListJsonLd,
+  facilityJsonLd,
+} from "@/lib/seo/jsonld";
 import { buildBreadcrumbs, type BreadcrumbItem } from "@/lib/seo/breadcrumbs";
 import { absoluteUrl } from "@/lib/site/config";
 import { isApiError } from "@/lib/api/error";
 import { FacilityGrid } from "@/components/facility/FacilityCard";
 import { Pagination } from "@/components/Pagination";
+import { Badge } from "@/components/ui/Badge";
+import { DetailHeader } from "@/components/facility/detail/Header";
+import {
+  AttributeRow,
+  DetailSection,
+} from "@/components/facility/detail/Section";
+import { ContactBlock } from "@/components/facility/detail/ContactBlock";
+import { MapEmbed } from "@/components/facility/detail/MapEmbed";
+import { LastVerified } from "@/components/facility/detail/LastVerified";
+import { GoneNotice } from "@/components/facility/detail/GoneNotice";
+import { FavoriteButton } from "@/components/facility/engagement/FavoriteButton";
+import { InquiryForm } from "@/components/facility/engagement/InquiryForm";
+import { ReviewWidget } from "@/components/facility/engagement/ReviewWidget";
+import type { components } from "@/types/api";
 
 export const revalidate = 3600;
 
@@ -27,13 +54,38 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { path } = await params;
   const route = parseKursusPath(path);
-  if (route.kind !== "list") return {};
 
-  const total = await safeListTotal(() =>
-    fetchKursusList(route.filters, route.page),
-  );
+  if (route.kind === "list") {
+    const total = await safeListTotal(() =>
+      fetchKursusList(route.filters, route.page),
+    );
+    return listMetadata(toMetaInput(route.filters, route.page, total === 0));
+  }
 
-  return listMetadata(toMetaInput(route.filters, route.page, total === 0));
+  if (route.kind === "detail") {
+    try {
+      const detail = await fetchKursusDetail({
+        provinsi: route.filters.provinsi,
+        kabkota: route.filters.kabkota,
+        kecamatan: route.filters.kecamatan,
+        main_category: route.filters.main_category,
+        slug: route.slug,
+      });
+      return detailMetadata({
+        category: "kursus",
+        name: detail.name ?? route.slug,
+        description: detail.description ?? null,
+        imageUrl: detail.image_main_url ?? null,
+        kabkota: detail.kabkota?.name ? { name: detail.kabkota.name } : undefined,
+        provinsi: detail.province?.name ? { name: detail.province.name } : undefined,
+        path: kursusDetailPath(route.filters, route.slug),
+      });
+    } catch {
+      return { title: "Kursus", robots: { index: false, follow: false } };
+    }
+  }
+
+  return {};
 }
 
 export default async function KursusCatchAllPage({ params }: Props) {
@@ -41,19 +93,22 @@ export default async function KursusCatchAllPage({ params }: Props) {
   const route = parseKursusPath(path);
 
   if (route.kind === "invalid") notFound();
-  if (route.kind === "detail") notFound(); // Phase 4
+  if (route.kind === "list") return renderList(route.filters, route.page);
+  return renderDetail(route.filters, route.slug);
+}
 
-  const result = await fetchKursusList(route.filters, route.page);
+async function renderList(filters: KursusFilters, page: number) {
+  const result = await fetchKursusList(filters, page);
   const facilities = result.data ?? [];
   const meta = result.meta;
   const totalPages = meta?.last_page ?? 1;
   const total = meta?.total ?? facilities.length;
 
-  if (route.page > 1 && route.page > totalPages) notFound();
+  if (page > 1 && page > totalPages) notFound();
 
-  const basePath = kursusListPath(route.filters, 1);
-  const breadcrumbs = buildBreadcrumbs(kursusBreadcrumbs(route.filters));
-  const heading = kursusHeading(route.filters);
+  const basePath = kursusListPath(filters, 1);
+  const breadcrumbs = buildBreadcrumbs(kursusListBreadcrumbs(filters));
+  const heading = kursusHeading(filters);
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-10 space-y-8">
@@ -75,18 +130,18 @@ export default async function KursusCatchAllPage({ params }: Props) {
           <FacilityGrid facilities={facilities} />
           <Pagination
             basePath={basePath}
-            currentPage={route.page}
+            currentPage={page}
             totalPages={totalPages}
           />
         </>
       ) : (
-        <EmptyState />
+        <ListEmpty />
       )}
     </main>
   );
 }
 
-function EmptyState() {
+function ListEmpty() {
   return (
     <div className="rounded-[var(--radius-lg)] border-2 border-dashed border-ink-200 p-10 text-center">
       <p className="text-lg font-semibold text-ink-700 mb-2">
@@ -96,6 +151,142 @@ function EmptyState() {
         Coba pilih kategori atau wilayah yang berbeda.
       </p>
     </div>
+  );
+}
+
+async function renderDetail(
+  filters: Required<KursusFilters>,
+  slug: string,
+) {
+  let detail: components["schemas"]["KursusDetail"];
+  try {
+    detail = await fetchKursusDetail({
+      provinsi: filters.provinsi,
+      kabkota: filters.kabkota,
+      kecamatan: filters.kecamatan,
+      main_category: filters.main_category,
+      slug,
+    });
+  } catch (e) {
+    if (isApiError(e) && e.isGone) {
+      return <GoneNotice category="kursus" parentHref={kursusListPath(filters)} />;
+    }
+    if (isApiError(e) && e.isNotFound) notFound();
+    throw e;
+  }
+
+  if (detail.status === "removed") {
+    return <GoneNotice category="kursus" parentHref={kursusListPath(filters)} />;
+  }
+
+  const breadcrumbs = buildBreadcrumbs(
+    kursusDetailBreadcrumbs(filters, slug, detail.name ?? slug),
+  );
+
+  const subtitle = [
+    detail.main_category?.name ? `Kursus ${detail.main_category.name}` : "Kursus",
+    detail.kabkota?.name,
+    detail.province?.name,
+  ]
+    .filter(Boolean)
+    .join(" • ");
+
+  const facilityUrl = absoluteUrl(kursusDetailPath(filters, slug));
+  const subCategories = detail.sub_categories ?? [];
+
+  return (
+    <main className="mx-auto max-w-6xl px-5 py-10 space-y-8">
+      <JsonLd data={breadcrumbListJsonLd(breadcrumbs)} id="ld-breadcrumbs" />
+      <JsonLd
+        data={facilityJsonLd({
+          category: "kursus",
+          name: detail.name ?? slug,
+          url: facilityUrl,
+          description: detail.description ?? null,
+          imageUrl: detail.image_main_url ?? null,
+          address: detail.address ?? null,
+          region: {
+            kabkota: detail.kabkota?.name,
+            provinsi: detail.province?.name,
+          },
+          email: detail.email ?? null,
+          phone: detail.phone ?? null,
+          website: detail.website ?? null,
+          latitude: detail.latitude ?? null,
+          longitude: detail.longitude ?? null,
+        })}
+        id="ld-facility"
+      />
+
+      <Breadcrumbs items={breadcrumbs} />
+
+      <DetailHeader facility={detail} subtitle={subtitle} />
+
+      <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div className="space-y-6">
+          {detail.description && (
+            <section className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-6 animate-[var(--animate-fade-up)]">
+              <h2 className="text-xl font-bold text-ink-700 mb-3">
+                Tentang {detail.name}
+              </h2>
+              <p className="text-body whitespace-pre-line">{detail.description}</p>
+            </section>
+          )}
+
+          {(detail.main_category || subCategories.length > 0) && (
+            <section className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-6 space-y-3 animate-[var(--animate-fade-up)]">
+              <h2 className="text-xl font-bold text-ink-700">Kategori</h2>
+              <div className="flex flex-wrap gap-2">
+                {detail.main_category?.name && (
+                  <Badge tone="brand">{detail.main_category.name}</Badge>
+                )}
+                {subCategories.map((c) => (
+                  <Badge key={c.slug ?? c.name} tone="ink">
+                    {c.name}
+                  </Badge>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <DetailSection title="Program & Jadwal">
+            <AttributeRow label="Program" value={detail.program} />
+            <AttributeRow label="Usia" value={detail.usia} />
+            <AttributeRow label="Jadwal" value={detail.jadwal} />
+          </DetailSection>
+
+          <DetailSection title="Biaya & Fasilitas">
+            <AttributeRow label="Biaya" value={detail.biaya} />
+            <AttributeRow label="Fasilitas" value={detail.fasilitas} />
+          </DetailSection>
+
+          <ContactBlock facility={detail} />
+
+          <MapEmbed
+            latitude={detail.latitude}
+            longitude={detail.longitude}
+            name={detail.name ?? slug}
+          />
+
+          {detail.email && detail.id !== undefined && (
+            <InquiryForm facilityId={detail.id} facilityName={detail.name ?? slug} />
+          )}
+
+          <LastVerified date={detail.last_verified_at ?? null} />
+        </div>
+
+        <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+          {detail.id !== undefined && (
+            <div className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-5 space-y-4">
+              <FavoriteButton facilityId={detail.id} />
+              <div className="border-t border-ink-100 pt-4">
+                <ReviewWidget facilityId={detail.id} />
+              </div>
+            </div>
+          )}
+        </aside>
+      </div>
+    </main>
   );
 }
 
@@ -127,7 +318,7 @@ function kursusHeading(filters: KursusFilters): string {
   return region ? `${prefix} di ${region}` : `${prefix} di Indonesia`;
 }
 
-function kursusBreadcrumbs(filters: KursusFilters): BreadcrumbItem[] {
+function kursusListBreadcrumbs(filters: KursusFilters): BreadcrumbItem[] {
   const items: BreadcrumbItem[] = [
     { name: "Kursus", url: absoluteUrl("/kursus") },
   ];
@@ -172,6 +363,19 @@ function kursusBreadcrumbs(filters: KursusFilters): BreadcrumbItem[] {
     });
   }
   return items;
+}
+
+function kursusDetailBreadcrumbs(
+  filters: Required<KursusFilters>,
+  slug: string,
+  facilityName: string,
+): BreadcrumbItem[] {
+  const list = kursusListBreadcrumbs(filters);
+  list.push({
+    name: facilityName,
+    url: absoluteUrl(kursusDetailPath(filters, slug)),
+  });
+  return list;
 }
 
 function toMetaInput(

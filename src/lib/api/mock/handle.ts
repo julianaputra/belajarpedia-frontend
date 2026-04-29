@@ -9,6 +9,14 @@ import {
   MOCK_KURSUS_CATEGORIES,
   MOCK_REGIONS,
 } from "@/lib/api/mock/regions";
+import {
+  buildKursusDetail,
+  buildSekolahDetail,
+  buildUniversitasDetail,
+  findKursusByPath,
+  findSekolahByPath,
+  findUniversitasByPath,
+} from "@/lib/api/mock/detail";
 import type { components } from "@/types/api";
 
 type FacilityCard = NonNullable<components["schemas"]["FacilityCard"]>;
@@ -104,6 +112,115 @@ export async function mockHandle<T>(
       ...filtered.filter((f) => f.is_timedoor_academy !== true),
     ];
     return paginate(sorted, pageOf(params)) as T;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Detail endpoints (Phase 4)
+  // ---------------------------------------------------------------------------
+  {
+    const m = path.match(
+      /^\/api\/sekolah\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)$/,
+    );
+    if (m && method === "GET") {
+      const [, provinsi, kabkota, kecamatan, schoolType, slug] = m;
+      const card = findSekolahByPath(provinsi!, kabkota!, kecamatan!, schoolType!, slug!);
+      if (!card) {
+        throw new ApiError(404, { message: "Sekolah tidak ditemukan" });
+      }
+      const detail = buildSekolahDetail(card);
+      if (!detail) throw new ApiError(404, { message: "Sekolah tidak ditemukan" });
+      if (detail.status === "removed") {
+        throw new ApiError(410, {
+          message: "Fasilitas ini sudah tidak terdaftar.",
+          code: "FACILITY_REMOVED",
+        });
+      }
+      return detail as T;
+    }
+  }
+  {
+    const m = path.match(
+      /^\/api\/universitas\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)$/,
+    );
+    if (m && method === "GET") {
+      const [, provinsi, kabkota, kecamatan, slug] = m;
+      const card = findUniversitasByPath(provinsi!, kabkota!, kecamatan!, slug!);
+      if (!card) throw new ApiError(404, { message: "Universitas tidak ditemukan" });
+      const detail = buildUniversitasDetail(card);
+      if (!detail) throw new ApiError(404, { message: "Universitas tidak ditemukan" });
+      if (detail.status === "removed") {
+        throw new ApiError(410, {
+          message: "Fasilitas ini sudah tidak terdaftar.",
+          code: "FACILITY_REMOVED",
+        });
+      }
+      return detail as T;
+    }
+  }
+  {
+    const m = path.match(
+      /^\/api\/kursus\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)$/,
+    );
+    if (m && method === "GET") {
+      const [, provinsi, kabkota, kecamatan, mainCategory, slug] = m;
+      const card = findKursusByPath(provinsi!, kabkota!, kecamatan!, mainCategory!, slug!);
+      if (!card) throw new ApiError(404, { message: "Kursus tidak ditemukan" });
+      const detail = buildKursusDetail(card);
+      if (!detail) throw new ApiError(404, { message: "Kursus tidak ditemukan" });
+      if (detail.status === "removed") {
+        throw new ApiError(410, {
+          message: "Fasilitas ini sudah tidak terdaftar.",
+          code: "FACILITY_REMOVED",
+        });
+      }
+      return detail as T;
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Engagement (Phase 4) — accept-and-acknowledge; no persistence in mock.
+  // ---------------------------------------------------------------------------
+  {
+    const m = path.match(/^\/api\/facilities\/(\d+)\/favorite$/);
+    if (m && method === "POST") {
+      return {
+        id: Math.floor(Math.random() * 100000),
+        facility_id: Number.parseInt(m[1]!, 10),
+        created_at: new Date().toISOString(),
+      } as T;
+    }
+  }
+  {
+    const m = path.match(/^\/api\/facilities\/(\d+)\/inquiries$/);
+    if (m && method === "POST") {
+      const body = (options.body ?? {}) as { subject?: string; message?: string };
+      return {
+        id: Math.floor(Math.random() * 100000),
+        facility_id: Number.parseInt(m[1]!, 10),
+        subject: body.subject ?? "",
+        message: body.message ?? "",
+        created_at: new Date().toISOString(),
+      } as T;
+    }
+  }
+  {
+    const m = path.match(/^\/api\/facilities\/(\d+)\/reviews$/);
+    if (m && method === "POST") {
+      const body = (options.body ?? {}) as { rating?: number };
+      return {
+        id: Math.floor(Math.random() * 100000),
+        facility_id: Number.parseInt(m[1]!, 10),
+        rating: body.rating ?? 5,
+        created_at: new Date().toISOString(),
+      } as T;
+    }
+  }
+  {
+    const m = path.match(/^\/api\/facilities\/(\d+)\/my-review$/);
+    if (m && method === "GET") {
+      // Mock: nobody has reviewed anything yet (returns null)
+      return null as T;
+    }
   }
 
   // ---------------------------------------------------------------------------

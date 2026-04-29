@@ -11,8 +11,12 @@ import type {
 export type FacilityCard = components["schemas"]["FacilityCard"];
 export type PaginatedFacilityCardList =
   components["schemas"]["PaginatedFacilityCardList"];
+export type SekolahDetail = components["schemas"]["SekolahDetail"];
+export type UniversitasDetail = components["schemas"]["UniversitasDetail"];
+export type KursusDetail = components["schemas"]["KursusDetail"];
 
 const LIST_REVALIDATE_SECONDS = 3600; // 60-minute ISR per spec §1.1
+const DETAIL_REVALIDATE_SECONDS = 3600;
 
 function appendFilter(
   params: URLSearchParams,
@@ -59,6 +63,53 @@ export async function fetchUniversitasList(
     {
       revalidate: LIST_REVALIDATE_SECONDS,
       tags: ["facilities:universitas"],
+    },
+  );
+}
+
+export async function fetchSekolahDetail(args: {
+  provinsi: string;
+  kabkota: string;
+  kecamatan: string;
+  school_type: string;
+  slug: string;
+}): Promise<SekolahDetail> {
+  return apiServerFetch<SekolahDetail>(
+    `/api/sekolah/${args.provinsi}/${args.kabkota}/${args.kecamatan}/${args.school_type}/${args.slug}`,
+    {
+      revalidate: DETAIL_REVALIDATE_SECONDS,
+      tags: ["facilities:sekolah", `facility:sekolah:${args.slug}`],
+    },
+  );
+}
+
+export async function fetchUniversitasDetail(args: {
+  provinsi: string;
+  kabkota: string;
+  kecamatan: string;
+  slug: string;
+}): Promise<UniversitasDetail> {
+  return apiServerFetch<UniversitasDetail>(
+    `/api/universitas/${args.provinsi}/${args.kabkota}/${args.kecamatan}/${args.slug}`,
+    {
+      revalidate: DETAIL_REVALIDATE_SECONDS,
+      tags: ["facilities:universitas", `facility:universitas:${args.slug}`],
+    },
+  );
+}
+
+export async function fetchKursusDetail(args: {
+  provinsi: string;
+  kabkota: string;
+  kecamatan: string;
+  main_category: string;
+  slug: string;
+}): Promise<KursusDetail> {
+  return apiServerFetch<KursusDetail>(
+    `/api/kursus/${args.provinsi}/${args.kabkota}/${args.kecamatan}/${args.main_category}/${args.slug}`,
+    {
+      revalidate: DETAIL_REVALIDATE_SECONDS,
+      tags: ["facilities:kursus", `facility:kursus:${args.slug}`],
     },
   );
 }

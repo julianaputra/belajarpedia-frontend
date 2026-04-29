@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
  * Variants share this geometry; only colors differ.
  */
 
-type Variant = "primary" | "secondary" | "sun" | "outline" | "ghost";
+type Variant = "primary" | "secondary" | "sun" | "outline" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
 
 /**
@@ -53,6 +53,13 @@ const variantStyles: Record<Variant, string> = {
     "shadow-none",
     "hover:bg-ink-50 hover:shadow-none",
     "active:bg-ink-100",
+  ),
+  danger: cn(
+    "bg-coral-500 text-white",
+    "shadow-[0_4px_0_0_#cc4434]",
+    "hover:bg-coral-400 hover:shadow-[0_6px_0_0_#cc4434]",
+    "active:bg-coral-500 active:shadow-[0_0_0_0_#cc4434]",
+    "focus-visible:ring-coral-400/40",
   ),
 };
 

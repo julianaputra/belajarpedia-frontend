@@ -1,0 +1,1378 @@
+openapi: 3.0.3
+info:
+  title: Belajarpedia API
+  version: 1.0.0
+  description: |
+    Backend API for the Belajarpedia educational directory portal (Indonesia).
+
+    Consumed by the Next.js public frontend and the public-form integrations.
+    Authenticated endpoints use Laravel Sanctum **SPA cookie** authentication —
+    clients must first GET `/sanctum/csrf-cookie` to receive `XSRF-TOKEN`,
+    then send it back in the `X-XSRF-TOKEN` header on every state-changing call.
+
+    All responses use JSON. All datetimes are ISO-8601 (UTC).
+  contact:
+    name: Belajarpedia Engineering
+    email: dev@belajarpedia.com
+
+servers:
+  - url: https://api.belajarpedia.com
+    description: Production
+  - url: https://api.staging.belajarpedia.com
+    description: Staging
+  - url: http://localhost:8000
+    description: Local development
+
+tags:
+  - name: Auth
+    description: Registration, login, logout, password, email verification, OAuth.
+  - name: Profile
+    description: Authenticated user profile and children management.
+  - name: Facilities
+    description: Public read endpoints for sekolah / universitas / kursus.
+  - name: Search
+    description: Per-category keyword search.
+  - name: Engagement
+    description: Favorites, inquiries, reviews (authenticated user actions).
+  - name: Home
+    description: Cache-bypassed home-page recommendation endpoints.
+  - name: Regions
+    description: Master data for provinsi / kabupaten-kota / kecamatan.
+  - name: Categories
+    description: Kursus category master.
+  - name: Public Forms
+    description: Public unauthenticated submission forms (registration / correction / deletion requests).
+  - name: Webhooks
+    description: Internal/external webhook endpoints (revalidation, SendGrid events).
+
+security: []
+
+paths:
+  # =========================================================================
+  # AUTH
+  # =========================================================================
+  /sanctum/csrf-cookie:
+    get:
+      tags: [Auth]
+      operationId: getCsrfCookie
+      summary: Initialize Sanctum CSRF cookie
+      description: |
+        Call this once before any authenticated request. Server sets the
+        `XSRF-TOKEN` cookie. Client must echo it in `X-XSRF-TOKEN` header
+        on all subsequent POST/PUT/PATCH/DELETE requests.
+      responses:
+        '204':
+          description: CSRF cookie issued.
+
+  /api/register:
+    post:
+      tags: [Auth]
+      operationId: register
+      summary: Register a new user (email + password)
+      description: |
+        Creates a user record and dispatches a verification email.
+        The account is unusable until the verification link is clicked.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Registration accepted; verification email queued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/login:
+    post:
+      tags: [Auth]
+      operationId: login
+      summary: Log in with email + password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful; session cookie set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Invalid credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Email not yet verified.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Too many login attempts.
+
+  /api/logout:
+    post:
+      tags: [Auth]
+      operationId: logout
+      summary: Log out the current session
+      security:
+        - cookieAuth: []
+      responses:
+        '204':
+          description: Session ended.
+
+  /api/user:
+    get:
+      tags: [Auth]
+      operationId: getCurrentUser
+      summary: Get the currently authenticated user
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Current user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/email/verify/{id}/{hash}:
+    get:
+      tags: [Auth]
+      operationId: verifyEmail
+      summary: Verify the user's email via signed link
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: hash
+          in: path
+          required: true
+          schema: { type: string }
+        - name: expires
+          in: query
+          required: true
+          schema: { type: integer }
+        - name: signature
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '302':
+          description: Email verified — redirects to frontend.
+        '410':
+          description: Verification link expired.
+        '422':
+          description: Invalid signature.
+
+  /api/email/verification-notification:
+    post:
+      tags: [Auth]
+      operationId: resendEmailVerification
+      summary: Resend the verification email
+      security:
+        - cookieAuth: []
+      responses:
+        '202':
+          description: Verification email queued.
+        '429':
+          description: Too many requests.
+
+  /api/auth/google/redirect:
+    get:
+      tags: [Auth]
+      operationId: googleOauthRedirect
+      summary: Begin Google OAuth flow
+      responses:
+        '302':
+          description: Redirects to Google's consent screen.
+
+  /api/auth/google/callback:
+    get:
+      tags: [Auth]
+      operationId: googleOauthCallback
+      summary: Google OAuth callback
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema: { type: string }
+        - name: state
+          in: query
+          schema: { type: string }
+      responses:
+        '302':
+          description: Logs the user in and redirects to frontend.
+        '400':
+          description: OAuth error.
+
+  /api/password/forgot:
+    post:
+      tags: [Auth]
+      operationId: requestPasswordReset
+      summary: Request a password reset email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, turnstile_token]
+              properties:
+                email: { type: string, format: email, example: ratna@example.com }
+                turnstile_token: { type: string, example: "0.AAA..." }
+      responses:
+        '202':
+          description: If the email exists, a reset link has been sent.
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/password/reset:
+    post:
+      tags: [Auth]
+      operationId: resetPassword
+      summary: Set a new password using a reset token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, email, password, password_confirmation]
+              properties:
+                token: { type: string }
+                email: { type: string, format: email }
+                password:
+                  type: string
+                  minLength: 8
+                  description: ≥8 chars, must include upper, lower, and a symbol.
+                password_confirmation: { type: string }
+      responses:
+        '200':
+          description: Password updated.
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  # =========================================================================
+  # PROFILE
+  # =========================================================================
+  /api/user/profile:
+    patch:
+      tags: [Profile]
+      operationId: updateProfile
+      summary: Update the current user's profile
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateRequest'
+      responses:
+        '200':
+          description: Updated user.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /api/user/email/change-request:
+    post:
+      tags: [Profile]
+      operationId: requestEmailChange
+      summary: Request an email-change verification email
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [new_email, current_password]
+              properties:
+                new_email: { type: string, format: email }
+                current_password: { type: string, format: password }
+      responses:
+        '202': { description: Verification email queued to new address. }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /api/user/password:
+    patch:
+      tags: [Profile]
+      operationId: changePassword
+      summary: Change the current user's password
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [current_password, password, password_confirmation]
+              properties:
+                current_password: { type: string, format: password }
+                password: { type: string, format: password, minLength: 8 }
+                password_confirmation: { type: string, format: password }
+      responses:
+        '204': { description: Password changed. }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /api/user/account:
+    delete:
+      tags: [Profile]
+      operationId: deleteAccount
+      summary: Delete the current user account (14-day grace)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [current_password]
+              properties:
+                current_password: { type: string, format: password }
+      responses:
+        '202':
+          description: Account scheduled for deletion in 14 days.
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/user/children:
+    get:
+      tags: [Profile]
+      operationId: listChildren
+      summary: List the current user's children
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Children list.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/UserChild' }
+    post:
+      tags: [Profile]
+      operationId: createChild
+      summary: Add a child record
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChildInput'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserChild' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /api/user/children/{childId}:
+    parameters:
+      - name: childId
+        in: path
+        required: true
+        schema: { type: integer }
+    patch:
+      tags: [Profile]
+      operationId: updateChild
+      summary: Update a child record
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ChildInput' }
+      responses:
+        '200':
+          description: Updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserChild' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Profile]
+      operationId: deleteChild
+      summary: Delete a child record
+      security:
+        - cookieAuth: []
+      responses:
+        '204': { description: Deleted. }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # =========================================================================
+  # FACILITIES — LIST
+  # =========================================================================
+  /api/sekolah:
+    get:
+      tags: [Facilities]
+      operationId: listSekolah
+      summary: List Sekolah facilities (hierarchical filter)
+      description: |
+        Mirrors the public URL hierarchy. Supply only the levels that apply.
+        Sort is fixed: score DESC, name ASC. 50 items per page.
+      parameters:
+        - name: provinsi
+          in: query
+          schema: { type: string, example: bali }
+        - name: kabkota
+          in: query
+          schema: { type: string, example: kab-badung }
+        - name: kecamatan
+          in: query
+          schema: { type: string, example: kuta-utara }
+        - name: school_type
+          in: query
+          schema:
+            type: string
+            enum: [negeri, swasta, international]
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: Paginated Sekolah list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFacilityCardList'
+
+  /api/sekolah/{provinsi}/{kabkota}/{kecamatan}/{school_type}/{slug}:
+    get:
+      tags: [Facilities]
+      operationId: getSekolahDetail
+      summary: Get a Sekolah detail
+      parameters:
+        - { name: provinsi, in: path, required: true, schema: { type: string } }
+        - { name: kabkota, in: path, required: true, schema: { type: string } }
+        - { name: kecamatan, in: path, required: true, schema: { type: string } }
+        - name: school_type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [negeri, swasta, international]
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Sekolah detail.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SekolahDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '410': { $ref: '#/components/responses/Gone' }
+
+  /api/universitas:
+    get:
+      tags: [Facilities]
+      operationId: listUniversitas
+      summary: List Universitas facilities
+      parameters:
+        - { name: provinsi, in: query, schema: { type: string } }
+        - { name: kabkota, in: query, schema: { type: string } }
+        - { name: kecamatan, in: query, schema: { type: string } }
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: Paginated list.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginatedFacilityCardList' }
+
+  /api/universitas/{provinsi}/{kabkota}/{kecamatan}/{slug}:
+    get:
+      tags: [Facilities]
+      operationId: getUniversitasDetail
+      summary: Get a Universitas detail
+      parameters:
+        - { name: provinsi, in: path, required: true, schema: { type: string } }
+        - { name: kabkota, in: path, required: true, schema: { type: string } }
+        - { name: kecamatan, in: path, required: true, schema: { type: string } }
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Universitas detail.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UniversitasDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '410': { $ref: '#/components/responses/Gone' }
+
+  /api/kursus:
+    get:
+      tags: [Facilities]
+      operationId: listKursus
+      summary: List Kursus facilities (with category filter)
+      description: |
+        Includes facilities whose `main_category_slug` matches OR whose
+        sub-categories include the slug. Timedoor facilities are pinned-top
+        when present.
+      parameters:
+        - { name: provinsi, in: query, schema: { type: string } }
+        - { name: kabkota, in: query, schema: { type: string } }
+        - { name: kecamatan, in: query, schema: { type: string } }
+        - { name: category, in: query, schema: { type: string, example: coding } }
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: Paginated list (Timedoor first).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginatedFacilityCardList' }
+
+  /api/kursus/{provinsi}/{kabkota}/{kecamatan}/{main_category}/{slug}:
+    get:
+      tags: [Facilities]
+      operationId: getKursusDetail
+      summary: Get a Kursus detail
+      parameters:
+        - { name: provinsi, in: path, required: true, schema: { type: string } }
+        - { name: kabkota, in: path, required: true, schema: { type: string } }
+        - { name: kecamatan, in: path, required: true, schema: { type: string } }
+        - { name: main_category, in: path, required: true, schema: { type: string } }
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Kursus detail.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/KursusDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '410': { $ref: '#/components/responses/Gone' }
+
+  # =========================================================================
+  # SEARCH
+  # =========================================================================
+  /api/sekolah/search:
+    get:
+      tags: [Search]
+      operationId: searchSekolah
+      summary: Keyword search within Sekolah
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string }, example: "smp negeri kuta" }
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: Paginated search results.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginatedFacilityCardList' }
+
+  /api/universitas/search:
+    get:
+      tags: [Search]
+      operationId: searchUniversitas
+      summary: Keyword search within Universitas
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string } }
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: Paginated search results.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginatedFacilityCardList' }
+
+  /api/kursus/search:
+    get:
+      tags: [Search]
+      operationId: searchKursus
+      summary: Keyword search within Kursus (Timedoor pinned-top)
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string } }
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: Paginated search results.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginatedFacilityCardList' }
+
+  # =========================================================================
+  # ENGAGEMENT — favorites / inquiries / reviews
+  # =========================================================================
+  /api/facilities/{facilityId}/favorite:
+    parameters:
+      - { name: facilityId, in: path, required: true, schema: { type: integer } }
+    post:
+      tags: [Engagement]
+      operationId: addFavorite
+      summary: Add facility to favorites (one-way, cumulative)
+      security:
+        - cookieAuth: []
+      responses:
+        '201':
+          description: Favorite added (or already existed — idempotent).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Favorite' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '410': { $ref: '#/components/responses/Gone' }
+
+  /api/user/favorites:
+    get:
+      tags: [Engagement]
+      operationId: listMyFavorites
+      summary: List my favorites
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: Paginated favorites.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginatedFavoriteList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/facilities/{facilityId}/inquiries:
+    parameters:
+      - { name: facilityId, in: path, required: true, schema: { type: integer } }
+    post:
+      tags: [Engagement]
+      operationId: submitInquiry
+      summary: Send an inquiry to a facility
+      description: |
+        Rate-limited to 1 per (user, facility) per rolling hour.
+        Email is dispatched with `Reply-To` set to the user's address.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InquiryRequest'
+      responses:
+        '202':
+          description: Inquiry queued for delivery.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Inquiry' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '410': { $ref: '#/components/responses/Gone' }
+        '422':
+          description: Facility has no email or invalid input.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '429':
+          description: Rate-limit exceeded.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+
+  /api/facilities/{facilityId}/reviews:
+    parameters:
+      - { name: facilityId, in: path, required: true, schema: { type: integer } }
+    post:
+      tags: [Engagement]
+      operationId: submitReview
+      summary: Submit a star rating (one-time, no re-rating)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+      responses:
+        '201':
+          description: Review saved.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Review' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: User has already rated this facility.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '410': { $ref: '#/components/responses/Gone' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /api/facilities/{facilityId}/my-review:
+    parameters:
+      - { name: facilityId, in: path, required: true, schema: { type: integer } }
+    get:
+      tags: [Engagement]
+      operationId: getMyReview
+      summary: Get the current user's review for a facility (if any)
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Existing review or null.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Review'
+                  - type: 'null'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  # =========================================================================
+  # HOME — Rekomendasi (cache-bypassed)
+  # =========================================================================
+  /api/home/rekomendasi/sekolah:
+    get:
+      tags: [Home]
+      operationId: getSekolahRekomendasi
+      summary: 8 random Sekolah facilities (score >= 10)
+      responses:
+        '200':
+          description: Random 8 cards.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/FacilityCard' }
+
+  /api/home/rekomendasi/universitas:
+    get:
+      tags: [Home]
+      operationId: getUniversitasRekomendasi
+      summary: 8 random Universitas facilities (score >= 10)
+      responses:
+        '200':
+          description: Random 8 cards.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/FacilityCard' }
+
+  /api/home/rekomendasi/kursus:
+    get:
+      tags: [Home]
+      operationId: getKursusRekomendasi
+      summary: 8 Kursus cards (2 Timedoor + 6 general, randomized)
+      responses:
+        '200':
+          description: 2 Timedoor first, then 6 general (all randomized within group).
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/FacilityCard' }
+
+  # =========================================================================
+  # REGIONS
+  # =========================================================================
+  /api/regions/provinces:
+    get:
+      tags: [Regions]
+      operationId: listProvinces
+      summary: List all provinces
+      responses:
+        '200':
+          description: Provinces.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Province' }
+
+  /api/regions/kabkota:
+    get:
+      tags: [Regions]
+      operationId: listKabkota
+      summary: List kabupaten/kota in a province
+      parameters:
+        - { name: provinsi_slug, in: query, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Kabkota list.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Kabkota' }
+
+  /api/regions/kecamatan:
+    get:
+      tags: [Regions]
+      operationId: listKecamatan
+      summary: List kecamatan in a kabkota
+      parameters:
+        - { name: kabkota_slug, in: query, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Kecamatan list.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Kecamatan' }
+
+  # =========================================================================
+  # KURSUS CATEGORIES
+  # =========================================================================
+  /api/kursus-categories:
+    get:
+      tags: [Categories]
+      operationId: listKursusCategories
+      summary: List active kursus categories
+      responses:
+        '200':
+          description: Active kursus categories.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/KursusCategory' }
+
+  # =========================================================================
+  # PUBLIC FORMS
+  # =========================================================================
+  /api/public/registration-request:
+    post:
+      tags: [Public Forms]
+      operationId: submitRegistrationRequest
+      summary: Submit a new-listing request (public, requires Turnstile)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegistrationRequest' }
+      responses:
+        '202': { description: Request received; admin will review. }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /api/public/correction-request:
+    post:
+      tags: [Public Forms]
+      operationId: submitCorrectionRequest
+      summary: Submit an information-correction request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CorrectionRequest' }
+      responses:
+        '202': { description: Request received. }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /api/public/deletion-request:
+    post:
+      tags: [Public Forms]
+      operationId: submitDeletionRequest
+      summary: Submit a removal request for a facility
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DeletionRequest' }
+      responses:
+        '202': { description: Request received; admin will review. }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  # =========================================================================
+  # WEBHOOKS
+  # =========================================================================
+  /api/webhooks/sendgrid:
+    post:
+      tags: [Webhooks]
+      operationId: sendgridWebhook
+      summary: SendGrid event webhook (delivered / bounced / dropped)
+      description: |
+        Verified via the `X-Twilio-Email-Event-Webhook-Signature` header.
+        Payload is an array of SendGrid event objects; outcomes are written
+        to `mail_logs.status`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                additionalProperties: true
+      responses:
+        '204': { description: Acknowledged. }
+        '401': { description: Invalid signature. }
+
+  /internal/revalidate:
+    post:
+      tags: [Webhooks]
+      operationId: nextjsRevalidate
+      summary: Trigger Next.js ISR revalidation (Laravel → Next.js)
+      description: |
+        Called by Laravel after any score- or status-affecting write.
+        Authenticated by a shared `X-Revalidate-Secret` header.
+      parameters:
+        - name: X-Revalidate-Secret
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [paths]
+              properties:
+                paths:
+                  type: array
+                  items: { type: string }
+                  example:
+                    - /sekolah/bali/kab-badung/kuta-utara/negeri/smp-negeri-2-kuta-utara
+                    - /sekolah/bali/kab-badung/kuta-utara/
+      responses:
+        '200':
+          description: Revalidation triggered.
+        '401': { description: Bad secret. }
+
+# =============================================================================
+# COMPONENTS
+# =============================================================================
+components:
+
+  # ---------------------------------------------------------------------------
+  # Security
+  # ---------------------------------------------------------------------------
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: belajarpedia_session
+      description: |
+        Laravel Sanctum SPA session cookie. After GET `/sanctum/csrf-cookie`,
+        all state-changing calls also require `X-XSRF-TOKEN` header echoing
+        the `XSRF-TOKEN` cookie.
+
+  # ---------------------------------------------------------------------------
+  # Reusable parameters
+  # ---------------------------------------------------------------------------
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: 1-based page number. Page size is fixed at 50.
+
+  # ---------------------------------------------------------------------------
+  # Reusable responses
+  # ---------------------------------------------------------------------------
+  responses:
+    Unauthorized:
+      description: Authentication required.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    Gone:
+      description: Facility has been removed (soft-deleted).
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    ValidationError:
+      description: Request body failed validation.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ValidationErrorResponse' }
+
+  # ---------------------------------------------------------------------------
+  # Schemas
+  # ---------------------------------------------------------------------------
+  schemas:
+
+    # --- Errors ---
+    ErrorResponse:
+      type: object
+      required: [message]
+      properties:
+        message: { type: string, example: "Resource not found." }
+        code:    { type: string, example: "NOT_FOUND" }
+
+    ValidationErrorResponse:
+      type: object
+      required: [message, errors]
+      properties:
+        message: { type: string, example: "The given data was invalid." }
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }
+          example:
+            email: ["The email field is required."]
+            password: ["The password must be at least 8 characters."]
+
+    # --- Auth & user ---
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+        - password_confirmation
+        - name
+        - gender
+        - birthdate
+        - phone
+        - province_id
+        - kabkota_id
+        - children_count
+        - turnstile_token
+      properties:
+        email: { type: string, format: email, example: ratna@example.com }
+        password:
+          type: string
+          format: password
+          minLength: 8
+          description: ≥8 chars; must include uppercase, lowercase, and a symbol.
+          example: "StrongPass!1"
+        password_confirmation: { type: string, format: password, example: "StrongPass!1" }
+        name: { type: string, example: "Ratna Dewi" }
+        gender: { type: string, enum: [male, female], example: female }
+        birthdate: { type: string, format: date, example: "1985-06-12" }
+        phone: { type: string, example: "+6281234567890" }
+        province_id: { type: integer, example: 17 }
+        kabkota_id: { type: integer, example: 217 }
+        children_count: { type: integer, minimum: 0, example: 2 }
+        children:
+          type: array
+          maxItems: 20
+          items: { $ref: '#/components/schemas/ChildInput' }
+        turnstile_token: { type: string, example: "0.AAAA-bbbb-cccc" }
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email, example: ratna@example.com }
+        password: { type: string, format: password, example: "StrongPass!1" }
+        turnstile_token: { type: string }
+
+    ProfileUpdateRequest:
+      type: object
+      properties:
+        name: { type: string }
+        gender: { type: string, enum: [male, female] }
+        birthdate: { type: string, format: date }
+        phone: { type: string }
+        province_id: { type: integer }
+        kabkota_id: { type: integer }
+
+    User:
+      type: object
+      properties:
+        id: { type: integer, example: 12 }
+        email: { type: string, format: email, example: ratna@example.com }
+        name: { type: string, example: "Ratna Dewi" }
+        gender: { type: string, enum: [male, female], example: female }
+        birthdate: { type: string, format: date, example: "1985-06-12" }
+        phone: { type: string, example: "+6281234567890" }
+        province_id: { type: integer, example: 17 }
+        kabkota_id: { type: integer, example: 217 }
+        email_verified_at: { type: string, format: date-time, nullable: true }
+        children:
+          type: array
+          items: { $ref: '#/components/schemas/UserChild' }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    ChildInput:
+      type: object
+      required: [gender, birthdate]
+      properties:
+        gender: { type: string, enum: [male, female], example: male }
+        birthdate: { type: string, format: date, example: "2014-09-21" }
+
+    UserChild:
+      allOf:
+        - $ref: '#/components/schemas/ChildInput'
+        - type: object
+          properties:
+            id: { type: integer, example: 41 }
+            user_id: { type: integer, example: 12 }
+            created_at: { type: string, format: date-time }
+
+    # --- Pagination ---
+    PaginationMeta:
+      type: object
+      properties:
+        current_page: { type: integer, example: 1 }
+        per_page:     { type: integer, example: 50 }
+        total:        { type: integer, example: 137 }
+        last_page:    { type: integer, example: 3 }
+
+    PaginatedFacilityCardList:
+      type: object
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/FacilityCard' }
+        meta:
+          allOf:
+            - $ref: '#/components/schemas/PaginationMeta'
+            - type: object
+              properties:
+                noindex:
+                  type: boolean
+                  description: True when zero results — frontend should emit `<meta robots=noindex>`.
+                  example: false
+
+    PaginatedFavoriteList:
+      type: object
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Favorite' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    # --- Facility (public read shapes) ---
+    FacilityCard:
+      type: object
+      description: Card-shape returned by list endpoints. Internal counters are NEVER included.
+      properties:
+        id: { type: integer, example: 8421 }
+        category: { type: string, enum: [sekolah, universitas, kursus], example: sekolah }
+        name: { type: string, example: "SMP Negeri 2 Kuta Utara" }
+        slug: { type: string, example: "smp-negeri-2-kuta-utara" }
+        kabkota_name: { type: string, example: "Kab. Badung" }
+        image_main_url: { type: string, format: uri, nullable: true }
+        url: { type: string, example: "/sekolah/bali/kab-badung/kuta-utara/negeri/smp-negeri-2-kuta-utara" }
+        is_timedoor_academy: { type: boolean, example: false }
+
+    FacilityBase:
+      type: object
+      properties:
+        id: { type: integer }
+        category: { type: string, enum: [sekolah, universitas, kursus] }
+        name: { type: string }
+        slug: { type: string }
+        description: { type: string, nullable: true }
+        address: { type: string, nullable: true }
+        latitude: { type: number, format: double, nullable: true, example: -8.6705 }
+        longitude: { type: number, format: double, nullable: true, example: 115.2126 }
+        province: { $ref: '#/components/schemas/Province' }
+        kabkota: { $ref: '#/components/schemas/Kabkota' }
+        kecamatan: { $ref: '#/components/schemas/Kecamatan' }
+        email: { type: string, format: email, nullable: true }
+        phone: { type: string, nullable: true }
+        website: { type: string, format: uri, nullable: true }
+        image_main_url: { type: string, format: uri, nullable: true }
+        is_timedoor_academy: { type: boolean }
+        status: { type: string, enum: [active, removed] }
+        last_verified_at: { type: string, format: date-time, nullable: true }
+
+    SekolahDetail:
+      allOf:
+        - $ref: '#/components/schemas/FacilityBase'
+        - type: object
+          properties:
+            school_type:
+              type: string
+              enum: [negeri, swasta, international]
+            accreditation: { type: string, nullable: true }
+            curriculum:    { type: string, nullable: true }
+            biaya:         { type: string, nullable: true }
+            jam_sekolah:   { type: string, nullable: true }
+            fasilitas:     { type: string, nullable: true }
+
+    UniversitasDetail:
+      allOf:
+        - $ref: '#/components/schemas/FacilityBase'
+        - type: object
+          properties:
+            jenis:
+              type: string
+              enum: [Universitas, S1, S2, S3, "D1-D4"]
+            program_studi:  { type: string, nullable: true }
+            jalur_masuk:    { type: string, nullable: true }
+            biaya:          { type: string, nullable: true }
+            fasilitas:      { type: string, nullable: true }
+            faculties_text: { type: string, nullable: true }
+            prodi_text:     { type: string, nullable: true }
+
+    KursusDetail:
+      allOf:
+        - $ref: '#/components/schemas/FacilityBase'
+        - type: object
+          properties:
+            main_category: { $ref: '#/components/schemas/KursusCategory' }
+            sub_categories:
+              type: array
+              items: { $ref: '#/components/schemas/KursusCategory' }
+            program:   { type: string, nullable: true }
+            usia:      { type: string, nullable: true }
+            jadwal:    { type: string, nullable: true }
+            biaya:     { type: string, nullable: true }
+            fasilitas: { type: string, nullable: true }
+
+    # --- Engagement ---
+    Favorite:
+      type: object
+      properties:
+        id: { type: integer }
+        facility: { $ref: '#/components/schemas/FacilityCard' }
+        created_at: { type: string, format: date-time }
+
+    InquiryRequest:
+      type: object
+      required: [subject, message, turnstile_token]
+      properties:
+        subject:
+          type: string
+          maxLength: 200
+          example: "Pertanyaan tentang biaya pendaftaran"
+        message:
+          type: string
+          maxLength: 5000
+          example: "Selamat siang, saya ingin bertanya tentang biaya pendaftaran tahun ajaran 2026..."
+        turnstile_token: { type: string }
+
+    Inquiry:
+      type: object
+      properties:
+        id: { type: integer }
+        facility_id: { type: integer }
+        subject: { type: string }
+        message: { type: string }
+        created_at: { type: string, format: date-time }
+
+    ReviewRequest:
+      type: object
+      required: [rating, turnstile_token]
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 4
+        turnstile_token: { type: string }
+
+    Review:
+      type: object
+      properties:
+        id: { type: integer }
+        facility_id: { type: integer }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        created_at: { type: string, format: date-time }
+
+    # --- Regions / categories ---
+    Province:
+      type: object
+      properties:
+        id: { type: integer, example: 17 }
+        name: { type: string, example: "Bali" }
+        slug: { type: string, example: "bali" }
+
+    Kabkota:
+      type: object
+      properties:
+        id: { type: integer, example: 217 }
+        province_id: { type: integer, example: 17 }
+        name: { type: string, example: "Kabupaten Badung" }
+        slug: { type: string, example: "kab-badung" }
+        type: { type: string, enum: [kabupaten, kota], example: kabupaten }
+
+    Kecamatan:
+      type: object
+      properties:
+        id: { type: integer, example: 1402 }
+        kabkota_id: { type: integer, example: 217 }
+        name: { type: string, example: "Kuta Utara" }
+        slug: { type: string, example: "kuta-utara" }
+
+    KursusCategory:
+      type: object
+      properties:
+        id: { type: integer, example: 4 }
+        name: { type: string, example: "Coding" }
+        slug: { type: string, example: "coding" }
+        is_active: { type: boolean, example: true }
+
+    # --- Public forms ---
+    RegistrationRequest:
+      type: object
+      required:
+        - facility_name
+        - category
+        - province_id
+        - kabkota_id
+        - kecamatan_id
+        - requester_name
+        - requester_email
+        - message
+        - turnstile_token
+      properties:
+        facility_name: { type: string }
+        category: { type: string, enum: [sekolah, universitas, kursus] }
+        province_id:  { type: integer }
+        kabkota_id:   { type: integer }
+        kecamatan_id: { type: integer }
+        address: { type: string }
+        website: { type: string, format: uri, nullable: true }
+        phone: { type: string, nullable: true }
+        requester_name: { type: string }
+        requester_email: { type: string, format: email }
+        message: { type: string, maxLength: 5000 }
+        turnstile_token: { type: string }
+
+    CorrectionRequest:
+      type: object
+      required:
+        - facility_url
+        - requester_name
+        - requester_email
+        - message
+        - turnstile_token
+      properties:
+        facility_url: { type: string, format: uri }
+        requester_name: { type: string }
+        requester_email: { type: string, format: email }
+        message: { type: string, maxLength: 5000 }
+        turnstile_token: { type: string }
+
+    DeletionRequest:
+      type: object
+      required:
+        - facility_url
+        - requester_name
+        - requester_email
+        - reason
+        - turnstile_token
+      properties:
+        facility_url: { type: string, format: uri }
+        requester_name: { type: string }
+        requester_email: { type: string, format: email }
+        reason: { type: string, maxLength: 5000 }
+        turnstile_token: { type: string }

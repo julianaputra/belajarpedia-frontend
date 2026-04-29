@@ -1,26 +1,138 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================================
+   Belajarpedia — Design Tokens
+   Brand: playful & friendly for school-age users.
+   Colors per brand spec; type/anim tuned for "fun but readable".
+   ============================================================================ */
+
+@theme {
+  /* --- Brand colors -------------------------------------------------------- */
+  --color-brand-50: #ecfdee;
+  --color-brand-100: #d2fad9;
+  --color-brand-200: #a7f3b3;
+  --color-brand-300: #6ee787;
+  --color-brand-400: #3dd45c;
+  --color-brand-500: #10af13;   /* primary, per brand */
+  --color-brand-600: #0c9510;
+  --color-brand-700: #0a7510;
+  --color-brand-800: #0a5c12;
+  --color-brand-900: #094c11;
+
+  /* --- Secondary (heading navy) ------------------------------------------- */
+  --color-ink-50: #eef1fa;
+  --color-ink-100: #d9deef;
+  --color-ink-200: #b3bcdf;
+  --color-ink-300: #8696c8;
+  --color-ink-400: #5874ad;
+  --color-ink-500: #3a5599;
+  --color-ink-600: #28428a;
+  --color-ink-700: #1c2f70;     /* secondary, per brand */
+  --color-ink-800: #182857;
+  --color-ink-900: #121f44;
+
+  /* --- Neutrals & text ---------------------------------------------------- */
+  --color-body: #212529;        /* per brand text */
+  --color-muted: #6c757d;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f8fafb;
+
+  /* --- Accents (playful) -------------------------------------------------- */
+  --color-sun-400: #ffd84a;
+  --color-sun-500: #ffc107;
+  --color-coral-400: #ff8a7a;
+  --color-coral-500: #ff6b5b;
+
+  /* --- Typography --------------------------------------------------------- */
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+
+  /* --- Radius (friendly = chunky rounded) --------------------------------- */
+  --radius-sm: 0.5rem;
+  --radius: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+
+  /* --- Shadows (3D depth) ------------------------------------------------- */
+  --shadow-pop: 0 4px 0 0 rgb(0 0 0 / 0.12);
+  --shadow-pop-lg: 0 6px 0 0 rgb(0 0 0 / 0.14);
+  --shadow-lift: 0 10px 25px -10px rgb(28 47 112 / 0.25);
+
+  /* --- Animation timing (snappy + bouncy) --------------------------------- */
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* --- Custom keyframes --------------------------------------------------- */
+  --animate-bounce-in: bounce-in 0.5s var(--ease-pop) both;
+  --animate-fade-up: fade-up 0.4s var(--ease-soft) both;
+  --animate-pop: pop 0.3s var(--ease-pop) both;
+  --animate-wiggle: wiggle 0.6s ease-in-out;
+  --animate-float: float 3s ease-in-out infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@keyframes bounce-in {
+  0%   { transform: scale(0.8) translateY(8px); opacity: 0; }
+  60%  { transform: scale(1.05) translateY(-2px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.95); }
+  60%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-3deg); }
+  75%      { transform: rotate(3deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+/* ============================================================================
+   Base layer
+   ============================================================================ */
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-surface);
+  color: var(--color-body);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-ink-700);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+::selection {
+  background: var(--color-brand-200);
+  color: var(--color-ink-900);
+}
+
+/* Reduce motion for users who request it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

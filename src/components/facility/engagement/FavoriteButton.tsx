@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useSWRConfig } from "swr";
 import { Button } from "@/components/ui/Button";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { addFavorite } from "@/lib/api/engagement.client";
@@ -18,6 +19,7 @@ type Props = {
  */
 export function FavoriteButton({ facilityId }: Props) {
   const { isAuthenticated, isLoading } = useCurrentUser();
+  const { mutate } = useSWRConfig();
   const [pending, setPending] = React.useState(false);
   const [favorited, setFavorited] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -57,6 +59,12 @@ export function FavoriteButton({ facilityId }: Props) {
           try {
             await addFavorite(facilityId);
             setFavorited(true);
+            // Invalidate any /favorites pages so they pick up the new entry.
+            mutate(
+              (key) => typeof key === "string" && key.startsWith("user:favorites:"),
+              undefined,
+              { revalidate: true },
+            );
           } catch (e) {
             if (isApiError(e) && e.isUnauthorized) {
               setError("Sesi Anda berakhir, silakan login kembali.");

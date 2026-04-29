@@ -27,6 +27,10 @@ import {
   setMockUser,
   updateMockChild,
 } from "@/lib/api/mock/auth-state";
+import {
+  addFavoriteId,
+  getFavoriteIds,
+} from "@/lib/api/mock/favorites-state";
 import type { components } from "@/types/api";
 
 type FacilityCard = NonNullable<components["schemas"]["FacilityCard"]>;
@@ -172,11 +176,32 @@ export async function mockHandle<T>(
     }
   }
 
-  // Favorites (Phase 9)
+  // Favorites (Phase 9) — paginated lookup against MOCK_* by ID
   if (path === "/api/user/favorites" && method === "GET") {
     if (!getMockUser()) throw new ApiError(401, { message: "Unauthenticated." });
-    // Mock: empty for now. Phase 9 may seed real entries from MOCK_* lists.
-    return { data: [], meta: { current_page: 1, per_page: 50, total: 0, last_page: 1 } } as T;
+    const ids = new Set(getFavoriteIds());
+    const all: FacilityCard[] = [
+      ...MOCK_SEKOLAH,
+      ...MOCK_UNIVERSITAS,
+      ...MOCK_KURSUS,
+    ].filter((f) => f.id !== undefined && ids.has(f.id));
+    const page = pageOf(params);
+    const total = all.length;
+    const start = (page - 1) * PAGE_SIZE;
+    const slice = all.slice(start, start + PAGE_SIZE);
+    return {
+      data: slice.map((f, i) => ({
+        id: f.id ?? i,
+        facility: f,
+        created_at: new Date().toISOString(),
+      })),
+      meta: {
+        current_page: page,
+        per_page: PAGE_SIZE,
+        total,
+        last_page: Math.max(1, Math.ceil(total / PAGE_SIZE)),
+      },
+    } as T;
   }
 
   // ---------------------------------------------------------------------------
@@ -357,9 +382,11 @@ export async function mockHandle<T>(
   {
     const m = path.match(/^\/api\/facilities\/(\d+)\/favorite$/);
     if (m && method === "POST") {
+      const facilityId = Number.parseInt(m[1]!, 10);
+      addFavoriteId(facilityId);
       return {
-        id: Math.floor(Math.random() * 100000),
-        facility_id: Number.parseInt(m[1]!, 10),
+        id: facilityId,
+        facility_id: facilityId,
         created_at: new Date().toISOString(),
       } as T;
     }

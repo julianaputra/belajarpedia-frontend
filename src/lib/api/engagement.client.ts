@@ -4,6 +4,7 @@ import { apiClientFetch } from "@/lib/api/client";
 import type { components } from "@/types/api";
 
 export type Favorite = components["schemas"]["Favorite"];
+export type PaginatedFavoriteList = components["schemas"]["PaginatedFavoriteList"];
 export type Inquiry = components["schemas"]["Inquiry"];
 export type InquiryRequest = components["schemas"]["InquiryRequest"];
 export type Review = components["schemas"]["Review"];
@@ -13,6 +14,15 @@ export async function addFavorite(facilityId: number): Promise<Favorite> {
   return apiClientFetch<Favorite>(`/api/facilities/${facilityId}/favorite`, {
     method: "POST",
   });
+}
+
+export async function listMyFavorites(
+  page = 1,
+): Promise<PaginatedFavoriteList> {
+  const params = page > 1 ? `?page=${page}` : "";
+  return apiClientFetch<PaginatedFavoriteList>(
+    `/api/user/favorites${params}`,
+  );
 }
 
 export async function submitInquiry(

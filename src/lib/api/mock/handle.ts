@@ -39,7 +39,8 @@ type PaginatedFacilityCardList =
 
 export const useMockApi = process.env.NEXT_PUBLIC_USE_MOCK_API === "true";
 
-const PAGE_SIZE = 50;
+const DEFAULT_PAGE_SIZE = 20;
+const MAX_PAGE_SIZE = 100;
 
 /**
  * Mock router. Match path against known endpoints; throw 404 ApiError for
@@ -186,9 +187,10 @@ export async function mockHandle<T>(
       ...MOCK_KURSUS,
     ].filter((f) => f.id !== undefined && ids.has(f.id));
     const page = pageOf(params);
+    const pageSize = pageSizeOf(params);
     const total = all.length;
-    const start = (page - 1) * PAGE_SIZE;
-    const slice = all.slice(start, start + PAGE_SIZE);
+    const start = (page - 1) * pageSize;
+    const slice = all.slice(start, start + pageSize);
     return {
       data: slice.map((f, i) => ({
         id: f.id ?? i,
@@ -197,9 +199,9 @@ export async function mockHandle<T>(
       })),
       meta: {
         current_page: page,
-        per_page: PAGE_SIZE,
+        per_page: pageSize,
         total,
-        last_page: Math.max(1, Math.ceil(total / PAGE_SIZE)),
+        last_page: Math.max(1, Math.ceil(total / pageSize)),
       },
     } as T;
   }
@@ -298,10 +300,10 @@ export async function mockHandle<T>(
   // Facility lists
   // ---------------------------------------------------------------------------
   if (path === "/api/sekolah" && method === "GET") {
-    return paginate(filterSekolah(params), pageOf(params)) as T;
+    return paginate(filterSekolah(params), pageOf(params), pageSizeOf(params)) as T;
   }
   if (path === "/api/universitas" && method === "GET") {
-    return paginate(filterUniversitas(params), pageOf(params)) as T;
+    return paginate(filterUniversitas(params), pageOf(params), pageSizeOf(params)) as T;
   }
   if (path === "/api/kursus" && method === "GET") {
     const filtered = filterKursus(params);
@@ -310,7 +312,7 @@ export async function mockHandle<T>(
       ...filtered.filter((f) => f.is_timedoor_academy === true),
       ...filtered.filter((f) => f.is_timedoor_academy !== true),
     ];
-    return paginate(sorted, pageOf(params)) as T;
+    return paginate(sorted, pageOf(params), pageSizeOf(params)) as T;
   }
 
   // ---------------------------------------------------------------------------
@@ -428,13 +430,13 @@ export async function mockHandle<T>(
   // Search (Phase 6 — naive substring match, AND across name + kabkota)
   // ---------------------------------------------------------------------------
   if (path === "/api/sekolah/search" && method === "GET") {
-    return paginate(searchIn(MOCK_SEKOLAH, params), pageOf(params)) as T;
+    return paginate(searchIn(MOCK_SEKOLAH, params), pageOf(params), pageSizeOf(params)) as T;
   }
   if (path === "/api/universitas/search" && method === "GET") {
-    return paginate(searchIn(MOCK_UNIVERSITAS, params), pageOf(params)) as T;
+    return paginate(searchIn(MOCK_UNIVERSITAS, params), pageOf(params), pageSizeOf(params)) as T;
   }
   if (path === "/api/kursus/search" && method === "GET") {
-    return paginate(searchIn(MOCK_KURSUS, params), pageOf(params)) as T;
+    return paginate(searchIn(MOCK_KURSUS, params), pageOf(params), pageSizeOf(params)) as T;
   }
 
   // ---------------------------------------------------------------------------
@@ -475,20 +477,28 @@ function pageOf(params: URLSearchParams): number {
   return Number.isFinite(n) && n > 0 ? n : 1;
 }
 
+function pageSizeOf(params: URLSearchParams): number {
+  const raw = params.get("per_page");
+  const n = raw ? Number.parseInt(raw, 10) : DEFAULT_PAGE_SIZE;
+  if (!Number.isFinite(n) || n <= 0) return DEFAULT_PAGE_SIZE;
+  return Math.min(n, MAX_PAGE_SIZE);
+}
+
 function paginate(
   items: FacilityCard[],
   page: number,
+  pageSize: number = DEFAULT_PAGE_SIZE,
 ): PaginatedFacilityCardList {
   const total = items.length;
-  const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const start = (page - 1) * PAGE_SIZE;
-  const data = items.slice(start, start + PAGE_SIZE);
+  const lastPage = Math.max(1, Math.ceil(total / pageSize));
+  const start = (page - 1) * pageSize;
+  const data = items.slice(start, start + pageSize);
 
   return {
     data,
     meta: {
       current_page: page,
-      per_page: PAGE_SIZE,
+      per_page: pageSize,
       total,
       last_page: lastPage,
       noindex: total === 0,

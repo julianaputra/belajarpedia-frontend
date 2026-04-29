@@ -17,6 +17,7 @@ export type KursusDetail = components["schemas"]["KursusDetail"];
 
 const LIST_REVALIDATE_SECONDS = 3600; // 60-minute ISR per spec §1.1
 const DETAIL_REVALIDATE_SECONDS = 3600;
+const LIST_PAGE_SIZE = 20;
 
 function appendFilter(
   params: URLSearchParams,
@@ -35,6 +36,7 @@ export async function fetchSekolahList(
   appendFilter(params, "kabkota", filters.kabkota);
   appendFilter(params, "kecamatan", filters.kecamatan);
   appendFilter(params, "school_type", filters.school_type);
+  params.set("per_page", String(LIST_PAGE_SIZE));
   if (page > 1) params.set("page", String(page));
 
   const query = params.toString();
@@ -55,6 +57,7 @@ export async function fetchUniversitasList(
   appendFilter(params, "provinsi", filters.provinsi);
   appendFilter(params, "kabkota", filters.kabkota);
   appendFilter(params, "kecamatan", filters.kecamatan);
+  params.set("per_page", String(LIST_PAGE_SIZE));
   if (page > 1) params.set("page", String(page));
 
   const query = params.toString();
@@ -119,6 +122,7 @@ export async function fetchSekolahSearch(
   page: number,
 ): Promise<PaginatedFacilityCardList> {
   const params = new URLSearchParams({ q });
+  params.set("per_page", String(LIST_PAGE_SIZE));
   if (page > 1) params.set("page", String(page));
   return apiServerFetch<PaginatedFacilityCardList>(
     `/api/sekolah/search?${params.toString()}`,
@@ -131,6 +135,7 @@ export async function fetchUniversitasSearch(
   page: number,
 ): Promise<PaginatedFacilityCardList> {
   const params = new URLSearchParams({ q });
+  params.set("per_page", String(LIST_PAGE_SIZE));
   if (page > 1) params.set("page", String(page));
   return apiServerFetch<PaginatedFacilityCardList>(
     `/api/universitas/search?${params.toString()}`,
@@ -143,6 +148,7 @@ export async function fetchKursusSearch(
   page: number,
 ): Promise<PaginatedFacilityCardList> {
   const params = new URLSearchParams({ q });
+  params.set("per_page", String(LIST_PAGE_SIZE));
   if (page > 1) params.set("page", String(page));
   return apiServerFetch<PaginatedFacilityCardList>(
     `/api/kursus/search?${params.toString()}`,
@@ -159,6 +165,7 @@ export async function fetchKursusList(
   appendFilter(params, "kabkota", filters.kabkota);
   appendFilter(params, "kecamatan", filters.kecamatan);
   appendFilter(params, "category", filters.main_category);
+  params.set("per_page", String(LIST_PAGE_SIZE));
   if (page > 1) params.set("page", String(page));
 
   const query = params.toString();

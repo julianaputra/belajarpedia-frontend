@@ -55,7 +55,7 @@ export function OwnerCta() {
           <RevealItem>
             <Link
               href="/submit-listing"
-              className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-white text-ink-700 font-semibold text-sm hover:bg-ink-50 transition-colors"
+              className="flex w-full items-center justify-center h-11 px-5 rounded-lg bg-white text-ink-700 font-semibold text-sm hover:bg-ink-50 transition-colors"
             >
               Daftarkan fasilitas →
             </Link>
@@ -63,7 +63,7 @@ export function OwnerCta() {
           <RevealItem>
             <Link
               href="/request-correction"
-              className="inline-flex items-center justify-center h-11 px-5 rounded-lg bg-transparent border border-white/30 text-white text-sm font-medium hover:bg-white/10 transition-colors"
+              className="flex w-full items-center justify-center h-11 px-5 rounded-lg bg-transparent border border-white/30 text-white text-sm font-medium hover:bg-white/10 transition-colors"
             >
               Perbaiki info yang ada
             </Link>

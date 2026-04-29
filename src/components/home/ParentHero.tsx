@@ -27,7 +27,7 @@ const TRUST_PILLS: Array<{ Icon: LucideIcon; label: string }> = [
  */
 export function ParentHero() {
   return (
-    <section className="relative overflow-hidden border-b border-ink-100 bg-gradient-to-b from-[#f6faf7] via-white to-white">
+    <section className="relative overflow-hidden border-b border-ink-100 fx-grid-paper">
       {/* Soft glow blobs */}
       <div
         aria-hidden

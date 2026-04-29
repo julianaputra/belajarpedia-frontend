@@ -44,6 +44,7 @@ import { GoneNotice } from "@/components/facility/detail/GoneNotice";
 import { FavoriteButton } from "@/components/facility/engagement/FavoriteButton";
 import { InquiryForm } from "@/components/facility/engagement/InquiryForm";
 import { ReviewWidget } from "@/components/facility/engagement/ReviewWidget";
+import { ShareButton } from "@/components/facility/engagement/ShareButton";
 import type { components } from "@/types/api";
 
 export const revalidate = 3600;
@@ -327,14 +328,17 @@ async function renderDetail(
         <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           <Toc items={tocItems} />
 
-          {detail.id !== undefined && (
-            <div className="rounded-2xl bg-white border border-ink-100 p-5 space-y-4">
-              <FavoriteButton facilityId={detail.id} />
-              <div className="border-t border-ink-100 pt-4">
-                <ReviewWidget facilityId={detail.id} />
-              </div>
-            </div>
-          )}
+          <div className="rounded-2xl bg-white border border-ink-100 p-5 space-y-4">
+            <ShareButton title={detail.name ?? slug} url={facilityUrl} />
+            {detail.id !== undefined && (
+              <>
+                <FavoriteButton facilityId={detail.id} />
+                <div className="border-t border-ink-100 pt-4">
+                  <ReviewWidget facilityId={detail.id} />
+                </div>
+              </>
+            )}
+          </div>
         </aside>
       </div>
     </main>

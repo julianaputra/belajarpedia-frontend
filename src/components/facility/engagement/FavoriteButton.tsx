@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useSWRConfig } from "swr";
+import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { addFavorite } from "@/lib/api/engagement.client";
@@ -35,7 +36,7 @@ export function FavoriteButton({ facilityId }: Props) {
   if (!isAuthenticated) {
     return (
       <Button variant="outline" disabled title="Masuk untuk menyimpan favorit">
-        ♡ Login untuk simpan
+        <Heart size={18} aria-hidden /> Login untuk simpan
       </Button>
     );
   }
@@ -43,7 +44,7 @@ export function FavoriteButton({ facilityId }: Props) {
   if (favorited) {
     return (
       <Button variant="primary" disabled aria-pressed="true">
-        ♥ Tersimpan
+        <Heart size={18} aria-hidden fill="currentColor" /> Tersimpan
       </Button>
     );
   }
@@ -76,7 +77,13 @@ export function FavoriteButton({ facilityId }: Props) {
           }
         }}
       >
-        {pending ? "Menyimpan…" : "♡ Simpan ke Favorit"}
+        {pending ? (
+          "Menyimpan…"
+        ) : (
+          <>
+            <Heart size={18} aria-hidden /> Simpan ke Favorit
+          </>
+        )}
       </Button>
       {error && <p className="text-sm text-coral-500">{error}</p>}
     </div>

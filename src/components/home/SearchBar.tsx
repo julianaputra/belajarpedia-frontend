@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -56,7 +57,7 @@ export function SearchBar({ className }: { className?: string }) {
           onChange={(e) => setQ(e.target.value)}
         />
         <Button type="submit" size="md" disabled={!canSubmit}>
-          🔍 Cari
+          <Search size={18} aria-hidden /> Cari
         </Button>
       </div>
     </form>

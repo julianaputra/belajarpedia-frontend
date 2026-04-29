@@ -43,10 +43,10 @@
   --color-coral-400: #ff8a7a;
   --color-coral-500: #ff6b5b;
 
-  /* --- Typography --------------------------------------------------------- */
+  /* --- Typography (single family per brand decision) --------------------- */
   --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-bricolage), var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
-  --font-hand: var(--font-caveat), "Comic Sans MS", cursive;
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-hand: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
 
   /* --- Radius (friendly = chunky rounded) --------------------------------- */
   --radius-sm: 0.5rem;
@@ -203,10 +203,12 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 2;
 }
 
-/* Hand-written tag font helper */
+/* "Hand-written" accent — Poppins italic to keep visual differentiation
+   under the single-family brand decision. */
 .fx-hand {
   font-family: var(--font-hand);
-  font-weight: 600;
+  font-style: italic;
+  font-weight: 500;
   letter-spacing: 0.01em;
 }
 

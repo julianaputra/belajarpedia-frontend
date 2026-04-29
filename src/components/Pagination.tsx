@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -47,7 +48,7 @@ export function Pagination({
         aria-label="Halaman sebelumnya"
         pageMode={pageMode}
       >
-        ‹ Sebelumnya
+        <ChevronLeft size={16} aria-hidden /> Sebelumnya
       </PageLink>
 
       {pages.map((p, i) =>
@@ -82,7 +83,7 @@ export function Pagination({
         aria-label="Halaman berikutnya"
         pageMode={pageMode}
       >
-        Berikutnya ›
+        Berikutnya <ChevronRight size={16} aria-hidden />
       </PageLink>
     </nav>
   );
@@ -110,7 +111,7 @@ function PageLink({
   ...rest
 }: PageLinkProps) {
   const className = cn(
-    "min-w-[2.5rem] h-10 px-3 inline-flex items-center justify-center",
+    "min-w-[2.5rem] h-10 px-3 inline-flex items-center justify-center gap-1",
     "rounded-[var(--radius)] font-semibold text-sm",
     "transition-[transform,background-color,box-shadow] duration-150 ease-[var(--ease-pop)]",
     active

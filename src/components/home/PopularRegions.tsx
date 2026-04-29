@@ -1,0 +1,102 @@
+import Link from "next/link";
+import { MapPin } from "lucide-react";
+
+/**
+ * Popular regions — 8 destination cards. Helps parents who already know the
+ * city they want and would rather skip the cascading dropdown flow.
+ *
+ * Counts are illustrative for now; backend can supply real per-region totals
+ * via /api/regions when ready.
+ */
+
+const REGIONS = [
+  {
+    href: "/sekolah/dki-jakarta",
+    label: "Jakarta",
+    count: "2.840 sekolah",
+  },
+  {
+    href: "/sekolah/jawa-barat/kota-bandung",
+    label: "Bandung",
+    count: "1.620 sekolah",
+  },
+  {
+    href: "/sekolah/jawa-barat/kab-bogor",
+    label: "Bogor",
+    count: "1.140 sekolah",
+  },
+  {
+    href: "/sekolah/bali/kota-denpasar",
+    label: "Denpasar",
+    count: "470 sekolah",
+  },
+  {
+    href: "/sekolah/bali/kab-badung",
+    label: "Badung",
+    count: "320 sekolah",
+  },
+  {
+    href: "/sekolah/dki-jakarta/kota-jakarta-selatan",
+    label: "Jakarta Selatan",
+    count: "780 sekolah",
+  },
+  {
+    href: "/universitas/dki-jakarta",
+    label: "Jakarta · Universitas",
+    count: "210 kampus",
+  },
+  {
+    href: "/universitas/jawa-barat/kota-bandung",
+    label: "Bandung · Universitas",
+    count: "130 kampus",
+  },
+];
+
+export function PopularRegions() {
+  return (
+    <section
+      aria-labelledby="regions-heading"
+      className="mx-auto max-w-6xl px-5 py-14 sm:py-16"
+    >
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">
+        <div>
+          <h2
+            id="regions-heading"
+            className="text-2xl sm:text-3xl font-bold text-ink-700"
+          >
+            Wilayah populer
+          </h2>
+          <p className="text-muted mt-1">
+            Mulai pencarian dari kota besar dengan opsi terbanyak.
+          </p>
+        </div>
+        <Link
+          href="/sekolah"
+          className="text-brand-700 hover:underline font-semibold text-sm whitespace-nowrap"
+        >
+          Lihat semua wilayah →
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+        {REGIONS.map((r) => (
+          <Link
+            key={r.href}
+            href={r.href}
+            className="group bg-white border border-ink-100 rounded-xl p-4 sm:p-5 hover:border-brand-300 hover:shadow-[0_8px_20px_-10px_rgb(28_47_112_/_0.2)] transition-all"
+          >
+            <div className="flex items-center gap-2 text-ink-500 text-xs">
+              <MapPin size={14} aria-hidden />
+              <span className="uppercase tracking-wider font-medium">Wilayah</span>
+            </div>
+            <div className="font-bold text-base sm:text-lg text-ink-700 mt-1.5 group-hover:text-brand-700 transition-colors">
+              {r.label}
+            </div>
+            <div className="text-xs sm:text-sm text-muted mt-1">{r.count}</div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+

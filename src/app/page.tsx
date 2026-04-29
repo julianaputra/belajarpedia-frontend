@@ -4,19 +4,16 @@ import { homeMetadata } from "@/lib/seo/meta";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/jsonld";
 
-import { Hero } from "@/components/home/Hero";
-import { HowItWorks } from "@/components/home/HowItWorks";
-import {
-  CategoryFeature,
-  H,
-  Panel,
-  Subhead,
-  W,
-} from "@/components/home/CategoryFeature";
+import { ParentHero } from "@/components/home/ParentHero";
+import { JenjangFilter } from "@/components/home/JenjangFilter";
+import { TrustPillars } from "@/components/home/TrustPillars";
+import { PopularRegions } from "@/components/home/PopularRegions";
+import { CategoryFeature, Panel, Subhead } from "@/components/home/CategoryFeature";
 import { RegionalNav } from "@/components/home/RegionalNav";
 import { RekomendasiSection } from "@/components/home/RekomendasiSection";
 import { KursusSection } from "@/components/home/KursusSection";
-import { CtaStrip } from "@/components/home/CtaStrip";
+import { ParentTips } from "@/components/home/ParentTips";
+import { OwnerCta } from "@/components/home/OwnerCta";
 
 export const metadata: Metadata = homeMetadata();
 
@@ -28,101 +25,77 @@ export default function HomePage() {
       <JsonLd data={organizationJsonLd()} id="ld-org" />
       <JsonLd data={websiteJsonLd()} id="ld-website" />
 
-      <Hero />
-      <HowItWorks />
+      <ParentHero />
+
+      <JenjangFilter />
+
+      <TrustPillars />
+
+      <PopularRegions />
 
       {/* ─── SEKOLAH ───────────────────────────────────────────────────── */}
       <CategoryFeature
         tone="brand"
         emoji="🏫"
         eyebrow="Sekolah"
-        number="01"
-        title={
-          <>
-            Cari <W>sekolah</W> yang pas <br className="hidden sm:block" />
-            buat kamu.
-          </>
-        }
-        subtitle="SD/SMP/SMA — negeri, swasta, atau internasional. Filter cepat lewat wilayah."
+        title="Cari sekolah dasar hingga menengah atas"
+        subtitle="Filter berdasarkan provinsi dan kab/kota. Lihat akreditasi, kurikulum, biaya, dan kontak — semua dalam satu halaman."
         ctaHref="/sekolah"
         ctaLabel="Lihat semua sekolah"
       >
-        <Panel>
-          <Subhead hand="mulai dari sini">Pilih wilayah</Subhead>
-          <div className="mt-4">
-            <RegionalNav category="sekolah" />
-          </div>
+        <Panel
+          title="Pilih wilayah"
+          hint="Kab/Kota opsional — kosongkan untuk lihat se-provinsi."
+        >
+          <RegionalNav category="sekolah" />
         </Panel>
 
         <div>
-          <div className="mb-4">
-            <Subhead hand="lagi rame nih ✨">Rekomendasi</Subhead>
-          </div>
+          <Subhead hint="Pilihan editorial">Rekomendasi</Subhead>
           <RekomendasiSection category="sekolah" />
         </div>
       </CategoryFeature>
 
       {/* ─── UNIVERSITAS ───────────────────────────────────────────────── */}
-      <CategoryFeature
-        tone="ink"
-        emoji="🎓"
-        eyebrow="Universitas"
-        number="02"
-        title={
-          <>
-            <H>Kampus</H> yang sesuai cita-citamu.
-          </>
-        }
-        subtitle="S1, D3, D4 — cek prodi, jalur masuk SNBP/SNBT/Mandiri, dan biaya UKT semua dalam satu tempat."
-        ctaHref="/universitas"
-        ctaLabel="Jelajahi universitas"
-      >
-        <Panel>
-          <Subhead hand="cari berdasarkan lokasi" tilt={1}>
-            Pilih wilayah
-          </Subhead>
-          <div className="mt-4">
+      <div className="bg-[var(--color-surface-soft)] border-y border-ink-100">
+        <CategoryFeature
+          tone="ink"
+          emoji="🎓"
+          eyebrow="Universitas"
+          title="Pilihan kampus untuk anak Anda"
+          subtitle="S1, D3, dan D4 dari seluruh Indonesia. Cek prodi, jalur masuk SNBP/SNBT/Mandiri, dan biaya UKT secara transparan."
+          ctaHref="/universitas"
+          ctaLabel="Jelajahi universitas"
+        >
+          <Panel title="Pilih wilayah">
             <RegionalNav category="universitas" />
-          </div>
-        </Panel>
+          </Panel>
 
-        <div>
-          <div className="mb-4">
-            <Subhead hand="kampus pilihan ⭐" tilt={-1}>
-              Rekomendasi
-            </Subhead>
+          <div>
+            <Subhead hint="Pilihan editorial">Rekomendasi</Subhead>
+            <RekomendasiSection category="universitas" />
           </div>
-          <RekomendasiSection category="universitas" />
-        </div>
-      </CategoryFeature>
+        </CategoryFeature>
+      </div>
 
       {/* ─── KURSUS ────────────────────────────────────────────────────── */}
       <CategoryFeature
-        tone="sun"
-        emoji="🚀"
+        tone="brand"
+        emoji="📚"
         eyebrow="Kursus"
-        number="03"
-        title={
-          <>
-            <W>Kursus</W> buat asah skill <br className="hidden sm:block" />
-            yang kamu suka.
-          </>
-        }
-        subtitle="Coding, bahasa, musik, olahraga, seni — pilih topik favoritmu. Featured Partner: Timedoor Academy."
+        title="Kursus untuk mengembangkan minat & bakat"
+        subtitle="Coding, bahasa, musik, olahraga, dan seni. Lengkapi pendidikan formal dengan program ekstra yang relevan."
         ctaHref="/kursus"
-        ctaLabel="Cari kursus seru"
+        ctaLabel="Cari kursus"
       >
-        <Panel>
-          <Subhead hand="pilih topik" tilt={1}>
-            Kategori populer
-          </Subhead>
-          <div className="mt-4">
-            <KursusSection />
-          </div>
+        <Panel title="Pilih topik kursus">
+          <KursusSection />
         </Panel>
       </CategoryFeature>
 
-      <CtaStrip />
+      <ParentTips />
+
+      <OwnerCta />
     </>
   );
 }

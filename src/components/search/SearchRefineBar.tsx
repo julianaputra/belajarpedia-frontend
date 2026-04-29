@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -68,7 +69,7 @@ export function SearchRefineBar({ category, initialQuery }: Props) {
           disabled={q.trim().length === 0}
           className="w-full sm:w-auto justify-center"
         >
-          🔍 Cari
+          <Search size={18} aria-hidden /> Cari
         </Button>
       </div>
     </form>

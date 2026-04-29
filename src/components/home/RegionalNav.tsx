@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
@@ -89,7 +90,7 @@ export function RegionalNav({ category }: Props) {
         disabled={!provinceSlug}
         className="w-full sm:w-auto justify-center"
       >
-        🔎 Cari {CATEGORY_LABEL[category]}
+        <Search size={18} aria-hidden /> Cari {CATEGORY_LABEL[category]}
       </Button>
 
       {!provinceSlug && (

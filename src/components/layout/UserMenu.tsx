@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ChevronDown, Heart, LogOut, User } from "lucide-react";
 
 import { ButtonLink } from "@/components/ui/Button";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -68,9 +69,7 @@ export function UserMenu() {
         <span className="hidden sm:inline text-sm font-semibold text-ink-700">
           {user.name?.split(" ")[0] ?? "Akun"}
         </span>
-        <span aria-hidden className="text-ink-500 text-xs">
-          ▾
-        </span>
+        <ChevronDown size={14} aria-hidden className="text-ink-500" />
       </button>
 
       {open && (
@@ -85,15 +84,15 @@ export function UserMenu() {
             <p className="text-xs text-muted truncate">{user.email}</p>
           </div>
           <MenuItem href="/profile" onClick={() => setOpen(false)}>
-            👤 Profil
+            <User size={16} aria-hidden /> Profil
           </MenuItem>
           <MenuItem href="/favorites" onClick={() => setOpen(false)}>
-            ♥ Favorit saya
+            <Heart size={16} aria-hidden /> Favorit saya
           </MenuItem>
           <button
             role="menuitem"
             type="button"
-            className="w-full text-left px-3 py-2 rounded-[var(--radius)] text-sm font-semibold text-coral-500 hover:bg-coral-400/10"
+            className="w-full text-left px-3 py-2 rounded-[var(--radius)] text-sm font-semibold text-coral-500 hover:bg-coral-400/10 inline-flex items-center gap-2"
             onClick={async () => {
               setOpen(false);
               await logout();
@@ -101,7 +100,7 @@ export function UserMenu() {
               router.push("/");
             }}
           >
-            🚪 Logout
+            <LogOut size={16} aria-hidden /> Logout
           </button>
         </div>
       )}
@@ -123,7 +122,7 @@ function MenuItem({
       role="menuitem"
       href={href}
       onClick={onClick}
-      className="block px-3 py-2 rounded-[var(--radius)] text-sm font-semibold text-ink-700 hover:bg-brand-50 hover:text-brand-700"
+      className="flex items-center gap-2 px-3 py-2 rounded-[var(--radius)] text-sm font-semibold text-ink-700 hover:bg-brand-50 hover:text-brand-700"
     >
       {children}
     </Link>

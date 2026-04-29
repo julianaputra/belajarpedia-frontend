@@ -186,14 +186,45 @@ The following are Laravel/Filament concerns and consumed only via REST:
 
 Frontend hanya mengonsumsi API per `belajarpedia_version01_api.yaml`.
 
-## 6. Open Questions
+## 6. Decisions (locked 2026-04-29)
 
-1. **Hosting**: spec menyebut AWS EC2/Lightsail. Apakah Vercel boleh dipertimbangkan? Vercel = ISR + on-demand revalidation native, tapi spec mengikat ke AWS shared host (NFR 6.4 backup).
-2. **UI kit**: shadcn/ui (recommended), atau ada brand kit Belajarpedia yang sudah ada?
-3. **Translation**: spec bilang Bahasa Indonesia only — confirm semua copy di Indonesia, gunakan `lang="id"` di `<html>`.
-4. **Slug pagination**: spec menyebut `/page/{n}` — ini bagian dari path, bukan query. Confirm route shape: `/sekolah/bali/page/2` (path-segment, bukan `?page=2`).
-5. **Revalidate granularity**: webhook menerima paths array — perlu spec list URL patterns mana yang harus diinvalidate per facility-edit (detail + 3 parent list).
-6. **Domain cookie split**: dev/staging/prod — perlu env-driven `SESSION_DOMAIN` config.
+### 6.1 Hosting — AWS shared host
+Next.js berjalan di EC2/Lightsail bersama Laravel host, di belakang Nginx, di-manage PM2/systemd. Cloudflare di depan untuk TLS+CDN. ISR cache disimpan di local FS Node. Vercel ditolak (cost not justified untuk traffic SEO-organic, terpisah dari Laravel host).
+
+### 6.2 UI Kit — shadcn/ui + Tailwind
+Components di-copy-paste (bukan dependency), Radix-based untuk a11y. Tema warna menyesuaikan brand Belajarpedia begitu style guide tersedia; default shadcn palette dipakai sementara.
+
+### 6.3 Translation — Bahasa Indonesia only
+- `<html lang="id">`
+- Semua copy public site = Bahasa Indonesia
+- Date locale `id-ID` (mis. "12 Juni 2026")
+- Currency: `Rp` + `Intl.NumberFormat('id-ID')`
+- Error/validation message di Bahasa Indonesia
+
+### 6.4 Pagination URL — path segment
+Format: `/sekolah/bali/kab-badung/kuta-utara/negeri/page/2` (bukan `?page=2`). Route parser (`lib/routing/url-parser.ts`) deteksi suffix `/page/{n}` di tail dan extract integer.
+
+### 6.5 Revalidate Granularity
+
+Mapping event Laravel → paths yang dikirim ke webhook `/internal/revalidate`:
+
+| Event | Paths |
+|---|---|
+| Sekolah CREATE/UPDATE/score-change | Detail URL + 5 parent list URLs (root, provinsi, kabkota, kecamatan, leaf w/ school_type) + sitemap-sekolah-N |
+| Universitas CREATE/UPDATE/score-change | Detail URL + 4 parent list URLs + sitemap-universitas-N |
+| Kursus CREATE/UPDATE/score-change | Detail URL + 4 parent list URLs (region) + category list URL + sitemap-kursus-N |
+| Facility status=removed | Same as above (detail akan return 410 setelah revalidate) |
+| Review delete by admin (AC-24) | Detail URL + parent list URLs facility tersebut |
+| Kursus category disable/delete | Semua list URL kategori + home |
+| Daily sitemap regen | `/sitemap.xml` + semua `/sitemap-*-N.xml` |
+
+### 6.6 Domain Cookie Config
+
+| Env | Frontend | API | `SESSION_DOMAIN` | `SANCTUM_STATEFUL_DOMAINS` |
+|---|---|---|---|---|
+| Local | `localhost:3000` | `localhost:8000` | `localhost` | `localhost:3000` |
+| Staging | `staging.belajarpedia.com` | `api.staging.belajarpedia.com` | `.staging.belajarpedia.com` | `staging.belajarpedia.com` |
+| Production | `belajarpedia.com` | `api.belajarpedia.com` | `.belajarpedia.com` | `belajarpedia.com` |
 
 ## 7. References
 

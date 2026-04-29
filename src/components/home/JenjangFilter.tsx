@@ -53,7 +53,7 @@ export function JenjangFilter() {
         </RevealItem>
         <RevealItem>
           <p className="text-sm sm:text-base text-muted mt-1 pl-4">
-            Pilih sesuai usia anak Anda untuk hasil paling relevan.
+            Pilih jenjang yang Anda cari — langsung lompat ke daftar yang relevan.
           </p>
         </RevealItem>
       </Reveal>

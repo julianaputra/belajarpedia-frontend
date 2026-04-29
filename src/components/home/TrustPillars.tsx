@@ -56,8 +56,9 @@ export function TrustPillars() {
           </RevealItem>
           <RevealItem>
             <p className="text-sm sm:text-base text-muted mt-2 sm:mt-3 leading-relaxed">
-              Belajarpedia adalah inisiatif Timedoor untuk memberikan akses
-              informasi pendidikan yang netral dan terverifikasi.
+              Tim editorial kami memverifikasi setiap data sebelum dipublikasi.
+              Listing tidak bisa dibeli — semua institusi tampil dengan kriteria
+              yang sama.
             </p>
           </RevealItem>
         </Reveal>

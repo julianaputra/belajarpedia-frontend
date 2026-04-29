@@ -56,8 +56,8 @@ export function ParentTips() {
           </RevealItem>
           <RevealItem>
             <p className="text-sm sm:text-base text-muted mt-2 sm:mt-3 leading-relaxed">
-              Tips praktis dari pengalaman ribuan keluarga yang sudah memilih
-              lewat Belajarpedia.
+              Empat hal yang sering luput diperiksa orang tua sebelum memutuskan
+              sekolah untuk anak.
             </p>
           </RevealItem>
         </Reveal>

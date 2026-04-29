@@ -107,15 +107,15 @@ export function ParentHero() {
               <span className="w-5 h-5 rounded-full bg-sun-400 border-2 border-white" />
               <span className="w-5 h-5 rounded-full bg-coral-400 border-2 border-white" />
             </span>
-            Dipercaya{" "}
-            <span className="font-semibold text-brand-700">12.000+ keluarga</span>{" "}
+            Direktori pendidikan{" "}
+            <span className="font-semibold text-brand-700">tanpa iklan</span>{" "}
             di Indonesia
           </span>
         </RevealItem>
 
         <RevealItem>
           <h1 className="text-[28px] sm:text-5xl lg:text-7xl font-semibold text-ink-700 leading-[1.1] tracking-tight max-w-4xl mx-auto">
-            Bantu Anda memilih{" "}
+            Temukan{" "}
             <span className="relative inline-block text-brand-700">
               <span
                 aria-hidden
@@ -130,9 +130,9 @@ export function ParentHero() {
 
         <RevealItem>
           <p className="text-sm sm:text-lg text-ink-600 max-w-2xl mx-auto leading-relaxed">
-            Bandingkan sekolah, universitas, dan kursus dari seluruh Indonesia.
-            Lihat biaya, kurikulum, akreditasi, dan kontak — semua dalam satu
-            tempat, transparan dan terpercaya.
+            Bandingkan sekolah, universitas, dan kursus dari seluruh Indonesia —
+            lengkap dengan biaya, kurikulum, akreditasi, dan kontak. Tanpa iklan,
+            tanpa paid placement.
           </p>
         </RevealItem>
 

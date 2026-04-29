@@ -70,7 +70,7 @@ export function PopularRegions() {
             Wilayah populer
           </h2>
           <p className="text-sm sm:text-base text-muted mt-1 pl-4">
-            Mulai pencarian dari kota besar dengan opsi terbanyak.
+            Lompat langsung ke kota Anda — tanpa perlu pilih provinsi dulu.
           </p>
         </RevealItem>
         <RevealItem>

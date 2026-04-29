@@ -85,8 +85,8 @@ export function CategoryTabs() {
         </RevealItem>
         <RevealItem>
           <p className="text-sm sm:text-base text-muted mt-2 sm:mt-3 leading-relaxed">
-            Pilih kategori untuk lihat fasilitas terdata yang baru saja
-            diverifikasi.
+            Pilih kategori untuk lihat fasilitas terbaru yang sudah diverifikasi
+            tim editorial.
           </p>
         </RevealItem>
       </Reveal>

@@ -1,42 +1,43 @@
 import Link from "next/link";
+import { ArrowLeft, AlertCircle } from "lucide-react";
 
 type Props = {
   category: "sekolah" | "universitas" | "kursus";
   parentHref: string;
 };
 
+const LABELS: Record<Props["category"], string> = {
+  sekolah: "sekolah",
+  universitas: "universitas",
+  kursus: "kursus",
+};
+
 /**
- * Rendered when a facility has `status = removed` (AC-03).
- *
- * Note: ideally this responds with HTTP 410. Next.js App Router doesn't expose
- * a built-in `gone()` helper, so we render this UI within the page handler and
- * pair it with `<meta robots="noindex">` via metadata. A middleware or
- * Route Handler could elevate the response status when richer 410 semantics
- * are needed (Phase 11+).
+ * Rendered when a facility has `status = removed` (AC-03). Calm parent-style
+ * empty state — clear status, clear escape route.
  */
 export function GoneNotice({ category, parentHref }: Props) {
-  const labels = {
-    sekolah: "sekolah",
-    universitas: "universitas",
-    kursus: "kursus",
-  } as const;
-
   return (
     <main className="mx-auto max-w-2xl px-5 py-20 text-center space-y-5">
-      <p className="text-sm font-medium uppercase tracking-wider text-coral-500">
-        410 — Gone
+      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-coral-400/15 text-coral-500">
+        <AlertCircle size={32} aria-hidden />
+      </div>
+      <p className="text-xs font-semibold uppercase tracking-wider text-coral-500">
+        410 — Tidak tersedia
       </p>
-      <h1 className="text-3xl sm:text-4xl text-ink-700">
+      <h1 className="text-2xl sm:text-3xl font-bold text-ink-700">
         Fasilitas ini sudah tidak terdaftar
       </h1>
-      <p className="text-muted text-lg">
-        {`Halaman ${labels[category]} ini telah dihapus dari direktori Belajarpedia. Silakan jelajahi opsi lain di area yang sama.`}
+      <p className="text-muted text-base sm:text-lg leading-relaxed">
+        Halaman {LABELS[category]} ini telah dihapus dari direktori. Silakan
+        jelajahi opsi lain di area yang sama.
       </p>
       <Link
         href={parentHref}
-        className="inline-block text-brand-700 font-semibold hover:underline"
+        className="inline-flex items-center gap-2 text-brand-700 font-semibold hover:underline"
       >
-        ← Kembali ke daftar
+        <ArrowLeft size={16} aria-hidden />
+        Kembali ke daftar
       </Link>
     </main>
   );

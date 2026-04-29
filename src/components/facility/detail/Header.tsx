@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Badge } from "@/components/ui/Badge";
+import { Star } from "lucide-react";
 import type { components } from "@/types/api";
 
 const PLACEHOLDER = "/placeholder-facility.svg";
@@ -10,14 +10,20 @@ type Props = {
   subtitle?: string;
 };
 
+/**
+ * Detail page header — calm, parent-targeted.
+ *
+ * Drops the sticker tape treatment in favor of a clean filled chip for the
+ * Featured Partner cue.
+ */
 export function DetailHeader({ facility, subtitle }: Props) {
   const name = facility.name ?? "";
   const image = facility.image_main_url ?? PLACEHOLDER;
   const isTimedoor = facility.is_timedoor_academy === true;
 
   return (
-    <header className="space-y-5 animate-[var(--animate-fade-up)]">
-      <div className="relative aspect-[16/9] sm:aspect-[16/6] rounded-[var(--radius-lg)] overflow-hidden bg-gradient-to-br from-brand-100 to-ink-100">
+    <header className="space-y-5">
+      <div className="relative aspect-[16/9] sm:aspect-[16/6] rounded-2xl overflow-hidden bg-gradient-to-br from-brand-50 to-ink-50 border border-ink-100">
         <Image
           src={image}
           alt={name}
@@ -27,17 +33,17 @@ export function DetailHeader({ facility, subtitle }: Props) {
           className="object-cover"
         />
         {isTimedoor && (
-          <Badge
-            tone="sun"
-            className="absolute top-4 left-4 shadow-[0_2px_0_0_#cc9a06]"
-          >
-            ⭐ Featured Partner
-          </Badge>
+          <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sun-400 text-ink-900 text-xs font-semibold shadow-[0_4px_10px_-2px_rgb(28_47_112_/_0.25)]">
+            <Star size={13} fill="currentColor" aria-hidden />
+            Featured Partner
+          </span>
         )}
       </div>
 
-      <div className="space-y-1">
-        <h1 className="text-3xl sm:text-4xl text-ink-700">{name}</h1>
+      <div className="space-y-1.5">
+        <h1 className="text-3xl sm:text-4xl font-bold text-ink-700 leading-tight">
+          {name}
+        </h1>
         {subtitle && <p className="text-muted text-base">{subtitle}</p>}
       </div>
     </header>

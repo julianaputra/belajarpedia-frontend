@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { absoluteUrl } from "@/lib/site/config";
 
 type Props = {
@@ -31,9 +32,10 @@ export function LastVerified({ date, facilityPath }: Props) {
       )}
       <Link
         href={reportHref}
-        className="text-brand-700 hover:underline font-medium"
+        className="inline-flex items-center gap-1.5 text-brand-700 hover:underline font-medium"
       >
-        Laporkan informasi yang tidak akurat →
+        Laporkan informasi yang tidak akurat
+        <ArrowRight size={14} aria-hidden />
       </Link>
     </footer>
   );

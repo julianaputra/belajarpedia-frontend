@@ -140,7 +140,7 @@ async function renderList(filters: UniversitasFilters, page: number) {
 
 function ListEmpty() {
   return (
-    <div className="rounded-[var(--radius-lg)] border-2 border-dashed border-ink-200 p-10 text-center">
+    <div className="rounded-2xl border border-dashed border-ink-200 p-10 text-center">
       <p className="text-lg font-semibold text-ink-700 mb-2">
         Tidak ada universitas ditemukan
       </p>
@@ -230,7 +230,7 @@ async function renderDetail(
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
         <div className="space-y-6">
           {detail.description && (
-            <section className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-6 animate-[var(--animate-fade-up)]">
+            <section className="rounded-2xl bg-white border border-ink-100 p-5 sm:p-6">
               <h2 className="text-xl font-bold text-ink-700 mb-3">
                 Tentang {detail.name}
               </h2>
@@ -277,7 +277,7 @@ async function renderDetail(
 
         <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
           {detail.id !== undefined && (
-            <div className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-5 space-y-4">
+            <div className="rounded-2xl bg-white border border-ink-100 p-5 space-y-4">
               <FavoriteButton facilityId={detail.id} />
               <div className="border-t border-ink-100 pt-4">
                 <ReviewWidget facilityId={detail.id} />

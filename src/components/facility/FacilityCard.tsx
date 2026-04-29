@@ -1,26 +1,27 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Star } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { Card, CardBody } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
 import type { FacilityCard as FacilityCardData } from "@/lib/api/facilities";
 
 const PLACEHOLDER = "/placeholder-facility.svg";
 
 type Props = {
   facility: FacilityCardData;
-  /** Animation stagger index — adds bounce-in delay for grid entrance. */
-  index?: number;
   className?: string;
 };
 
 /**
- * Card-shape per AC-05: name + kabkota + image only.
- * No score, no count chips, no school_type/category chip.
+ * Facility card — name + kabkota + image only (AC-05).
  *
- * `is_timedoor_academy` = true → Sponsored badge (B-03 mitigation).
+ * Calm, parent-targeted styling:
+ *   - No bounce-in or stagger animation
+ *   - Subtle hover lift via shadow only (no translate)
+ *   - Featured Partner shows as a small filled chip with Lucide Star
  */
-export function FacilityCard({ facility, index = 0, className }: Props) {
+export function FacilityCard({ facility, className }: Props) {
   const href = facility.url ?? "#";
   const name = facility.name ?? "Tanpa nama";
   const kabkota = facility.kabkota_name ?? "";
@@ -31,16 +32,12 @@ export function FacilityCard({ facility, index = 0, className }: Props) {
     <Link
       href={href}
       className={cn(
-        "block focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200 rounded-[var(--radius-lg)]",
+        "block focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200 rounded-2xl",
         className,
       )}
-      style={{ animationDelay: `${Math.min(index * 40, 400)}ms` }}
     >
-      <Card
-        interactive
-        className="h-full overflow-hidden animate-[var(--animate-bounce-in)]"
-      >
-        <div className="relative aspect-[4/3] bg-gradient-to-br from-brand-100 to-ink-100">
+      <Card interactive className="h-full overflow-hidden">
+        <div className="relative aspect-[4/3] bg-gradient-to-br from-brand-50 to-ink-50">
           <Image
             src={imageSrc}
             alt={name}
@@ -49,16 +46,14 @@ export function FacilityCard({ facility, index = 0, className }: Props) {
             className="object-cover"
           />
           {isTimedoor && (
-            <Badge
-              tone="sun"
-              className="absolute top-3 left-3 shadow-[0_2px_0_0_#cc9a06]"
-            >
-              ⭐ Featured Partner
-            </Badge>
+            <span className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sun-400 text-ink-900 text-xs font-semibold shadow-[0_2px_6px_-1px_rgb(28_47_112_/_0.2)]">
+              <Star size={12} fill="currentColor" aria-hidden />
+              Featured Partner
+            </span>
           )}
         </div>
         <CardBody className="space-y-1">
-          <h3 className="text-base font-bold text-ink-700 leading-snug line-clamp-2">
+          <h3 className="text-base font-semibold text-ink-700 leading-snug line-clamp-2">
             {name}
           </h3>
           {kabkota && (
@@ -79,7 +74,7 @@ export function FacilityGrid({ facilities, className }: GridProps) {
   return (
     <div
       className={cn(
-        "grid gap-5",
+        "grid gap-4 sm:gap-5",
         "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
         className,
       )}
@@ -88,7 +83,6 @@ export function FacilityGrid({ facilities, className }: GridProps) {
         <FacilityCard
           key={facility.id ?? `${facility.slug}-${i}`}
           facility={facility}
-          index={i}
         />
       ))}
     </div>

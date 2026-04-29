@@ -2,11 +2,12 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Card with friendly hover-lift.
- * - Default: subtle resting shadow.
- * - Interactive (hover): lifts +4px, deeper shadow, slight scale.
+ * Calm card primitive used across the site.
  *
- * Use `<Card asChild>`-style? Not implemented — wrap with <Link> if needed.
+ * Visual language:
+ *   - 1px border, no chunky shadow at rest
+ *   - Soft modern shadow on interactive hover (no translate jump)
+ *   - Quiet radius (rounded-2xl ≈ 16px)
  */
 
 type CardProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -17,11 +18,10 @@ export function Card({ className, interactive = false, ...rest }: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-lg)] bg-white border-2 border-ink-100",
-        "shadow-[0_2px_0_0_rgb(28_47_112_/_0.08)]",
-        "transition-[transform,box-shadow,border-color] duration-200 ease-[var(--ease-pop)]",
+        "rounded-2xl bg-white border border-ink-100",
+        "transition-[box-shadow,border-color] duration-200",
         interactive &&
-          "cursor-pointer hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] hover:border-brand-300",
+          "hover:border-brand-200 hover:shadow-[0_8px_20px_-10px_rgb(28_47_112_/_0.2)]",
         className,
       )}
       {...rest}
@@ -52,7 +52,7 @@ export function CardTitle({
 }) {
   return (
     <As
-      className={cn("text-lg font-bold text-ink-700 leading-tight", className)}
+      className={cn("text-lg font-semibold text-ink-700 leading-tight", className)}
       {...rest}
     />
   );

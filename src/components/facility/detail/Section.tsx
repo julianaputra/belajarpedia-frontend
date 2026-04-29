@@ -31,11 +31,11 @@ export function DetailSection({ title, children, className }: SectionProps) {
   return (
     <section
       className={cn(
-        "rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-6 space-y-4 animate-[var(--animate-fade-up)]",
+        "rounded-2xl bg-white border border-ink-100 p-5 sm:p-6 space-y-4",
         className,
       )}
     >
-      <h2 className="text-xl font-bold text-ink-700">{title}</h2>
+      <h2 className="text-lg sm:text-xl font-semibold text-ink-700">{title}</h2>
       <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-[max-content_1fr]">
         {children}
       </dl>

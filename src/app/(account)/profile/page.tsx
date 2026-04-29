@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import useSWR from "swr";
 
 import { Button } from "@/components/ui/Button";
-import { Input, Label } from "@/components/ui/Input";
+import { Input, Label, PasswordInput } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { FormError } from "@/components/auth/AuthCard";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -392,9 +392,8 @@ function ChangePasswordSection() {
       >
         <div>
           <Label htmlFor="cur-pass">Password saat ini</Label>
-          <Input
+          <PasswordInput
             id="cur-pass"
-            type="password"
             autoComplete="current-password"
             value={current}
             onChange={(e) => setCurrent(e.target.value)}
@@ -403,9 +402,8 @@ function ChangePasswordSection() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="new-pass">Password baru</Label>
-            <Input
+            <PasswordInput
               id="new-pass"
-              type="password"
               autoComplete="new-password"
               value={next}
               onChange={(e) => setNext(e.target.value)}
@@ -413,9 +411,8 @@ function ChangePasswordSection() {
           </div>
           <div>
             <Label htmlFor="conf-pass">Konfirmasi password baru</Label>
-            <Input
+            <PasswordInput
               id="conf-pass"
-              type="password"
               autoComplete="new-password"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
@@ -511,9 +508,8 @@ function DangerZone({ onLogout }: { onLogout: () => void }) {
             </p>
             <div>
               <Label htmlFor="del-pass">Password untuk konfirmasi</Label>
-              <Input
+              <PasswordInput
                 id="del-pass"
-                type="password"
                 value={pwd}
                 onChange={(e) => setPwd(e.target.value)}
               />

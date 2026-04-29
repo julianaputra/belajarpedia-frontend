@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Flame, Search } from "lucide-react";
 
 type Category = "sekolah" | "universitas" | "kursus";
 
@@ -33,16 +34,12 @@ const POPULAR: Record<Category, { label: string; q: string }[]> = {
   ],
 };
 
-/**
- * Shown when user lands on /{category}/search without a query parameter.
- * Invites them to search and seeds with popular keywords for the category.
- */
 export function SearchPrompt({ category }: Props) {
   return (
-    <div className="space-y-6">
-      <div className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-6 sm:p-8 text-center space-y-3">
-        <div className="text-4xl" aria-hidden>
-          🔍
+    <div className="space-y-5">
+      <div className="rounded-2xl bg-white border border-ink-100 p-6 sm:p-8 text-center space-y-3">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-ink-50 text-ink-500">
+          <Search size={24} aria-hidden />
         </div>
         <h2 className="text-xl sm:text-2xl font-bold text-ink-700">
           Cari di {CATEGORY_LABEL[category]}
@@ -52,16 +49,17 @@ export function SearchPrompt({ category }: Props) {
         </p>
       </div>
 
-      <div className="rounded-[var(--radius-lg)] bg-brand-50 border-2 border-brand-200 p-5 sm:p-6 space-y-3">
-        <h3 className="font-bold text-ink-700">
-          🔥 Pencarian populer di {CATEGORY_LABEL[category]}
+      <div className="rounded-2xl bg-brand-50 border border-brand-200 p-5 sm:p-6 space-y-3">
+        <h3 className="font-semibold text-ink-700 inline-flex items-center gap-2">
+          <Flame size={16} className="text-coral-500" aria-hidden />
+          Pencarian populer di {CATEGORY_LABEL[category]}
         </h3>
         <div className="flex flex-wrap gap-2">
           {POPULAR[category].map((p) => (
             <Link
               key={p.q}
               href={`/${category}/search?q=${encodeURIComponent(p.q)}`}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border-2 border-brand-300 text-brand-800 font-semibold text-sm hover:bg-brand-100 hover:-translate-y-0.5 transition-all"
+              className="inline-flex items-center px-4 py-2 rounded-full bg-white border border-brand-200 text-brand-800 font-medium text-sm hover:bg-brand-100 hover:border-brand-300 transition-colors"
             >
               {p.label}
             </Link>

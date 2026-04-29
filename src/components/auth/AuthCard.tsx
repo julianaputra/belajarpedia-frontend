@@ -12,21 +12,19 @@ export function AuthCard({ title, subtitle, children, footer, className }: Props
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-6 sm:p-8 shadow-[var(--shadow-lift)] space-y-6",
+        "rounded-2xl bg-white border border-ink-100 p-6 sm:p-8 shadow-[0_10px_30px_-10px_rgb(28_47_112_/_0.15)] space-y-6",
         className,
       )}
     >
       <header className="space-y-2">
-        <h1 className="font-display font-extrabold text-3xl text-ink-700">
-          {title}
-        </h1>
-        {subtitle && <p className="text-muted">{subtitle}</p>}
+        <h1 className="text-2xl sm:text-3xl font-bold text-ink-700">{title}</h1>
+        {subtitle && <p className="text-muted leading-relaxed">{subtitle}</p>}
       </header>
 
       <div>{children}</div>
 
       {footer && (
-        <footer className="border-t-2 border-dashed border-ink-200 pt-4 text-sm text-muted">
+        <footer className="border-t border-ink-100 pt-4 text-sm text-muted">
           {footer}
         </footer>
       )}
@@ -43,7 +41,7 @@ export function FormError({ message }: FormErrorProps) {
   return (
     <div
       role="alert"
-      className="rounded-[var(--radius)] bg-coral-400/15 border-2 border-coral-400 text-coral-500 px-4 py-2.5 text-sm"
+      className="rounded-lg bg-coral-400/10 border border-coral-400/40 text-coral-500 px-4 py-2.5 text-sm"
     >
       {message}
     </div>

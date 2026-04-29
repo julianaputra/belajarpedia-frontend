@@ -70,7 +70,6 @@ export function RekomendasiSection({ category, filterMainCategory }: Props) {
         <FacilityCard
           key={f.id ?? `${f.slug}-${i}`}
           facility={f}
-          index={i}
         />
       ))}
     </div>

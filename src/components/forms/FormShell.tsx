@@ -1,5 +1,6 @@
 import * as React from "react";
 import Link from "next/link";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 type ShellProps = {
   emoji: string;
@@ -13,15 +14,15 @@ export function FormShell({ emoji, eyebrow, title, subtitle, children }: ShellPr
   return (
     <>
       <header className="space-y-3 text-center sm:text-left">
-        <span className="fx-sticker fx-stick-rot-l-soft bg-brand-100 border-brand-700 text-brand-800">
-          {emoji} {eyebrow}
-        </span>
-        <h1 className="font-display font-extrabold text-3xl sm:text-4xl text-ink-700 leading-tight">
+        <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-brand-700 inline-flex items-center gap-2">
+          <span aria-hidden>{emoji}</span> {eyebrow}
+        </p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-ink-700 leading-tight">
           {title}
         </h1>
-        <p className="text-muted">{subtitle}</p>
+        <p className="text-muted leading-relaxed">{subtitle}</p>
       </header>
-      <div className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-5 sm:p-7 shadow-[var(--shadow-lift)]">
+      <div className="rounded-2xl bg-white border border-ink-100 p-5 sm:p-7 shadow-[0_10px_30px_-10px_rgb(28_47_112_/_0.15)]">
         {children}
       </div>
     </>
@@ -36,20 +37,20 @@ type SuccessProps = {
 
 export function FormSuccess({ title, body, homeHref = "/" }: SuccessProps) {
   return (
-    <div className="rounded-[var(--radius-lg)] bg-brand-50 border-2 border-brand-300 p-6 sm:p-8 space-y-4 text-center animate-[var(--animate-bounce-in)]">
-      <div className="text-5xl" aria-hidden>
-        ✅
+    <div className="rounded-2xl bg-brand-50 border border-brand-200 p-6 sm:p-8 space-y-4 text-center">
+      <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-brand-100 text-brand-700">
+        <CheckCircle2 size={28} aria-hidden />
       </div>
-      <h2 className="font-display font-extrabold text-2xl text-ink-700">{title}</h2>
-      <p className="text-body">{body}</p>
+      <h2 className="text-xl sm:text-2xl font-bold text-ink-700">{title}</h2>
+      <p className="text-body leading-relaxed">{body}</p>
       <p className="text-sm text-muted">
         Tim Belajarpedia akan review permintaanmu dan menghubungi via email.
       </p>
       <Link
         href={homeHref}
-        className="inline-block mt-2 text-brand-700 hover:underline font-semibold"
+        className="inline-flex items-center gap-1.5 mt-2 text-brand-700 hover:underline font-semibold"
       >
-        ← Kembali ke beranda
+        <ArrowLeft size={14} aria-hidden /> Kembali ke beranda
       </Link>
     </div>
   );

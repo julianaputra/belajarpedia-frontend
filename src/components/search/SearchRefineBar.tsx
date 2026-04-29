@@ -42,7 +42,7 @@ export function SearchRefineBar({ category, initialQuery }: Props) {
   return (
     <form
       onSubmit={submit}
-      className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-3 sm:p-4"
+      className="rounded-2xl bg-white border border-ink-100 p-3 sm:p-4"
       role="search"
       aria-label={`Cari di ${CATEGORY_LABEL[category]}`}
     >

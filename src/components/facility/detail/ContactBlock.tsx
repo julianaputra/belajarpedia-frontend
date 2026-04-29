@@ -56,8 +56,8 @@ export function ContactBlock({ facility }: Props) {
   if (items.length === 0) return null;
 
   return (
-    <section className="rounded-[var(--radius-lg)] bg-white border-2 border-ink-100 p-6 animate-[var(--animate-fade-up)]">
-      <h2 className="text-xl font-bold text-ink-700 mb-4">Kontak</h2>
+    <section className="rounded-2xl bg-white border border-ink-100 p-5 sm:p-6">
+      <h2 className="text-lg sm:text-xl font-semibold text-ink-700 mb-4">Kontak</h2>
       <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-[max-content_1fr]">
         {items.map((it) => (
           <div key={it.label} className="contents">

@@ -187,7 +187,7 @@ function ConfirmModal({
       aria-modal="true"
       aria-labelledby="confirm-rating-title"
     >
-      <div className="bg-white rounded-[var(--radius-lg)] max-w-md w-full p-6 space-y-4 shadow-2xl animate-[var(--animate-bounce-in)]">
+      <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
         <h3
           id="confirm-rating-title"
           className="text-xl font-bold text-ink-700"

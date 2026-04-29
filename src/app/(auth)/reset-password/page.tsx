@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/Button";
-import { Input, Label } from "@/components/ui/Input";
+import { Label, PasswordInput } from "@/components/ui/Input";
 import { AuthCard, FormError, FieldError } from "@/components/auth/AuthCard";
 import { resetPassword } from "@/lib/api/auth.client";
 import { isApiError } from "@/lib/api/error";
@@ -82,9 +82,8 @@ export default function ResetPasswordPage() {
       >
         <div>
           <Label htmlFor="password">Password baru</Label>
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             autoComplete="new-password"
             {...register("password")}
           />
@@ -92,9 +91,8 @@ export default function ResetPasswordPage() {
         </div>
         <div>
           <Label htmlFor="password_confirmation">Konfirmasi password baru</Label>
-          <Input
+          <PasswordInput
             id="password_confirmation"
-            type="password"
             autoComplete="new-password"
             {...register("password_confirmation")}
           />

@@ -50,7 +50,7 @@ export function InquiryForm({ facilityId, facilityName }: Props) {
 
   if (isLoading) {
     return (
-      <div className="rounded-[var(--radius-lg)] border-2 border-ink-100 bg-white p-6 text-muted">
+      <div className="rounded-2xl border border-ink-100 bg-white p-6 text-muted">
         Memuat formulir…
       </div>
     );
@@ -58,8 +58,8 @@ export function InquiryForm({ facilityId, facilityName }: Props) {
 
   if (!isAuthenticated) {
     return (
-      <div className="rounded-[var(--radius-lg)] border-2 border-ink-100 bg-white p-6 space-y-3">
-        <h2 className="text-xl font-bold text-ink-700">Kirim Pertanyaan</h2>
+      <div className="rounded-2xl border border-ink-100 bg-white p-5 sm:p-6 space-y-3">
+        <h2 className="text-lg sm:text-xl font-semibold text-ink-700">Kirim Pertanyaan</h2>
         <p className="text-muted">
           Silakan login untuk mengirim pertanyaan langsung ke {facilityName}.
         </p>
@@ -72,8 +72,8 @@ export function InquiryForm({ facilityId, facilityName }: Props) {
 
   if (success) {
     return (
-      <div className="rounded-[var(--radius-lg)] border-2 border-brand-200 bg-brand-50 p-6 space-y-2 animate-[var(--animate-pop)]">
-        <h2 className="text-xl font-bold text-brand-800">Pesan terkirim ✓</h2>
+      <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 sm:p-6 space-y-2">
+        <h2 className="text-lg sm:text-xl font-semibold text-brand-800">Pesan terkirim ✓</h2>
         <p className="text-body">
           Pertanyaan Anda telah diteruskan ke {facilityName}. Mereka akan
           membalas langsung ke email Anda.
@@ -112,9 +112,9 @@ export function InquiryForm({ facilityId, facilityName }: Props) {
           }
         }
       })}
-      className="rounded-[var(--radius-lg)] border-2 border-ink-100 bg-white p-6 space-y-4"
+      className="rounded-2xl border border-ink-100 bg-white p-5 sm:p-6 space-y-4"
     >
-      <h2 className="text-xl font-bold text-ink-700">Kirim Pertanyaan</h2>
+      <h2 className="text-lg sm:text-xl font-semibold text-ink-700">Kirim Pertanyaan</h2>
       <p className="text-sm text-muted">
         Pesan ini akan dikirim ke {facilityName}. Balasan akan masuk ke email
         akun Belajarpedia Anda.
@@ -137,7 +137,7 @@ export function InquiryForm({ facilityId, facilityName }: Props) {
         <textarea
           id="message"
           rows={6}
-          className="w-full rounded-[var(--radius)] border-2 border-ink-200 bg-white px-4 py-3 text-base text-body placeholder:text-muted transition-[border-color,box-shadow] hover:border-ink-300 focus:outline-none focus:border-brand-500 focus:shadow-[0_0_0_4px_var(--color-brand-100)]"
+          className="w-full rounded-lg border border-ink-200 bg-white px-4 py-3 text-base text-body placeholder:text-muted transition-[border-color,box-shadow] hover:border-ink-300 focus:outline-none focus:border-brand-500 focus:shadow-[0_0_0_3px_var(--color-brand-100)]"
           placeholder="Halo, saya ingin bertanya tentang…"
           {...register("message")}
         />

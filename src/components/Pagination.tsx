@@ -112,11 +112,11 @@ function PageLink({
 }: PageLinkProps) {
   const className = cn(
     "min-w-[2.5rem] h-10 px-3 inline-flex items-center justify-center gap-1",
-    "rounded-[var(--radius)] font-semibold text-sm",
-    "transition-[transform,background-color,box-shadow] duration-150 ease-[var(--ease-pop)]",
+    "rounded-lg font-medium text-sm",
+    "transition-[background-color,border-color,color] duration-150",
     active
-      ? "bg-brand-500 text-white shadow-[0_3px_0_0_var(--color-brand-700)]"
-      : "bg-white text-ink-700 border-2 border-ink-100 hover:border-brand-300 hover:text-brand-700 hover:-translate-y-0.5",
+      ? "bg-brand-700 text-white"
+      : "bg-white text-ink-700 border border-ink-100 hover:border-brand-300 hover:text-brand-700",
     disabled && "opacity-40 cursor-not-allowed pointer-events-none",
   );
 
